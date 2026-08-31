@@ -34,16 +34,16 @@ Run the build script. We will specify the `hikey960` board and target the `edge`
     ./compile.sh \
         BOARD=hikey960 \
         BRANCH=edge \
-        RELEASE=bookworm \
+        RELEASE=trixie \
         BUILD_MINIMAL=no \
         BUILD_DESKTOP=no \
         KERNEL_ONLY=no \
         KERNEL_CONFIGURE=no
     ```
-    *Note: You can change `RELEASE` to `jammy` or `noble` if you prefer Ubuntu over Debian.*
+    *Note: We are building Debian Trixie (testing/13). You can theoretically change RELEASE to an Ubuntu flavor (like jammy or noble), but Trixie is our tested target.*
 
 3.  **Output**
-    Once the compilation finishes, your new OS image will be located in the `output/images/` directory. It will be a `.img` file (e.g., `Armbian_24.x.x_Hikey960_bookworm_edge_6.x.y.img`).
+    Once the compilation finishes, your new OS image will be located in the `output/images/` directory. It will be a `.img` file (e.g., `Armbian_24.x.x_Hikey960_trixie_edge_6.x.y.img`).
 
 ## Why not just flash this image directly?
 Armbian's default build process generates a highly optimized partition table (often referred to as `maxroot`), which removes unused Android partitions like `cache` to maximize rootfs space. 
