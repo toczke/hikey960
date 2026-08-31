@@ -34,4 +34,4 @@ Armbian provides a text-based UI tool called `armbian-config` which can also fre
 *(Note: Doing this manually via `apt-mark` as shown in Step 1 is preferred because you have exact control over which packages are held).*
 
 ## 4. Safe Upgrades
-From now on, running `sudo apt update && sudo apt upgrade` is perfectly safe. It will update userland applications (like curl, docker, python) and Debian security patches, but it will skip the core kernel/DTB packages, ensuring your HiKey960 remains stable and functional.
+From now on, running `sudo apt update && sudo apt upgrade` is perfectly safe. It will update userland applications (like curl, python, standard tools) and Debian security patches, but it will skip the core kernel/DTB packages, ensuring your HiKey960 remains stable and functional.
