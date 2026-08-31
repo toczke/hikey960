@@ -26,22 +26,5 @@ PARTUUID=d3340696-9b95-4c64-8df6-e6d4548fba41  /boot/efi  vfat  defaults  0  2
 2. Turn **Switch 3 OFF**. (Leave Switch 1 ON).
 3. Power on. The board should automatically boot directly into Armbian without dropping into the UEFI shell.
 
-## 3. Freezing the Kernel (CRITICAL)
-Once you have booted and verified that Wi-Fi (TI or Intel M.2), USB, and networking function correctly, you **must freeze the kernel and bootloader packages**.
-
-An accidental `apt upgrade` of the edge kernel will overwrite the device tree (DTB) or firmware binaries, often bricking Wi-Fi or causing kernel panics on boot.
-
-Run as root:
-```bash
-apt-mark hold armbian-bsp-cli-hikey960-edge-grub
-apt-mark hold armbian-firmware-full
-apt-mark hold linux-dtb-edge-arm64
-apt-mark hold linux-headers-edge-arm64
-apt-mark hold linux-image-edge-arm64
-```
-Verify the holds:
-```bash
-apt-mark showhold
-```
-
-You are now free to install Docker, update userland packages, and use the board as a stable, modern Linux server!
+## 3. Next Steps
+Move on to the final and most important step: **[04-FREEZING_KERNEL_UPDATES.md](04-FREEZING_KERNEL_UPDATES.md)** to lock your system state and prevent catastrophic regressions during `apt upgrade`.
