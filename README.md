@@ -4,6 +4,19 @@ The HiKey960 (Kirin 960) is a powerful ARM64 board that was officially abandoned
 
 This repository documents the **complete, end-to-end process** for compiling a modern Armbian system with a mainline edge kernel, working around the critical flaws in Hisilicon's EDK2 (UEFI) implementation, and successfully flashing the board so it auto-boots reliably.
 
+## Current Project State
+We have successfully ported the HiKey960 to a modern headless server environment.
+* **Operating System:** Armbian (Debian 13 "Trixie")
+* **Kernel:** Mainline Linux 7.1.x (Edge branch)
+
+**Hardware Support & Fixes:**
+* **Storage (32GB UFS 2.0):** **Working.** Booting directly from the internal UFS storage. Achieved by restoring the stock partition table (keeping the EFI partition at LBA 73984) and compiling UFS/EXT4 drivers built-in.
+* **USB Ports (2x USB 3.0, 1x Type-C):** **Working.** A bug in the mainline kernel disables the power to the Microchip USB hub. Fixed via a custom Device Tree (DTB) patch that forces `vcc3v3_hub` to `regulator-always-on`.
+* **Expansion (M.2 Key M PCIe Gen2):** **Working.** Kernel configured with `igc`, `igb`, and `e1000e` modules to support 2.5GbE network adapters (e.g., Intel I225-V) in the M.2 slot, freeing up USB ports.
+* **Processor (Kirin 960 4xA73 + 4xA53, 3GB LPDDR4):** **Working.** SMP and CPU frequency scaling are operational.
+* **Graphics (Mali G71 MP8 GPU):** **Disabled.** Deliberately disabled (`CONFIG_DRM_PANFROST` unset) to ensure 100% stability. Mainline Panfrost/Kirin DRM drivers can cause kernel panics without proper Android blobs. Since this board is used as a headless server (Docker/Dockhand/Restic), the GPU is unnecessary.
+
+
 ## The Challenge
 Nobody does this because the Hisilicon firmware is fundamentally broken in several ways:
 1.  **EDK2 NVRAM Hardcoding:** The stock UEFI bootloader ("Grub" entry) ignores standard EFI partition UUIDs. It hardcodes the EFI System Partition (ESP) to **Partition Index 7** and **LBA 73984**. Custom partition tables (like Armbian's default `maxroot`) shift this LBA, breaking auto-boot completely.
