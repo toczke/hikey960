@@ -11,6 +11,7 @@ We have successfully ported the HiKey960 to a modern headless server environment
 
 **Hardware Support & Fixes:**
 * **Storage (32GB UFS 2.0):** **Working.** Booting directly from the internal UFS storage. Achieved by restoring the stock partition table (keeping the EFI partition at LBA 73984) and compiling UFS/EXT4 drivers built-in.
+* **Wireless (TI WL1837 Wi-Fi & Bluetooth):** **Working.** The integrated 802.11ac dual-band Wi-Fi operates natively out of the box (`wlan0` via `wl18xx`/`wlcore` drivers). Bluetooth is recognized via UART (`hci0`), but depending on the specific Armbian firmware package, it may require manual baud rate initialization using `hciattach`.
 * **USB Ports (2x USB 3.0, 1x Type-C):** **Working.** A bug in the mainline kernel disables the power to the Microchip USB hub. Fixed via a custom Device Tree (DTB) patch that forces `vcc3v3_hub` to `regulator-always-on`.
 * **Expansion (M.2 Key M PCIe Gen2):** **Working.** Kernel configured with `igc`, `igb`, and `e1000e` modules to support 2.5GbE network adapters (e.g., Intel I225-V) in the M.2 slot, freeing up USB ports.
 * **Processor (Kirin 960 4xA73 + 4xA53, 3GB LPDDR4):** **Working.** SMP and CPU frequency scaling are operational.
