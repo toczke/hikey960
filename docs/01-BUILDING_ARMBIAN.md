@@ -28,7 +28,29 @@ Locate the regulator node for the USB hub (often named `vcc3v3_hub` or similar) 
 	};
 ```
 
-## 3. Start the Compilation
+## 3. Kernel Configuration (menuconfig)
+To ensure system stability for a headless server and support for future M.2 expansion cards, we modified the kernel configuration via Armbian's `userpatches` (or `menuconfig`). If you are recreating this build, ensure the following config changes are applied:
+
+*   **Disable GPU/DRM Drivers (Crucial for stability):**
+    The HiKey960 Mali GPU drivers (Panfrost/Kirin) on mainline edge kernels can cause kernel panics without Android blobs. Since this is a headless server, disable them:
+    ```ini
+    # CONFIG_DRM_PANFROST is not set
+    # CONFIG_DRM_HISI_KIRIN is not set
+    # CONFIG_DRM_HISI_KIRIN960 is not set
+    ```
+*   **Enable M.2 Ethernet Drivers (e.g., Intel I225-V 2.5GbE):**
+    ```ini
+    CONFIG_IGB=m
+    CONFIG_IGC=m
+    CONFIG_E1000E=m
+    ```
+*   **Ensure UFS is built-in (for booting):**
+    ```ini
+    CONFIG_SCSI_UFS_HISI=y
+    CONFIG_EXT4_FS=y
+    ```
+
+## 4. Start the Compilation
 Run the build script. We will specify the `hikey960` board and target the `edge` kernel branch.
     ```bash
     ./compile.sh \
