@@ -13,8 +13,23 @@ You need a dedicated build machine (Ubuntu 22.04/24.04 recommended) with Docker 
     cd build
     ```
 
-2.  **Start the Compilation:**
-    Run the build script. We will specify the `hikey960` board and target the `edge` kernel branch.
+## 2. Patching the Device Tree (USB Fix)
+Before compiling, you must patch the HiKey960 Device Tree Source (DTS) to force the USB hub regulator to remain on. Without this, the Microchip USB2734 hub will power down, leaving you with no USB ports.
+
+Navigate to the kernel source directory inside the build framework (usually `cache/sources/linux-mainline/.../arch/arm64/boot/dts/hisilicon/`) and edit `hi3660-hikey960.dts`.
+Locate the regulator node for the USB hub (often named `vcc3v3_hub` or similar) and append the `regulator-always-on;` property:
+```dts
+	vcc3v3_hub: regulator-vcc3v3-hub {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc3v3_hub";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-always-on; /* <-- ADD THIS LINE */
+	};
+```
+
+## 3. Start the Compilation
+Run the build script. We will specify the `hikey960` board and target the `edge` kernel branch.
     ```bash
     ./compile.sh \
         BOARD=hikey960 \
