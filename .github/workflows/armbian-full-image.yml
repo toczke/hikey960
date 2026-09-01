@@ -8,11 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout Our Repository
-      uses: actions/checkout@v4
-      with:
-        path: hikey-repo
-
     - name: Maximize Build Space (Free up 30GB+)
       uses: easimon/maximize-build-space@master
       with:
@@ -21,6 +16,11 @@ jobs:
         remove-haskell: 'true'
         remove-codeql: 'true'
         remove-docker-images: 'true'
+
+    - name: Checkout Our Repository
+      uses: actions/checkout@v4
+      with:
+        path: hikey-repo
 
     - name: Checkout Armbian Build Framework
       run: |
