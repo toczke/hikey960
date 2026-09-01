@@ -15,7 +15,7 @@ We have successfully ported the HiKey960 to a modern headless server environment
 * **USB Ports (2x USB 3.0, 1x Type-C):** **Working.** A bug in the mainline kernel disables the power to the Microchip USB hub. Fixed via a custom Device Tree (DTB) patch that forces `vcc3v3_hub` to `regulator-always-on`.
 * **Expansion (M.2 Key M PCIe Gen2):** **Working.** Kernel configured with `igc`, `igb`, and `e1000e` modules to support 2.5GbE network adapters (e.g., Intel I225-V) in the M.2 slot, freeing up USB ports.
 * **Processor (Kirin 960 4xA73 + 4xA53, 3GB LPDDR4):** **Working.** SMP and CPU frequency scaling are operational.
-* **40-Pin Low Speed Expansion Connector:** **Working (Basic Support).** Standard buses (UART3/UART6, I2C0/I2C7, SPI, and basic GPIOs) are supported by the mainline kernel and accessible via standard Linux interfaces (`libgpiod`, `/dev/i2c-*`, `/dev/ttyAMA*`).
+* **40-Pin Low Speed Expansion Connector:** **Working (Full Support).** Standard buses (UART, I2C, SPI) and GPIOs are supported. A custom Device Tree Blob (DTB) patch is required to expose `spidev` nodes to user-space. Logic levels are strictly 1.8V.
 * **60-Pin High Speed Expansion Connector:** **Disabled/Unsupported.** Contains MIPI DSI (Display) and MIPI CSI (Camera) interfaces. Since this is a headless build (DRM disabled) and mainline camera support for the Kirin ISP is essentially non-existent, these high-speed multimedia lanes are inactive.
 * **Graphics (Mali G71 MP8 GPU):** **Disabled.** Deliberately disabled (`CONFIG_DRM_PANFROST` unset) to ensure 100% stability. Mainline Panfrost/Kirin DRM drivers can cause kernel panics without proper Android blobs. Since this board is used as a headless server, the GPU is unnecessary.
 
@@ -34,6 +34,10 @@ Please read the documentation in the following order to successfully build and f
 2.  [02-EDK2_AND_FLASHING.md](docs/02-EDK2_AND_FLASHING.md) - **CRITICAL:** How to handle the partition table bug and flash the image chunk-by-chunk.
 3.  [03-POST_FLASH_STABILIZATION.md](docs/03-POST_FLASH_STABILIZATION.md) - Fixing `fstab` and getting the board to boot reliably.
 4.  [04-FREEZING_KERNEL_UPDATES.md](docs/04-FREEZING_KERNEL_UPDATES.md) - **CRITICAL:** Locking kernel packages via `apt-mark` to prevent automated updates from overwriting our DTB fixes and bricking the system.
+5.  [05-GPIO_EXPANSION_HEADER.md](docs/05-GPIO_EXPANSION_HEADER.md) - Hardware specifications, 1.8V logic limits, full 40-pin layout, and SPI/PWM device tree configuration.
+6.  [06-HS_EXPANSION_HEADER.md](docs/06-HS_EXPANSION_HEADER.md) - Details on the 60-pin HS connector, MIPI CSI/DSI limitations, and ISP hardware blockers on mainline Linux.
+7.  [07-MULTIMEDIA_AND_GPU.md](docs/07-MULTIMEDIA_AND_GPU.md) - Why the HDMI port and Mali-G71 GPU are intentionally disabled for server stability.
+8.  [08-BOARD_SWITCHES.md](docs/08-BOARD_SWITCHES.md) - Hardware DIP switch configurations for Normal Boot, Fastboot, and Brick Recovery.
 
 ## Assets in this Repository
 *   `firmware/prm_ptable.img` - The stock Linaro partition table. **This is the holy grail** for fixing the EDK2 auto-boot bug. You *must* use this partition table to keep the ESP at LBA 73984.

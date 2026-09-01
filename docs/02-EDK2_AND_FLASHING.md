@@ -1,46 +1,38 @@
-# 02. EDK2 Quirks & Flashing Procedure
+# UEFI Bootloader (EDK2) and System Flashing
 
-This is the most critical step. The HiKey960 will refuse to auto-boot and will crash during standard flashing if you do not follow these steps precisely.
+The HiKey960 relies on a fragile implementation of Hisilicon's EDK2 (UEFI). The bootloader strictly expects the EFI System Partition (ESP) to exist exactly at **LBA 73984** on the internal UFS. Standard Linux image writing (like `dd`) alters this layout, rendering the board unbootable.
 
-## The EDK2 NVRAM Bug (The "Grub" Entry)
-The HiKey960's Hisilicon EDK2 implementation contains a factory NVRAM boot entry labeled `Grub`. This entry is supposed to find the EFI System Partition (ESP) and execute `EFI\BOOT\BOOTAA64.EFI`.
+We utilize the `fastboot` protocol to flash partitions individually, retaining the factory layout.
 
-However, the EDK2 firmware **does not search for the ESP by UUID or partition type**. It hardcodes the expected location:
-*   **Partition Index:** 7
-*   **Start LBA:** 73984 (Offset: ~37.8 MB)
+## Normal System Flashing (Fastboot)
 
-If your partition table alters this geometry (which modern images usually do), EDK2 silently fails the `Grub` boot entry and drops you into the `Android Fastboot` entry or a UEFI Shell prompt, requiring manual keyboard intervention on every boot.
-
-### The Solution
-We must flash the **stock Linaro partition table** (`firmware/prm_ptable.img`). This forces the ESP back to Index 7 / LBA 73984.
-
-## The Flashing Steps
+Once you have your compiled Armbian image, use the provided `scripts/02-flash-rootfs.sh` script.
 
 ### 1. Enter Fastboot Mode
-1. Ensure the board is powered off.
-2. Set the DIP switches: **Switch 1 (Auto-boot) ON**, **Switch 2 OFF**, **Switch 3 (Fastboot) ON**.
-3. Connect USB-C to your PC and power on the board.
+Set the physical DIP switches on the board to Fastboot Mode:
+*   Switch 1: `OFF`
+*   Switch 2: `ON`
+*   Switch 3: `OFF`
+Connect a USB-C cable to your PC and power the board.
 
-### 2. Flash the Stock Partition Table
-Flash the stock partition table provided in this repository.
+### 2. Run the Flash Sequence
+The script explicitly flashes the stock partition table (`prm_ptable.img`), bootloaders, and finally the massive rootfs in sparse chunks to bypass hardware buffer limits.
 ```bash
-fastboot flash ptable firmware/prm_ptable.img
+./scripts/02-flash-rootfs.sh
 ```
 
-**CRITICAL STEP:** You must reboot the bootloader immediately so it loads the new partition map into memory.
+## Ultimate Rescue (Serial Recovery)
+
+If the bootloader is completely corrupted (the board doesn't show up in `fastboot devices`), you must perform an ultimate rescue via the IDT serial protocol.
+
+### 1. Enter Recovery Mode
+*   Switch 1: `OFF`
+*   Switch 2: `OFF`
+*   Switch 3: `OFF`
+
+### 2. Run the Recovery Sequence
+Execute the `scripts/03-rescue-uefi.sh` script. This will use the `hikey_idt` tool to inject a temporary bootloader directly into RAM via the serial port (`/dev/ttyUSB0`), reboot the board into an intermediate fastboot state, and definitively rewrite the partition table (`prm_ptable_expanded.img`) and EDK2 UEFI firmwares from scratch.
 ```bash
-fastboot reboot-bootloader
+./scripts/03-rescue-uefi.sh
 ```
-
-### 3. Flash the Armbian Image (Avoiding the Sparse Bug)
-Hisilicon's sparse image parser is broken. If you flash a 30GB+ `.img` file directly, `fastboot` will try to send massive sparse chunks, causing the board to crash with `Unsupported Chunk Type: 0xFFFF`.
-
-You must force `fastboot` to split the image into 128MB chunks using the `-S 128M` flag.
-```bash
-# Assuming your built image is named armbian-image.img
-fastboot -S 128M flash system armbian-image.img
-```
-*(Note: Because we kept the stock ptable, the `system` partition extends to the end of the 32GB UFS, so we won't lose space by flashing the Armbian rootfs here).*
-
-### 4. Prepare for Boot
-Do **not** boot the OS just yet. Because we flashed the stock partition table, the block device mappings in the Armbian image's `/etc/fstab` are now wrong. Proceed to Document 03.
+After a successful rescue, return the switches to Auto-Boot (`ON`, `OFF`, `OFF`) and power cycle.

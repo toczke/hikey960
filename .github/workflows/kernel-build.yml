@@ -1,0 +1,49 @@
+name: ARM64 Kernel and DTB Build
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'arch/arm64/**'
+      - 'Makefile'
+      - '.github/workflows/kernel-build.yml'
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Install Toolchain and Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc-aarch64-linux-gnu build-essential bc bison flex libssl-dev make device-tree-compiler
+
+    - name: Configure Kernel
+      run: |
+        # Replace defconfig with specific hikey960 config if available
+        make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- defconfig
+
+    - name: Build Kernel (Image.gz)
+      run: |
+        make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) Image.gz
+
+    - name: Build Device Tree Blobs (DTB)
+      run: |
+        make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) dtbs
+
+    - name: Upload Kernel Image
+      uses: actions/upload-artifact@v3
+      with:
+        name: Image.gz
+        path: arch/arm64/boot/Image.gz
+
+    - name: Upload Compiled DTBs
+      uses: actions/upload-artifact@v3
+      with:
+        name: dtbs
+        path: arch/arm64/boot/dts/hisilicon/*.dtb
