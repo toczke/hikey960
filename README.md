@@ -36,15 +36,17 @@ We have successfully ported the HiKey960 to a modern headless server environment
 * **Kernel:** Mainline Linux 7.1.x (Edge branch)
 
 **Hardware Support & Fixes:**
-* **Storage (32GB UFS 2.0):** **Working.** Booting directly from the internal UFS storage. Achieved by restoring the stock partition table (keeping the EFI partition at LBA 73984) and compiling UFS/EXT4 drivers built-in.
-* **Wireless (TI WL1837 Wi-Fi & Bluetooth):** **Working.** The integrated 802.11ac dual-band Wi-Fi operates natively out of the box (`wlan0` via `wl18xx`/`wlcore` drivers). Bluetooth is recognized via UART (`hci0`), but depending on the specific Armbian firmware package, it may require manual baud rate initialization using `hciattach`.
-* **USB Ports (2x USB 3.0, 1x Type-C):** **Working.** A bug in the mainline kernel disables the power to the Microchip USB hub. Fixed via a custom Device Tree (DTB) patch that forces `vcc3v3_hub` to `regulator-always-on`.
-* **Expansion (M.2 Key M PCIe Gen2):** **Working.** Kernel configured with `igc`, `igb`, and `e1000e` modules to support 2.5GbE network adapters (e.g., Intel I225-V) in the M.2 slot, freeing up USB ports.
-* **Processor (Kirin 960 4xA73 + 4xA53, 4GB LPDDR4):** **Working.** SMP and CPU frequency scaling are operational.
-* **40-Pin Low Speed Expansion Connector:** **Working (Full Support).** Standard buses (UART, I2C, SPI) and GPIOs are supported. A custom Device Tree Blob (DTB) patch is required to expose `spidev` nodes to user-space. Logic levels are strictly 1.8V.
-* **60-Pin High Speed Expansion Connector:** **Disabled/Unsupported.** Contains MIPI DSI (Display) and MIPI CSI (Camera) interfaces. Since this is a headless build (DRM disabled) and mainline camera support for the Kirin ISP is essentially non-existent, these high-speed multimedia lanes are inactive.
-* **Graphics (Mali G71 MP8 GPU):** **Disabled.** Deliberately disabled (`CONFIG_DRM_PANFROST` unset) to ensure 100% stability. Mainline Panfrost/Kirin DRM drivers can cause kernel panics without proper Android blobs. Since this board is used as a headless server, the GPU is unnecessary.
 
+| Component | Status | Configuration / Notes |
+| :--- | :--- | :--- |
+| **Storage** (32GB UFS 2.0) | Working | Restored stock partition table (EFI at LBA 73984) and compiled UFS/EXT4 drivers built-in. |
+| **Wireless** (TI WL1837) | Working | Wi-Fi operates natively out of the box. Bluetooth via UART (hci0) may require manual baud rate initialization (hciattach). |
+| **USB Ports** (3.0 / Type-C) | Working | DTB patch required. Forced `vcc3v3_hub` to `regulator-always-on` to bypass a mainline kernel power bug. |
+| **Expansion** (M.2 PCIe Gen2) | Working | Kernel pre-configured with `igc`/`igb`/`e1000e` and `ahci`. Supports networking or SATA adapters (e.g., ASM1166). |
+| **Processor** (Kirin 960 4GB) | Working | SMP and CPU frequency scaling operate natively without modifications. |
+| **40-Pin LS Header** | Working | UART, I2C, SPI, GPIO supported. `spidev` nodes require DTB patch. **Strictly 1.8V logic.** |
+| **60-Pin HS Header** | Unsupported | MIPI CSI/DSI lanes inactive due to missing ISP blobs and disabled DRM. |
+| **Graphics** (Mali G71 MP8) | Disabled | `CONFIG_DRM_PANFROST` intentionally unset to ensure stability and prevent SError kernel panics on headless servers. |
 
 ## The Challenge
 Nobody does this because the Hisilicon firmware is fundamentally broken in several ways:
