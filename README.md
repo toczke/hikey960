@@ -4,6 +4,32 @@ The HiKey960 (Kirin 960) is a powerful ARM64 board that was officially abandoned
 
 This repository documents the **complete, end-to-end process** for compiling a modern Armbian system with a mainline edge kernel, working around the critical flaws in Hisilicon's EDK2 (UEFI) implementation, and successfully flashing the board so it auto-boots reliably.
 
+```text
+                ..                     user@hikey960
+            `:]x**j-,'                 -------------
+       .,+t***********z\<"             OS: Armbian 26.8.3 bookworm aarch64
+       ?******************;            Host: HiKey960
+      '*n` .'`^,;;,^`'. ,cc.           Kernel: Linux 7.1.10-edge-arm64
+      -<.                .[l           Uptime: 35 mins
+     //     ^^      ^^    \\           Packages: 440 (dpkg)
+     !^         ^^         ":          Shell: bash 5.2.15
+    'tt}`     !~]rj_     ")t/.         Terminal: /dev/pts/0
+    Itttt?'   ~~]rr]   `{tttt,         CPU: hi3660 (4+4) @ 2.36 GHz
+    \tttttt!""I_]r("""~tttttt1         Memory: 645.18 MiB / 3.79 GiB (17%)
+  '_tttttttttttt)ftttttttttttti.       Swap: 0 B / 1.89 GiB (0%)
+ \*ztttttttttttttttttttttttttf**[      Disk (/): 7.13 GiB / 28.12 GiB (25%) - ext4
+l**c)tttttttttttttttttttttttt(z**,     Disk (/mnt/storage): 618.92 GiB / 3.58 TiB (17%) - ext4
+.z*x.`tttttttttttttttttttttttt.`u*n    Disk (/tmp): 48.00 KiB / 1.86 GiB (0%) - ext4
+>`   (tttttttttttttttttttttt]   "I     Disk (/var/log): 1.95 MiB / 46.84 MiB (4%) - ext4
+     ,tttttttttttttttttttttt`          Local IP (wlan0): 192.168.x.x/24
+     ./tttttfttttttttfttttt(           Locale: en_US.UTF-8
+      'I)))(\()(tt))|\()({;'           
+        .~~~~~~~|)~~~~~~~<                                     
+        '[)))))1|()))))))?                                     
+          ",,,"    ",,,^
+```
+
+
 ## Current Project State
 We have successfully ported the HiKey960 to a modern headless server environment.
 * **Operating System:** Armbian (Debian 13 "Trixie")
