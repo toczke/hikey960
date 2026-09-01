@@ -41,7 +41,33 @@ Generate the default configuration for the ARM64 architecture:
 ```bash
 make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- defconfig
 ```
-*(Optional but Recommended)*: To manually disable the buggy Mali GPU and ensure headless stability, edit the generated `.config` file and ensure the Panfrost driver is disabled (`# CONFIG_DRM_PANFROST is not set`).
+
+**⚠️ CRITICAL KERNEL FLAGS:**
+Before proceeding, you *must* edit the generated `.config` file to ensure the system can boot from the internal 32GB UFS storage and operate stably. Standard generic configs often build critical storage drivers as external modules (`=m`), which causes a boot loop because the kernel cannot read the UFS to load the module.
+
+Ensure the following flags are strictly set to built-in (`=y`) or disabled (`# is not set`):
+
+*   **Internal Storage (UFS) and Filesystem:**
+    ```ini
+    CONFIG_SCSI_UFSHCD=y
+    CONFIG_SCSI_UFS_HISI=y
+    CONFIG_EXT4_FS=y
+    ```
+    *(If these are `=m`, the HiKey960 will kernel panic at boot with `VFS: Cannot open root device`)*
+
+*   **Graphics / GPU (Stability Fix):**
+    ```ini
+    # CONFIG_DRM_PANFROST is not set
+    ```
+    *(Disables the Mali G71 open-source driver to prevent SError hardware interrupts and hard lockups on headless servers)*
+
+*   **Networking & Expansion (Optional but recommended):**
+    ```ini
+    CONFIG_SATA_AHCI=m
+    CONFIG_IGC=m
+    CONFIG_IGB=m
+    ```
+    *(Ensures support for M.2 ASM1166 SATA controllers and Intel 2.5GbE network cards)*
 
 #### Step 2.2: Build the Kernel Core
 Compile the uncompressed kernel executable (`Image.gz`). This takes 15-40 minutes depending on your CPU:
