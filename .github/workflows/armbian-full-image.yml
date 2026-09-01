@@ -36,8 +36,13 @@ jobs:
         # Wywołujemy nasz skrypt, aby przygotować customową konfigurację
         ./01-build-armbian.sh
 
-    - name: Set up QEMU for Cross-Compilation
-      uses: docker/setup-qemu-action@v3
+    - name: Install QEMU and Binfmt natively on Host
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qemu-user-static binfmt-support
+        sudo systemctl enable --now systemd-binfmt.service || true
+        # Ensure binfmt_misc is mounted for Docker to inherit
+        sudo mount -t binfmt_misc none /proc/sys/fs/binfmt_misc || true
 
     - name: Compile Armbian Image (HiKey960)
       run: |
