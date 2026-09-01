@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-WORKSPACE_DIR="/home/toczektomasz/hikey960"
+WORKSPACE_DIR="$(cd .. && pwd)"
 REPO="$WORKSPACE_DIR/armbian-build"
 STATE="$WORKSPACE_DIR/flawless-build-state"
 LOG="$STATE/build.log"
