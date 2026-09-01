@@ -36,6 +36,9 @@ jobs:
         # Wywołujemy nasz skrypt, aby przygotować customową konfigurację
         ./01-build-armbian.sh
 
+    - name: Set up QEMU for Cross-Compilation
+      uses: docker/setup-qemu-action@v3
+
     - name: Compile Armbian Image (HiKey960)
       run: |
         cd armbian-build
