@@ -1,7 +1,7 @@
 name: Full Armbian OS Build
 
 on:
-  workflow_dispatch: # Allows manual trigger so it doesn't run and consume minutes on every single push
+  workflow_dispatch: 
 
 jobs:
   build-armbian:
@@ -26,22 +26,17 @@ jobs:
       run: |
         git clone --depth 1 https://github.com/armbian/build armbian-build
 
-    - name: Prepare Armbian Userpatches (Run our script)
+    - name: Run Our Flawless Build Patch (01-build-armbian.sh)
       run: |
         cd armbian-build
-        # Prepare userpatches directory
-        mkdir -p userpatches/kernel/archive
-        # In a real scenario, you would copy custom configs or run the script here.
-        # Since our script 01-build-armbian.sh edits the file, we ensure the path exists.
         cp ../hikey-repo/scripts/01-build-armbian.sh ./
         chmod +x 01-build-armbian.sh
-        # Note: In CI, we usually just pass a custom config or copy it directly to userpatches
-        echo "Prepared build environment."
+        # Wywołujemy nasz skrypt, aby przygotować customową konfigurację
+        ./01-build-armbian.sh
 
     - name: Compile Armbian Image (HiKey960)
       run: |
         cd armbian-build
-        # Run non-interactive build for headless server
         sudo ./compile.sh build BOARD=hikey960 BRANCH=edge BUILD_DESKTOP=no BUILD_MINIMAL=yes KERNEL_CONFIGURE=no RELEASE=trixie
 
     - name: Upload Armbian Image Artifact
