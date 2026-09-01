@@ -5,6 +5,7 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -28,13 +29,26 @@ jobs:
       run: |
         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- defconfig
 
+    - name: Build Kernel (Image.gz)
+      working-directory: ./linux-src
+      run: |
+        make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) Image.gz
+
     - name: Build Device Tree Blobs (DTB)
       working-directory: ./linux-src
       run: |
         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) dtbs
+
+    - name: Upload Kernel Image
+      uses: actions/upload-artifact@v4
+      with:
+        name: hikey960-kernel-image
+        path: linux-src/arch/arm64/boot/Image.gz
+        retention-days: 7
 
     - name: Upload Compiled DTBs
       uses: actions/upload-artifact@v4
       with:
         name: hikey960-dtbs
         path: linux-src/arch/arm64/boot/dts/hisilicon/*.dtb
+        retention-days: 7
