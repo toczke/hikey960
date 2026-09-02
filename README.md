@@ -41,7 +41,7 @@ We have successfully ported the HiKey960 to a modern headless server environment
 | :--- | :--- | :--- |
 | **Storage** (32GB UFS 2.0) | Working | Restored stock partition table (EFI at LBA 73984) and compiled UFS/EXT4 drivers built-in. |
 | **Wi-Fi** (TI WL1837) | Working | Requires `firmware-ti-connectivity` package. Operates natively via `wlcore` drivers. |
-| **Bluetooth** (TI WL1837) | Working | Requires `firmware-ti-connectivity`. Interfaces via UART (`hci0`) and requires manual baud rate initialization using `hciattach`. |
+| **Bluetooth** (TI WL1837) | Working | Requires `bluez`, `rfkill`, and TI firmware. Requires DTB patch removing `dmas` from UART4 to fix DMA timeouts. Initializes automatically via `hci_ti`. |
 | **USB Ports** (3.0 / Type-C) | Working | DTB patch required. Forced `vcc3v3_hub` to `regulator-always-on` to bypass a mainline kernel power bug. |
 | **Expansion** (M.2 PCIe Gen2) | Working | Kernel pre-configured with `igc`/`igb`/`e1000e` and `ahci`. Supports networking or SATA adapters (e.g., ASM1166). |
 | **Processor** (Kirin 960 4GB) | Working | SMP and CPU frequency scaling operate natively without modifications. |

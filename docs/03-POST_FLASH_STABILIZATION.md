@@ -21,6 +21,8 @@ PARTUUID=d3340696-9b95-4c64-8df6-e6d4548fba41  /boot/efi  vfat  defaults  0  2
 ```
 *(The UUID `d3340696-9b95-4c64-8df6-e6d4548fba41` is a constant in the stock Linaro `prm_ptable.img`).*
 
+> **⚠️ NOTE on `/boot/efi` mounting:** The stock FAT32 EFI partition uses a 512-byte sector size, but the native UFS memory uses 4K sectors. Modern Linux kernels may refuse to mount it, throwing `FAT-fs: logical sector size too small for device`. This is usually harmless for a headless server (as the EDK2 bootloader still reads it just fine at boot), but it means `apt upgrade` cannot update GRUB. Freezing kernel updates (Step 04) prevents this from causing apt failures.
+
 ## 2. Booting
 1. Power off the board.
 2. Turn **Switch 3 OFF**. (Leave Switch 1 ON).
