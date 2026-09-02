@@ -68,8 +68,8 @@ post_patch_kernel() {
     local dts="arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts"
     if [ -f "$dts" ]; then
         echo "Aplikowanie poprawek dla HiKey960 w pliku DTS..."
-        # Usunięcie dmas z węzła serial@fdf01000 (UART4) by naprawić błędy BT
-        sed -i '/serial@fdf01000 {/,/bluetooth {/ s/dmas = .*/\/\* usunięto dmas dla BT \*\//' "$dts"
+        # Usunięcie dmas z węzła uart4 by naprawić błędy BT
+        sed -i '/&uart4 {/a \\t/delete-property/ dmas;' "$dts"
     fi
 }
 EOF

@@ -48,8 +48,8 @@ jobs:
         ./scripts/config --disable CONFIG_DRM_HISI_KIRIN
         ./scripts/config --disable CONFIG_DRM_HISI_KIRIN960
         
-        # Fix BT DMA directly in DTB
-        sed -i '/serial@fdf01000 {/,/bluetooth {/ s/dmas = .*/\/\* usunięto dmas dla BT \*\//' arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
+        # Fix BT DMA directly in DTB by deleting the 'dmas' property from uart4
+        sed -i '/&uart4 {/a \\t/delete-property/ dmas;' arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
 
     - name: Build Kernel (Image.gz)
       working-directory: ./linux-src
