@@ -10,6 +10,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout Repository
@@ -48,8 +50,9 @@ jobs:
         ./scripts/config --disable CONFIG_DRM_HISI_KIRIN
         ./scripts/config --disable CONFIG_DRM_HISI_KIRIN960
         
-        # Fix BT DMA directly in DTB by deleting the 'dmas' property from uart4
+        # Fix BT DMA and baud rate bugs directly in DTB by deleting 'dmas' and 'max-speed'
         sed -i '/&uart4 {/a \\t/delete-property/ dmas;' arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
+        sed -i '/max-speed = <3000000>;/d' arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
 
     - name: Build Kernel (Image.gz)
       working-directory: ./linux-src
@@ -82,3 +85,19 @@ jobs:
         name: hikey960-dtbs-${{ env.KERNEL_VERSION }}
         path: linux-src/arch/arm64/boot/dts/hisilicon/*.dtb
         retention-days: 7
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ env.KERNEL_VERSION }}
+        name: Kernel ${{ env.KERNEL_VERSION }}
+        body: |
+          Automated kernel build for HiKey960.
+          - Kernel version: ${{ env.KERNEL_VERSION }}
+          - Includes DTB fixes for Panfrost and Bluetooth
+          - Includes config optimizations for UFS, USB, and PMIC
+        files: |
+          linux-src/arch/arm64/boot/Image.gz
+          linux-src/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dtb
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
