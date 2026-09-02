@@ -26,6 +26,16 @@ jobs:
       run: |
         git clone --depth 1 -b linux-7.1.y https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git linux-src
 
+    - name: Apply Custom Patches
+      working-directory: ./linux-src
+      run: |
+        if [ -d "../patches" ]; then
+          for p in ../patches/*.patch; do
+            echo "Applying $p"
+            patch -p1 < "$p"
+          done
+        fi
+
     - name: Configure Kernel
       working-directory: ./linux-src
       run: |

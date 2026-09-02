@@ -1,0 +1,21 @@
+--- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+@@ -1071,5 +1071,18 @@
+ 			clock-names = "apb_pclk";
+ 			status = "disabled";
+ 		};
++
++		gpu: gpu@e82c0000 {
++			compatible = "hisilicon,hi3660-mali", "arm,mali-bifrost";
++			reg = <0x0 0xe82c0000 0x0 0x4000>;
++			interrupts = <GIC_SPI 258 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 259 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 260 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "job", "mmu", "gpu";
++			clocks = <&stub_clock HI3660_CLK_STUB_GPU>;
++			clock-names = "core";
++			dma-coherent;
++			status = "okay";
++		};
+ 	};
+ };
