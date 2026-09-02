@@ -14,7 +14,7 @@ printf '%s [FLAWLESS] PREPARE\n' "$(date -Is)" > "$STATUS"
 
 cd "$REPO"
 mkdir -p userpatches
-# Wyczyść poprzednie ustawienia
+# Clear previous settings
 cp config/kernel/linux-uefi-arm64-edge.config "$CONFIG_FILE"
 
 set_symbol() {
@@ -29,47 +29,49 @@ set_symbol() {
     fi
 }
 
-echo "1. UFS (Storage) - OBLIGATORYJNE =y, inaczej kernel panic VFS"
+echo "1. UFS (Storage) - MANDATORY =y, otherwise VFS kernel panic"
 for sym in SCSI BLK_DEV_SD SCSI_UFSHCD SCSI_UFSHCD_PLATFORM SCSI_UFS_HISI EXT4_FS; do set_symbol "$sym" "y"; done
 
-echo "2. Clocks & PMIC - OBLIGATORYJNE =y"
+echo "2. Clocks echo "2. Clocks & PMIC - OBLIGATORYJNE =y" PMIC - MANDATORY =y"
 for sym in COMMON_CLK_HI3660 COMMON_RESET_HI3660 RESET_CONTROLLER MFD_HI6421_PMIC REGULATOR REGULATOR_HI6421V530 REGULATOR_FIXED_VOLTAGE; do set_symbol "$sym" "y"; done
 
-echo "3. USB (Dual-Role) - OBLIGATORYJNE =y, kasujemy gryzące się tryby host/gadget"
+echo "3. USB (Dual-Role) - MANDATORY =y, disabling conflicting host/gadget modes"
 for sym in USB USB_XHCI_HCD USB_XHCI_PLATFORM USB_DWC3 USB_DWC3_DUAL_ROLE HISI_HIKEY_USB PHY_HI3660_USB USB_ROLE_SWITCH TYPEC TYPEC_TCPM TYPEC_TCPCI TYPEC_RT1711H EXTCON EXTCON_USB_GPIO; do set_symbol "$sym" "y"; done
 set_symbol "USB_DWC3_HOST" "n"
 set_symbol "USB_DWC3_GADGET" "n"
 
-echo "4. Networking & UART (bez tego płytka jest 'martwa' komunikacyjnie)"
+echo "4. Networking echo "4. Networking & UART (bez tego płytka jest 'martwa' komunikacyjnie)" UART (without these, the board has no communication)"
 set_symbol "IGB" "m"
 set_symbol "IGC" "m"
 set_symbol "E1000E" "m"
 set_symbol "IKHEADERS" "n"
 for sym in SERIAL_AMBA_PL011 SERIAL_AMBA_PL011_CONSOLE DEVTMPFS DEVTMPFS_MOUNT EFI EFI_STUB EFI_PARTITION USB_NET_DRIVERS USB_USBNET USB_RTL8152; do set_symbol "$sym" "y"; done
 
-echo "5. WiFi & Bluetooth - moduły, ale włączone, upewnijmy się że działają"
+echo "5. WiFi echo "5. WiFi & Bluetooth - moduły, ale włączone, upewnijmy się że działają" Bluetooth - load as modules, ensure they work"
 set_symbol "MAC80211" "y"
 set_symbol "CFG80211" "y"
 set_symbol "WL18XX" "m"
 set_symbol "WLCORE_SDIO" "m"
 set_symbol "BT_HCIUART" "m"
 
-echo "6. CRITICAL FIX: ZABIJAMY PANFROST (Mali-G71 lockup) i Naprawiamy BT DMA w DTB"
-# GPU Panfrost powoduje twardy lockup Kirin960 na mainline przy inicjalizacji G71.
-# Przez to płytka nie zdąży nawet zapalić diod!
+echo "6. CRITICAL FIX: KILL PANFROST (Mali-G71 lockup) and Fix BT DMA in DTB"
+# GPU Panfrost causes a hard lockup on Kirin960 mainline during G71 initialization.
+# This prevents the board from even lighting up the LEDs!
 set_symbol "DRM_PANFROST" "n"
 set_symbol "DRM_HISI_KIRIN" "n"
 set_symbol "DRM_HISI_KIRIN960" "n"
 
-# Dodajemy patcha w postaci skryptu hooka użytkownika Armbiana, który dynamicznie usuwa dmas z UART4
-# aby wyeliminować błędy BT.
+# Add a patch via Armbian user hook script that dynamically removes dmas from UART4
+# to eliminate BT errors.
 cat << 'EOF' > userpatches/lib.config
 post_patch_kernel() {
     local dts="arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts"
     if [ -f "$dts" ]; then
-        echo "Aplikowanie poprawek dla HiKey960 w pliku DTS..."
-        # Usunięcie dmas z węzła uart4 by naprawić błędy BT
+        echo "Applying fixes for HiKey960 in the DTS file..."
+        # Remove dmas from the uart4 node to fix BT errors
         sed -i '/&uart4 {/a \\t/delete-property/ dmas;' "$dts"
+        # Remove max-speed so the kernel does not freeze the port when attempting to change baud rate
+        sed -i '/max-speed = <3000000>;/d' "$dts"
     fi
 }
 EOF
