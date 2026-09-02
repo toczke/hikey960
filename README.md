@@ -41,13 +41,22 @@ We have successfully ported the HiKey960 to a modern headless server environment
 | :--- | :--- | :--- |
 | **Storage** (32GB UFS 2.0) | Working | Restored stock partition table (EFI at LBA 73984) and compiled UFS/EXT4 drivers built-in. |
 | **Wi-Fi** (TI WL1837) | Working | Requires `firmware-ti-connectivity` package. Operates natively via `wlcore` drivers. |
-| **Bluetooth** (TI WL1837) | Working | Requires `bluez`, `rfkill`, and TI firmware. Requires DTB patch removing `dmas` from UART4 to fix DMA timeouts. Initializes automatically via `hci_ti`. |
+| **Bluetooth** (TI WL1837) | Working | Requires `bluez`, `rfkill`, and TI firmware. Requires DTB patch removing `dmas` and `max-speed` from UART4 to fix DMA and baud rate timeouts. Initializes automatically natively via `hci_ti`. |
 | **USB Ports** (3.0 / Type-C) | Working | DTB patch required. Forced `vcc3v3_hub` to `regulator-always-on` to bypass a mainline kernel power bug. |
 | **Expansion** (M.2 PCIe Gen2) | Working | Kernel pre-configured with `igc`/`igb`/`e1000e` and `ahci`. Supports networking or SATA adapters (e.g., ASM1166). |
 | **Processor** (Kirin 960 4GB) | Working | SMP and CPU frequency scaling operate natively without modifications. |
 | **40-Pin LS Header** | Working | UART, I2C, SPI, GPIO supported. `spidev` nodes require DTB patch. **Strictly 1.8V logic.** |
 | **60-Pin HS Header** | Unsupported | MIPI CSI/DSI lanes inactive due to missing ISP blobs and disabled DRM. |
 | **Graphics** (Mali G71 MP8) | Disabled | `CONFIG_DRM_PANFROST` intentionally unset to ensure stability and prevent SError kernel panics on headless servers. |
+
+## GitHub Actions CI
+This repository is equipped with a fully automated **GitHub Actions** workflow (`.github/workflows/kernel-build.yml`). 
+Whenever a change is pushed to `main`, it will automatically:
+1. Clone the latest `linux-7.1.y` stable kernel source from kernel.org.
+2. Apply the custom HiKey960 configurations (UFS, PMIC, USB, Panfrost kill).
+3. Apply Device Tree (DTB) patches on the fly to fix the UART4 Bluetooth bugs (`dmas` and `max-speed`).
+4. Build the `Image.gz` and `.dtb` files.
+5. Automatically create a **GitHub Release** with the compiled, production-ready kernel files attached as artifacts for easy downloading.
 
 ## The Challenge
 Nobody does this because the Hisilicon firmware is fundamentally broken in several ways:

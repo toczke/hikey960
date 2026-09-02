@@ -76,7 +76,11 @@ make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) Image.gz
 ```
 
 #### Step 2.3: Build Device Tree Blobs (DTB)
-Compile the hardware description files. This generates the critical HiKey960 `.dtb` file which includes our patches for USB power and expansion headers:
+Before compiling the hardware description files, it's highly recommended to apply a patch to the HiKey960 device tree to fix the native Bluetooth driver (`hci_ti`) timeouts. Delete the `dmas` and `max-speed` properties from the `uart4` node:
+```bash
+sed -i '/&uart4 {/a \\t/delete-property/ dmas;\n\t/delete-property/ max-speed;' arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
+```
+Then, compile the DTBs:
 ```bash
 make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) dtbs
 ```

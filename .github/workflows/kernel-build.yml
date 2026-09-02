@@ -53,6 +53,9 @@ jobs:
         # Fix BT DMA and baud rate bugs directly in DTB by deleting 'dmas' and 'max-speed'
         sed -i '/&uart4 {/a \\t/delete-property/ dmas;' arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
         sed -i '/max-speed = <3000000>;/d' arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+        git commit -am "Apply HiKey960 DTB fixes" || true
 
     - name: Build Kernel (Image.gz)
       working-directory: ./linux-src

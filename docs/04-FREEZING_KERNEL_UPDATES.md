@@ -4,7 +4,7 @@ Once you have successfully booted your HiKey960 and verified that everything wor
 
 Because we are running on the `edge` branch (Linux 7.1+) with custom Device Tree (DTB) patches and specific bootloader configurations, a standard `apt upgrade` will pull the latest automated nightly/weekly build from the Armbian servers. 
 
-This will overwrite your patched DTB (breaking USB), potentially overwrite your GRUB configuration, and can easily cause kernel panics or an unbootable system.
+This will overwrite your patched DTB (breaking Bluetooth and USB), potentially overwrite your GRUB configuration, and can easily cause kernel panics or an unbootable system.
 
 ## 1. Locking Packages via APT
 Open a terminal on the HiKey960 and run the following commands as root to mark the kernel, headers, firmware, and board-support packages as "held back":
