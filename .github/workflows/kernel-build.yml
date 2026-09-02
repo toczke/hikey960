@@ -28,6 +28,26 @@ jobs:
       working-directory: ./linux-src
       run: |
         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- defconfig
+        
+        # Apply critical config overrides for HiKey960 (Storage, PMIC, USB)
+        ./scripts/config --enable CONFIG_SCSI_UFSHCD
+        ./scripts/config --enable CONFIG_SCSI_UFSHCD_PLATFORM
+        ./scripts/config --enable CONFIG_SCSI_UFS_HISI
+        ./scripts/config --enable CONFIG_EXT4_FS
+        ./scripts/config --enable CONFIG_COMMON_CLK_HI3660
+        ./scripts/config --enable CONFIG_RESET_CONTROLLER
+        ./scripts/config --enable CONFIG_MFD_HI6421_PMIC
+        ./scripts/config --enable CONFIG_REGULATOR
+        ./scripts/config --enable CONFIG_REGULATOR_HI6421V530
+        ./scripts/config --enable CONFIG_REGULATOR_FIXED_VOLTAGE
+        ./scripts/config --enable CONFIG_USB_ROLE_SWITCH
+        ./scripts/config --enable CONFIG_TYPEC
+        ./scripts/config --disable CONFIG_USB_DWC3_HOST
+        ./scripts/config --disable CONFIG_USB_DWC3_GADGET
+        
+        # Fix Panfrost and DMA directly in DTB
+        sed -i '/serial@fdf01000 {/,/bluetooth {/ s/dmas = .*/\/\* usunięto dmas dla BT \*\//' arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
+        echo -e "\n&gpu {\n\tstatus = \"disabled\";\n};\n" >> arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
 
     - name: Build Kernel (Image.gz)
       working-directory: ./linux-src
@@ -39,16 +59,24 @@ jobs:
       run: |
         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) dtbs
 
+    - name: Extract Kernel Version
+      id: kver
+      working-directory: ./linux-src
+      run: |
+        KVER=$(make -s ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- kernelrelease)
+        echo "KERNEL_VERSION=$KVER" >> $GITHUB_ENV
+        echo "Built kernel version: $KVER"
+
     - name: Upload Kernel Image
       uses: actions/upload-artifact@v4
       with:
-        name: hikey960-kernel-image
+        name: hikey960-kernel-${{ env.KERNEL_VERSION }}
         path: linux-src/arch/arm64/boot/Image.gz
         retention-days: 7
 
     - name: Upload Compiled DTBs
       uses: actions/upload-artifact@v4
       with:
-        name: hikey960-dtbs
+        name: hikey960-dtbs-${{ env.KERNEL_VERSION }}
         path: linux-src/arch/arm64/boot/dts/hisilicon/*.dtb
         retention-days: 7
