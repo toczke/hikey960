@@ -46,9 +46,9 @@ jobs:
         ./scripts/config --enable CONFIG_TYPEC
         ./scripts/config --disable CONFIG_USB_DWC3_HOST
         ./scripts/config --disable CONFIG_USB_DWC3_GADGET
-        ./scripts/config --disable CONFIG_DRM_PANFROST
-        ./scripts/config --disable CONFIG_DRM_HISI_KIRIN
-        ./scripts/config --disable CONFIG_DRM_HISI_KIRIN960
+        ./scripts/config --enable CONFIG_DRM_PANFROST
+        ./scripts/config --enable CONFIG_DRM_HISI_KIRIN
+        ./scripts/config --enable CONFIG_DRM_HISI_KIRIN960
         
         # Fix BT DMA and baud rate bugs directly in DTB by deleting 'dmas' and 'max-speed'
         sed -i '/&uart4 {/a \\t/delete-property/ dmas;' arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
