@@ -56,8 +56,10 @@ Ensure the following flags are strictly set to built-in (`=y`) or disabled (`# i
     *(If these are `=m`, the HiKey960 will kernel panic at boot with `VFS: Cannot open root device`)*
 
 *   **Graphics / GPU (Stability Fix):**
-    The Mali G71 open-source driver (Panfrost) causes SError hardware interrupts and hard lockups on headless servers. 
-    Instead of disabling `CONFIG_DRM_PANFROST` globally (which breaks other boards), we apply a Device Tree patch (dynamically via Armbian hook) to set `status = "disabled"` on the GPU node.
+    ```ini
+    # CONFIG_DRM_PANFROST is not set
+    ```
+    *(Disables the Mali G71 open-source driver to prevent SError hardware interrupts and hard lockups on headless servers)*
 
 *   **Networking & Expansion (Optional but recommended):**
     ```ini

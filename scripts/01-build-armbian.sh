@@ -55,8 +55,14 @@ set_symbol "WLCORE_SDIO" "m"
 set_symbol "BT_HCIUART" "m"
 
 echo "6. CRITICAL FIX: ZABIJAMY PANFROST (Mali-G71 lockup) i Naprawiamy BT DMA w DTB"
+# GPU Panfrost powoduje twardy lockup Kirin960 na mainline przy inicjalizacji G71.
+# Przez to płytka nie zdąży nawet zapalić diod!
+set_symbol "DRM_PANFROST" "n"
+set_symbol "DRM_HISI_KIRIN" "n"
+set_symbol "DRM_HISI_KIRIN960" "n"
+
 # Dodajemy patcha w postaci skryptu hooka użytkownika Armbiana, który dynamicznie usuwa dmas z UART4
-# i dodaje status = "disabled" do węzła GPU, aby wyeliminować twardy lockup.
+# aby wyeliminować błędy BT.
 cat << 'EOF' > userpatches/lib.config
 post_patch_kernel() {
     local dts="arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts"
@@ -64,8 +70,6 @@ post_patch_kernel() {
         echo "Aplikowanie poprawek dla HiKey960 w pliku DTS..."
         # Usunięcie dmas z węzła serial@fdf01000 (UART4) by naprawić błędy BT
         sed -i '/serial@fdf01000 {/,/bluetooth {/ s/dmas = .*/\/\* usunięto dmas dla BT \*\//' "$dts"
-        # Wyłączenie GPU Panfrost
-        echo -e "\n&gpu {\n\tstatus = \"disabled\";\n};\n" >> "$dts"
     fi
 }
 EOF

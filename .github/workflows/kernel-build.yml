@@ -29,7 +29,7 @@ jobs:
       run: |
         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- defconfig
         
-        # Apply critical config overrides for HiKey960 (Storage, PMIC, USB)
+        # Apply critical config overrides for HiKey960 (Storage, PMIC, USB, GPU)
         ./scripts/config --enable CONFIG_SCSI_UFSHCD
         ./scripts/config --enable CONFIG_SCSI_UFSHCD_PLATFORM
         ./scripts/config --enable CONFIG_SCSI_UFS_HISI
@@ -44,10 +44,12 @@ jobs:
         ./scripts/config --enable CONFIG_TYPEC
         ./scripts/config --disable CONFIG_USB_DWC3_HOST
         ./scripts/config --disable CONFIG_USB_DWC3_GADGET
+        ./scripts/config --disable CONFIG_DRM_PANFROST
+        ./scripts/config --disable CONFIG_DRM_HISI_KIRIN
+        ./scripts/config --disable CONFIG_DRM_HISI_KIRIN960
         
-        # Fix Panfrost and DMA directly in DTB
+        # Fix BT DMA directly in DTB
         sed -i '/serial@fdf01000 {/,/bluetooth {/ s/dmas = .*/\/\* usunięto dmas dla BT \*\//' arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
-        echo -e "\n&gpu {\n\tstatus = \"disabled\";\n};\n" >> arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
 
     - name: Build Kernel (Image.gz)
       working-directory: ./linux-src
