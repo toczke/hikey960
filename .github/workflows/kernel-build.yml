@@ -87,18 +87,30 @@ jobs:
         echo "KERNEL_VERSION=$KVER" >> $GITHUB_ENV
         echo "Built kernel version: $KVER"
 
-    - name: Upload Kernel Image
-      uses: actions/upload-artifact@v4
-      with:
-        name: hikey960-kernel-${{ env.KERNEL_VERSION }}
-        path: linux-src/arch/arm64/boot/Image.gz
-        retention-days: 7
+    - name: Generate boot.img (for stock EDK2)
+      working-directory: ./linux-src
+      run: |
+        sudo apt-get install -y mkbootimg
+        # Create a dummy ramdisk
+        echo "dummy" > dummy.txt && gzip -c dummy.txt > ramdisk.img
+        # Assemble Android-style boot.img with HiKey960 offsets
+        mkbootimg --kernel arch/arm64/boot/Image.gz \
+                  --ramdisk ramdisk.img \
+                  --cmdline "console=ttyAMA6,115200 root=/dev/mmcblk0p1 rw rootwait earlycon=pl011,0xfdf05000" \
+                  --base 0x0 \
+                  --tags-addr 0x07A00000 \
+                  --kernel_offset 0x00080000 \
+                  --ramdisk_offset 0x07c00000 \
+                  --output hikey960-boot.img
 
-    - name: Upload Compiled DTBs
+    - name: Upload Kernel Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: hikey960-dtbs-${{ env.KERNEL_VERSION }}
-        path: linux-src/arch/arm64/boot/dts/hisilicon/*.dtb
+        name: hikey960-kernel-artifacts-${{ env.KERNEL_VERSION }}
+        path: |
+          linux-src/arch/arm64/boot/Image.gz
+          linux-src/arch/arm64/boot/dts/hisilicon/*.dtb
+          linux-src/hikey960-boot.img
         retention-days: 7
 
     - name: Create GitHub Release
@@ -109,10 +121,10 @@ jobs:
         body: |
           Automated kernel build for HiKey960.
           - Kernel version: ${{ env.KERNEL_VERSION }}
-          - Includes DTB fixes for Panfrost and Bluetooth
-          - Includes config optimizations for UFS, USB, and PMIC
+          - Includes DTB fixes for Panfrost GPU and Bluetooth
         files: |
           linux-src/arch/arm64/boot/Image.gz
           linux-src/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dtb
+          linux-src/hikey960-boot.img
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
