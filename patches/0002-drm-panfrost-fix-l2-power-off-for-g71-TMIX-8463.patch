@@ -1,0 +1,48 @@
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+index 7d555e63e..c4d055663 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+@@ -482,7 +482,7 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
+ 
+ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+ {
+-	int ret;
++	int ret, loop;
+ 	u32 val;
+ 
+ 	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
+@@ -497,11 +497,29 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+ 	if (ret)
+ 		dev_err(pfdev->base.dev, "tiler power transition timeout");
+ 
+-	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
+-	ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
+-				 val, !val, 0, 2000);
+-	if (ret)
+-		dev_err(pfdev->base.dev, "l2 power transition timeout");
++	if (panfrost_has_hw_issue(pfdev, HW_ISSUE_TMIX_8463)) {
++		/*
++		 * HW_ISSUE_TMIX_8463 (Mali-G71 errata):
++		 * The L2 cache may never complete power-off transition.
++		 * Use bounded loop to avoid infinite wait / system hang.
++		 */
++		gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
++		for (loop = 0; loop < 100; loop++) {
++			val = gpu_read(pfdev, L2_PWRTRANS_LO);
++			if (!val)
++				break;
++			udelay(10);
++		}
++		if (val)
++			dev_warn(pfdev->base.dev,
++				 "l2 power off stall (G71 TMIX_8463), continuing\n");
++	} else {
++		gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
++		ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
++					 val, !val, 0, 2000);
++		if (ret)
++			dev_err(pfdev->base.dev, "l2 power transition timeout");
++	}
+ }
+ 
+ void panfrost_gpu_suspend_irq(struct panfrost_device *pfdev)
