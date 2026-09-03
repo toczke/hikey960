@@ -56,7 +56,7 @@ jobs:
         ./scripts/config --enable CONFIG_USB
         ./scripts/config --enable CONFIG_USB_XHCI_HCD
         ./scripts/config --enable CONFIG_USB_DWC3
-        ./scripts/config --enable CONFIG_USB_DWC3_DUAL_ROLE
+        ./scripts/config --enable CONFIG_USB_DWC3_HOST
         ./scripts/config --enable CONFIG_USB_ROLE_SWITCH
         ./scripts/config --enable CONFIG_TYPEC
         ./scripts/config --enable CONFIG_TYPEC_TCPM
