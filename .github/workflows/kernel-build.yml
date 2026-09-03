@@ -101,7 +101,7 @@ jobs:
                   --ramdisk ramdisk.img \
                   --cmdline "console=ttyAMA6,115200 root=/dev/mmcblk0p1 rw rootwait earlycon=pl011,0xfdf05000" \
                   --base 0x0 \
-                  --tags-addr 0x07A00000 \
+                  --tags_offset 0x07A00000 \
                   --kernel_offset 0x00080000 \
                   --ramdisk_offset 0x07c00000 \
                   --output hikey960-boot.img
