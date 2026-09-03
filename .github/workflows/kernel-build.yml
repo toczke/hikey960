@@ -52,9 +52,11 @@ jobs:
         ./scripts/config --enable CONFIG_REGULATOR
         ./scripts/config --enable CONFIG_REGULATOR_HI6421V530
         ./scripts/config --enable CONFIG_REGULATOR_FIXED_VOLTAGE
-        # USB: DWC3 dual-role + Type-C (RT1711H) + HiKey MUX driver
+        # USB: DWC3 + EHCI + OHCI + Type-C (RT1711H) + HiKey MUX driver
         ./scripts/config --enable CONFIG_USB
         ./scripts/config --enable CONFIG_USB_XHCI_HCD
+        ./scripts/config --enable CONFIG_USB_EHCI_HCD
+        ./scripts/config --enable CONFIG_USB_OHCI_HCD
         ./scripts/config --enable CONFIG_USB_DWC3
         ./scripts/config --enable CONFIG_USB_DWC3_HOST
         ./scripts/config --enable CONFIG_USB_ROLE_SWITCH
