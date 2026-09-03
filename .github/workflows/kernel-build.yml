@@ -52,10 +52,20 @@ jobs:
         ./scripts/config --enable CONFIG_REGULATOR
         ./scripts/config --enable CONFIG_REGULATOR_HI6421V530
         ./scripts/config --enable CONFIG_REGULATOR_FIXED_VOLTAGE
+        # USB: DWC3 dual-role + Type-C (RT1711H) + HiKey MUX driver
+        ./scripts/config --enable CONFIG_USB
+        ./scripts/config --enable CONFIG_USB_XHCI_HCD
+        ./scripts/config --enable CONFIG_USB_DWC3
+        ./scripts/config --enable CONFIG_USB_DWC3_DUAL_ROLE
         ./scripts/config --enable CONFIG_USB_ROLE_SWITCH
         ./scripts/config --enable CONFIG_TYPEC
-        ./scripts/config --disable CONFIG_USB_DWC3_HOST
-        ./scripts/config --disable CONFIG_USB_DWC3_GADGET
+        ./scripts/config --enable CONFIG_TYPEC_TCPM
+        ./scripts/config --enable CONFIG_TYPEC_TCPCI
+        ./scripts/config --enable CONFIG_TYPEC_RT1711H
+        ./scripts/config --enable CONFIG_HISI_HIKEY_USB
+        ./scripts/config --enable CONFIG_PHY_HI3660_USB
+        ./scripts/config --enable CONFIG_EXTCON
+        ./scripts/config --enable CONFIG_EXTCON_USB_GPIO
         ./scripts/config --enable CONFIG_DRM_PANFROST
         ./scripts/config --enable CONFIG_DRM_HISI_KIRIN
         ./scripts/config --enable CONFIG_DRM_HISI_KIRIN960
