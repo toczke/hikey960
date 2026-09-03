@@ -92,6 +92,8 @@ jobs:
       working-directory: ./linux-src
       run: |
         sudo apt-get install -y mkbootimg
+        # Fix Ubuntu mkbootimg bug: missing gki module (LP#2058228)
+        sudo sed -i 's/^from gki.generate_gki_certificate import/# from gki.generate_gki_certificate import/' /usr/bin/mkbootimg
         # Create a dummy ramdisk
         echo "dummy" > dummy.txt && gzip -c dummy.txt > ramdisk.img
         # Assemble Android-style boot.img with HiKey960 offsets
