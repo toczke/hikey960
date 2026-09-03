@@ -40,7 +40,7 @@ jobs:
       working-directory: ./linux-src
       run: |
         # Use full HiKey960 config from working Armbian 7.1.10 kernel
-        cp ../hikey960/configs/hikey960-defconfig .config
+        cp ../configs/hikey960-defconfig .config
         make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
         
         # Fix BT DMA and baud rate bugs directly in DTB by deleting 'dmas' and 'max-speed'
