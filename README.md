@@ -9,20 +9,20 @@ This repository documents the **complete, end-to-end process** for compiling a m
             `:]x**j-,'                 -------------
        .,+t***********z\<"             OS: Armbian 26.8.3 bookworm aarch64
        ?******************;            Host: HiKey960
-      '*n` .'`^,;;,^`'. ,cc.           Kernel: Linux 7.1.10-edge-arm64
-      -<.                .[l           Uptime: 35 mins
-     //     ^^      ^^    \\           Packages: 440 (dpkg)
+      '*n` .'`^,;;,^`'. ,cc.           Kernel: Linux 7.1.13+
+      -<.                .[l           Uptime: 11 mins
+     //     ^^      ^^    \\           Packages: 491 (dpkg)
      !^         ^^         ":          Shell: bash 5.2.15
-    'tt}`     !~]rj_     ")t/.         Terminal: /dev/pts/0
-    Itttt?'   ~~]rr]   `{tttt,         CPU: hi3660 (4+4) @ 2.36 GHz
-    \tttttt!""I_]r("""~tttttt1         Memory: 645.18 MiB / 3.79 GiB (17%)
-  '_tttttttttttt)ftttttttttttti.       Swap: 0 B / 1.89 GiB (0%)
- \*ztttttttttttttttttttttttttf**[      Disk (/): 7.13 GiB / 28.12 GiB (25%) - ext4
-l**c)tttttttttttttttttttttttt(z**,     Disk (/mnt/storage): 618.92 GiB / 3.58 TiB (17%) - ext4
-.z*x.`tttttttttttttttttttttttt.`u*n    Disk (/tmp): 48.00 KiB / 1.86 GiB (0%) - ext4
->`   (tttttttttttttttttttttt]   "I     Disk (/var/log): 1.95 MiB / 46.84 MiB (4%) - ext4
-     ,tttttttttttttttttttttt`          Local IP (wlan0): 192.168.x.x/24
-     ./tttttfttttttttfttttt(           Locale: en_US.UTF-8
+    'tt}`     !~]rj_     ")t/.         Display (HDMI-A-1): 1920x1080, 60 Hz
+    Itttt?'   ~~]rr]   `{tttt,         Terminal: /dev/pts/0 9.2p1 Debian-2+deb12u10
+    \tttttt!""I_]r("""~tttttt1         CPU: hi3660 (4+4) @ 2.36 GHz
+  '_tttttttttttt)ftttttttttttti.       GPU: Hisilicon hi3660-mali [Integrated]
+ \*ztttttttttttttttttttttttttf**[      Memory: 341.53 MiB / 3.79 GiB (9%)
+l**c)tttttttttttttttttttttttt(z**,     Swap: Disabled
+.z*x.`tttttttttttttttttttttttt.`u*n    Disk (/): 8.13 GiB / 28.12 GiB (29%) - ext4
+>`   (tttttttttttttttttttttt]   "I     Local IP (wlan0): 192.168.x.x/24
+     ,tttttttttttttttttttttt`          Locale: en_US.UTF-8
+     ./tttttfttttttttfttttt(           
       'I)))(\()(tt))|\()({;'           
         .~~~~~~~|)~~~~~~~<                                     
         '[)))))1|()))))))?                                     
