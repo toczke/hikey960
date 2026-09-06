@@ -1,6 +1,18 @@
---- a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts	2026-09-06 20:53:04.188536557 +0200
-+++ b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts	2026-09-06 20:53:04.197233060 +0200
-@@ -576,6 +576,9 @@
+--- a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts	2026-09-06 21:23:24.514787602 +0200
++++ b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts	2026-09-06 21:24:49.787995532 +0200
+@@ -570,12 +570,21 @@
+ 		status = "okay";
+ 		compatible = "adi,adv7533";
+ 		reg = <0x39>;
++		v1p2-supply = <&ldo3>;
++		avdd-supply = <&ldo3>;
++		dvdd-supply = <&ldo3>;
++		pvdd-supply = <&ldo3>;
++		a2vdd-supply = <&ldo3>;
++		pd-gpios = <&gpio5 1 0>;
+ 		adi,dsi-lanes = <4>;
+ 		ports {
+ 			#address-cells = <1>;
  			#size-cells = <0>;
  			port@0 {
  				reg = <0>;
