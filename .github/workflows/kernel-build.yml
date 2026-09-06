@@ -38,12 +38,6 @@ jobs:
           done
         fi
 
-    - name: Inject Kirin 960 DRM Driver
-      working-directory: ./linux-src
-      run: |
-        cp -r ../drivers-import/kirin960 drivers/gpu/drm/hisilicon/
-        echo "source \"drivers/gpu/drm/hisilicon/kirin960/Kconfig\"" >> drivers/gpu/drm/hisilicon/Kconfig
-        echo "obj-y += kirin960/" >> drivers/gpu/drm/hisilicon/Makefile
 
     - name: Configure Kernel
       working-directory: ./linux-src
