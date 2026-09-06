@@ -1367,6 +1367,10 @@ static int dsi_connector_init(struct drm_device *dev, struct dw_dsi *dsi)
 	DRM_INFO("connector init\n");
 	return 0;
 }
+static int dsi_parse_endpoint(struct dw_dsi *dsi,
+			      struct device_node *np,
+			      enum dsi_output_client client);
+
 static int dsi_bind(struct device *dev, struct device *master, void *data)
 {
 	struct dsi_data *ddata = dev_get_drvdata(dev);
@@ -1589,7 +1593,6 @@ static int dsi_parse_dt(struct platform_device *pdev, struct dw_dsi *dsi)
 
 static int dsi_probe(struct platform_device *pdev)
 {
-	struct device_node *np = pdev->dev.of_node;
 	struct device *dev = &pdev->dev;
 	struct dsi_data *data;
 	struct dw_dsi *dsi;
