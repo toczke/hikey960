@@ -1594,14 +1594,14 @@ static int dsi_probe(struct platform_device *pdev)
 	ctx = &data->ctx;
 	dsi->ctx = ctx;
 
-	/* parse HDMI bridge endpoint */
-	ret = dsi_parse_endpoint(dsi, np, OUT_HDMI);
-	if (ret)
-		return ret;
-
 	ret = dsi_host_init(dev, dsi);
 	if (ret)
 		return ret;
+
+	/* parse HDMI bridge endpoint */
+	ret = dsi_parse_endpoint(dsi, np, OUT_HDMI);
+	if (ret)
+		goto err_host_unregister;
 
 	/* parse panel endpoint */
 	ret = dsi_parse_endpoint(dsi, np, OUT_PANEL);
