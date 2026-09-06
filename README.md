@@ -46,8 +46,9 @@ We have successfully ported the HiKey960 to a modern headless server environment
 | **Expansion** (M.2 PCIe Gen2) | Working | Kernel pre-configured with `igc`/`igb`/`e1000e` and `ahci`. Supports networking or SATA adapters (e.g., ASM1166). |
 | **Processor** (Kirin 960 4GB) | Working | SMP and CPU frequency scaling operate natively without modifications. |
 | **40-Pin LS Header** | Working | UART, I2C, SPI, GPIO supported. `spidev` nodes require DTB patch. **Strictly 1.8V logic.** |
-| **60-Pin HS Header** | Unsupported | MIPI CSI/DSI lanes inactive due to missing ISP blobs and disabled DRM. |
-| **Graphics** (Mali G71 MP8) | Disabled | `CONFIG_DRM_PANFROST` intentionally unset to ensure stability and prevent SError kernel panics on headless servers. |
+| **60-Pin HS Header** | Unsupported | MIPI CSI lanes inactive due to missing ISP blobs. |
+| **Graphics** (Mali G71 MP8) | Working | `panfrost` driver functional. CMA size reduced to 64MB to prevent boot panics. |
+| **Display** (HDMI) | Working | Ported legacy `kirin960-drm` driver to Linux 7.1. Injected missing DPE and DSI device tree routing for ADV7533 bridge. |
 
 ## GitHub Actions CI
 This repository is equipped with a fully automated **GitHub Actions** workflow (`.github/workflows/kernel-build.yml`). 
@@ -74,7 +75,7 @@ Please read the documentation in the following order to successfully build and f
 4.  [04-FREEZING_KERNEL_UPDATES.md](docs/04-FREEZING_KERNEL_UPDATES.md) - **CRITICAL:** Locking kernel packages via `apt-mark` to prevent automated updates from overwriting our DTB fixes and bricking the system.
 5.  [05-GPIO_EXPANSION_HEADER.md](docs/05-GPIO_EXPANSION_HEADER.md) - Hardware specifications, 1.8V logic limits, full 40-pin layout, and SPI/PWM device tree configuration.
 6.  [06-HS_EXPANSION_HEADER.md](docs/06-HS_EXPANSION_HEADER.md) - Details on the 60-pin HS connector, MIPI CSI/DSI limitations, and ISP hardware blockers on mainline Linux.
-7.  [07-MULTIMEDIA_AND_GPU.md](docs/07-MULTIMEDIA_AND_GPU.md) - Why the HDMI port and Mali-G71 GPU are intentionally disabled for server stability.
+7.  [07-MULTIMEDIA_AND_GPU.md](docs/07-MULTIMEDIA_AND_GPU.md) - How the Mali-G71 GPU and HDMI display pipeline (DPE/DSI) were ported to Linux 7.1.
 8.  [08-BOARD_SWITCHES.md](docs/08-BOARD_SWITCHES.md) - Hardware DIP switch configurations for Normal Boot, Fastboot, and Brick Recovery.
 
 ## Assets in this Repository
