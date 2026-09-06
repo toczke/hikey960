@@ -2,9 +2,9 @@ name: ARM64 Kernel and DTB Build
 
 on:
   push:
-    branches: [ main, master, gpu-acceleration ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main, master, gpu-acceleration ]
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
