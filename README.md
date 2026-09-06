@@ -59,11 +59,11 @@ Whenever a change is pushed to `main`, it will automatically:
 4. Build the `Image.gz` and `.dtb` files.
 5. Automatically create a **GitHub Release** with the compiled, production-ready kernel files attached as artifacts for easy downloading.
 
-## The Challenge
-Nobody does this because the Hisilicon firmware is fundamentally broken in several ways:
-1.  **EDK2 NVRAM Hardcoding:** The stock UEFI bootloader ("Grub" entry) ignores standard EFI partition UUIDs. It hardcodes the EFI System Partition (ESP) to **Partition Index 7** and **LBA 73984**. Custom partition tables (like Armbian's default `maxroot`) shift this LBA, breaking auto-boot completely.
-2.  **Sparse Image Parser Bug:** The HiKey960's `fastboot` implementation crashes (`Unsupported Chunk Type: 0xFFFF`) when flashing large, modern rootfs images.
-3.  **Kernel Fragility:** Modern mainline kernels often break compatibility with the closed-source Wi-Fi/Bluetooth binaries or bootloader chain.
+## Challenges Overcome
+Nobody ported this board to modern Linux because the Hisilicon firmware is fundamentally broken in several ways. This repository systematically resolves all of them:
+1.  **EDK2 NVRAM Hardcoding:** The stock UEFI bootloader ignores standard EFI partition UUIDs, hardcoding the ESP to **Partition Index 7** and **LBA 73984**. Custom partition tables shift this LBA, breaking auto-boot. **Solution:** We provide and flash the stock `prm_ptable.img` to lock the LBA in place, ensuring reliable auto-booting.
+2.  **Sparse Image Parser Bug:** The HiKey960's `fastboot` crashes (`Unsupported Chunk Type: 0xFFFF`) when flashing large, modern rootfs images. **Solution:** Our flashing documentation provides the exact chunk-split workarounds to safely flash modern Armbian images.
+3.  **Kernel Fragility & Hardware Regressions:** Mainline kernels broke compatibility with the Wi-Fi/Bluetooth UART bus and entirely dropped the proprietary display drivers. **Solution:** Our CI pipeline applies on-the-fly Device Tree (DTB) patches to fix Bluetooth DMA/baud-rate timeouts, modifies CMA allocation to stabilize the GPU, and injects a manually ported Kirin DRM driver to restore physical HDMI output.
 
 ## Documentation Workflow
 
