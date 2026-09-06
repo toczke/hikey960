@@ -1373,6 +1373,17 @@ static int dsi_bind(struct device *dev, struct device *master, void *data)
 	struct dw_dsi *dsi = &ddata->dsi;
 	struct drm_device *drm_dev = data;
 	int ret;
+	struct device_node *np = dev->of_node;
+
+	/* parse HDMI bridge endpoint */
+	ret = dsi_parse_endpoint(dsi, np, OUT_HDMI);
+	if (ret && ret != -ENODEV)
+		return ret;
+
+	/* parse panel endpoint */
+	ret = dsi_parse_endpoint(dsi, np, OUT_PANEL);
+	if (ret && ret != -ENODEV)
+		return ret;
 
 	ret = dw_drm_encoder_init(dev, drm_dev, &dsi->encoder);
 	if (ret)
@@ -1597,16 +1608,6 @@ static int dsi_probe(struct platform_device *pdev)
 	ret = dsi_host_init(dev, dsi);
 	if (ret)
 		return ret;
-
-	/* parse HDMI bridge endpoint */
-	ret = dsi_parse_endpoint(dsi, np, OUT_HDMI);
-	if (ret)
-		goto err_host_unregister;
-
-	/* parse panel endpoint */
-	ret = dsi_parse_endpoint(dsi, np, OUT_PANEL);
-	if (ret)
-		goto err_host_unregister;
 
 	ret = dsi_parse_dt(pdev, dsi);
 	if (ret)
