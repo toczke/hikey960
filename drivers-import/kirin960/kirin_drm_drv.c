@@ -297,7 +297,7 @@ static struct platform_driver kirin_drm_platform_driver = {
 	.probe = kirin_drm_platform_probe,
 	.remove = kirin_drm_platform_remove,
 	.driver = {
-		.name = "kirin-drm",
+		.name = "kirin960-drm",
 		.of_match_table = kirin_drm_dt_ids,
 	},
 };
