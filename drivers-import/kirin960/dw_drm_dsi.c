@@ -1,3 +1,6 @@
+#include <drm/drm_bridge.h>
+#include <drm/drm_probe_helper.h>
+#include <drm/drm_panel.h>
 #include <drm/drm_device.h>
 #include <drm/drm_file.h>
 #include <drm/drm_print.h>
@@ -30,7 +33,6 @@
 #include <drm/drm_of.h>
 #include <drm/drm_crtc_helper.h>
 #include <drm/drm_mipi_dsi.h>
-#include <drm/drm_encoder_slave.h>
 #include <drm/drm_atomic_helper.h>
 #include <drm/drm_panel.h>
 
@@ -262,9 +264,13 @@ void dsi_set_output_client(struct drm_device *dev)
 	dsi = encoder_to_dsi(encoder);
 
 	/* find HDMI connector */
-	drm_for_each_connector(connector, dev)
+	struct drm_connector_list_iter conn_iter;
+drm_connector_list_iter_begin(dev, &conn_iter);
+drm_for_each_connector_iter(connector, &conn_iter) {
 		if (connector->connector_type == DRM_MODE_CONNECTOR_HDMIA)
 			break;
+	}
+	drm_connector_list_iter_end(&conn_iter);
 
 	/*
 	 * set the proper dsi output client
@@ -273,15 +279,12 @@ void dsi_set_output_client(struct drm_device *dev)
 		OUT_HDMI : OUT_PANEL;
 	if (client != dsi->cur_client) {
 		/* associate bridge and dsi encoder */
-		if (client == OUT_HDMI)
-			encoder->bridge = dsi->bridge;
-		else
-			encoder->bridge = NULL;
+	
 
 		gpiod_set_value_cansleep(dsi->gpio_mux, client);
 		dsi->cur_client = client;
 		/* let the userspace know panel connector status has changed */
-		drm_sysfs_hotplug_event(dev);
+		drm_kms_helper_hotplug_event(dev);
 		DRM_INFO("client change to %s\n", client == OUT_HDMI ?
 				 "HDMI" : "panel");
 	}
@@ -944,12 +947,10 @@ static void dsi_encoder_disable(struct drm_encoder *encoder)
 
 	dw_dsi_set_mode(dsi, DSI_COMMAND_MODE);
 	/* turn off panel's backlight */
-	if (dsi->panel && drm_panel_disable(dsi->panel))
-		DRM_ERROR("failed to disable panel\n");
+	if (dsi->panel) drm_panel_disable(dsi->panel);
 
 	/* turn off panel */
-	if (dsi->panel && drm_panel_unprepare(dsi->panel))
-		DRM_ERROR("failed to unprepare panel\n");
+	if (dsi->panel) drm_panel_unprepare(dsi->panel);
 
 	writel(0, base + PWR_UP);
 	writel(0, base + LPCLK_CTRL);
@@ -1029,14 +1030,12 @@ static void dsi_encoder_enable(struct drm_encoder *encoder)
 	mipi_dsi_on_sub2(dsi, ctx->base);
 
 	/* turn on panel */
-	if (dsi->panel && drm_panel_prepare(dsi->panel))
-		DRM_ERROR("failed to prepare panel\n");
+	if (dsi->panel) drm_panel_prepare(dsi->panel);
 
 	/*dw_dsi_set_mode(dsi, DSI_VIDEO_MODE);*/
 
 	/* turn on panel's back light */
-	if (dsi->panel && drm_panel_enable(dsi->panel))
-		DRM_ERROR("failed to enable panel\n");
+	if (dsi->panel) drm_panel_enable(dsi->panel);
 
 	dsi->enable = true;
 }
@@ -1272,9 +1271,9 @@ static int dsi_bridge_init(struct drm_device *dev, struct dw_dsi *dsi)
 	int ret;
 
 	/* associate the bridge to dsi encoder */
-	bridge->encoder = encoder;
+	
 
-	ret = drm_bridge_attach(dev, bridge);
+	ret = drm_bridge_attach(encoder, bridge, NULL, 0);
 	if (ret) {
 		DRM_ERROR("failed to attach external bridge\n");
 		return ret;
@@ -1287,12 +1286,12 @@ static int dsi_connector_get_modes(struct drm_connector *connector)
 {
 	struct dw_dsi *dsi = connector_to_dsi(connector);
 
-	return drm_panel_get_modes(dsi->panel);
+	return drm_panel_get_modes(dsi->panel, connector);
 }
 
 static enum drm_mode_status
 dsi_connector_mode_valid(struct drm_connector *connector,
-			 struct drm_display_mode *mode)
+			 const struct drm_display_mode *mode)
 {
 	enum drm_mode_status mode_status = MODE_OK;
 
@@ -1332,7 +1331,7 @@ static void dsi_connector_destroy(struct drm_connector *connector)
 }
 
 static struct drm_connector_funcs dsi_atomic_connector_funcs = {
-	.dpms = drm_atomic_helper_connector_dpms,
+	
 	.fill_modes = drm_helper_probe_single_connector_modes,
 	.detect = dsi_connector_detect,
 	.destroy = dsi_connector_destroy,
@@ -1357,11 +1356,11 @@ static int dsi_connector_init(struct drm_device *dev, struct dw_dsi *dsi)
 	if (ret)
 		return ret;
 
-	ret = drm_mode_connector_attach_encoder(connector, encoder);
+	ret = drm_connector_attach_encoder(connector, encoder);
 	if (ret)
 		return ret;
 
-	ret = drm_panel_attach(dsi->panel, connector);
+	ret = 0 /* drm_panel_attach removed */;
 	if (ret)
 		return ret;
 
@@ -1626,11 +1625,10 @@ err_host_unregister:
 	return ret;
 }
 
-static int dsi_remove(struct platform_device *pdev)
+static void dsi_remove(struct platform_device *pdev)
 {
 	component_del(&pdev->dev, &dsi_ops);
 
-	return 0;
 }
 
 static const struct of_device_id dsi_of_match[] = {

@@ -12,16 +12,13 @@
 #define __KIRIN_DRM_DRV_H__
 
 #include <linux/iommu.h>
-#include <linux/ion.h>
-#include <linux/hisi/hisi_ion.h>
-#include <linux/hisi/hisi-iommu.h>
 
-#include "drm_crtc.h"
-#include "drm_fb_helper.h"
+#include <drm/drm_crtc.h>
+#include <drm/drm_fb_helper.h>
 
 #define MAX_CRTC	2
 
-#define to_kirin_fbdev(x) container_of(x, struct kirin_fbdev, fb_helper)
+
 
 /* display controller init/cleanup ops */
 struct kirin_dc_ops {
@@ -35,18 +32,6 @@ struct kirin_drm_private {
 	struct drm_crtc *crtc[MAX_CRTC];
 };
 
-struct kirin_fbdev {
-	struct drm_fb_helper fb_helper;
-	struct drm_framebuffer *fb;
-
-	struct ion_client *ion_client;
-	struct ion_handle *ion_handle;
-	struct iommu_map_format iommu_format;
-	void *screen_base;
-	unsigned long smem_start;
-	unsigned long screen_size;
-	int shared_fd;
-};
 
 extern const struct kirin_dc_ops dss_dc_ops;
 extern void dsi_set_output_client(struct drm_device *dev);

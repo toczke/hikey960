@@ -1,3 +1,6 @@
+#include <drm/clients/drm_client_setup.h>
+#include <drm/drm_fbdev_dma.h>
+#include <drm/drm_probe_helper.h>
 #include <drm/drm_device.h>
 #include <drm/drm_file.h>
 #include <drm/drm_print.h>
@@ -23,8 +26,11 @@
 #include <linux/component.h>
 #include <linux/of_graph.h>
 
-#include <drm/drm_gem_cma_helper.h>
-#include <drm/drm_fb_cma_helper.h>
+#include <drm/drm_gem_dma_helper.h>
+#include <drm/drm_gem_framebuffer_helper.h>
+#include <drm/drm_fbdev_dma.h>
+#include <linux/platform_device.h>
+#include <linux/module.h>
 #include <drm/drm_atomic_helper.h>
 #include <drm/drm_crtc_helper.h>
 
@@ -45,12 +51,9 @@ static int kirin_drm_kms_cleanup(struct drm_device *dev)
 	struct kirin_drm_private *priv = dev->dev_private;
 
 	if (priv->fbdev) {
-		kirin_drm_fbdev_fini(dev);
 		priv->fbdev = NULL;
 	}
 
-	drm_kms_helper_poll_fini(dev);
-	drm_vblank_cleanup(dev);
 	dc_ops->cleanup(dev);
 	drm_mode_config_cleanup(dev);
 	devm_kfree(dev->dev, priv);
@@ -59,21 +62,8 @@ static int kirin_drm_kms_cleanup(struct drm_device *dev)
 	return 0;
 }
 
-static void kirin_fbdev_output_poll_changed(struct drm_device *dev)
-{
-	struct kirin_drm_private *priv = dev->dev_private;
-
-	dsi_set_output_client(dev);
-
-	if (priv->fbdev)
-		drm_fb_helper_hotplug_event(priv->fbdev);
-	else
-		priv->fbdev = kirin_drm_fbdev_init(dev);
-}
-
 static const struct drm_mode_config_funcs kirin_drm_mode_config_funcs = {
-	.fb_create = drm_fb_cma_create,
-	.output_poll_changed = kirin_fbdev_output_poll_changed,
+	.fb_create = drm_gem_fb_create,
 	.atomic_check = drm_atomic_helper_check,
 	.atomic_commit = drm_atomic_helper_commit,
 };
@@ -124,7 +114,6 @@ static int kirin_drm_kms_init(struct drm_device *dev)
 		goto err_unbind_all;
 	}
 	/* with irq_enabled = true, we can use the vblank feature. */
-	dev->irq_enabled = true;
 
 	/* reset all the states of crtc/plane/encoder/connector */
 	drm_mode_config_reset(dev);
@@ -162,75 +151,23 @@ static const struct file_operations kirin_drm_fops = {
 #endif
 	.poll		= drm_poll,
 	.read		= drm_read,
-	.llseek		= no_llseek,
-	.mmap		= drm_gem_cma_mmap,
+	.llseek		= noop_llseek,
+	.mmap		= drm_gem_mmap,
 };
 
-static int kirin_gem_cma_dumb_create(struct drm_file *file,
-				     struct drm_device *dev,
-				     struct drm_mode_create_dumb *args)
-{
-	return drm_gem_cma_dumb_create_internal(file, dev, args);
-}
-
-static int kirin_drm_connectors_register(struct drm_device *dev)
-{
-	struct drm_connector *connector;
-	struct drm_connector *failed_connector;
-	int ret;
-
-	mutex_lock(&dev->mode_config.mutex);
-	drm_for_each_connector(connector, dev) {
-		ret = drm_connector_register(connector);
-		if (ret) {
-			failed_connector = connector;
-			goto err;
-		}
-	}
-	mutex_unlock(&dev->mode_config.mutex);
-
-	return 0;
-
-err:
-	drm_for_each_connector(connector, dev) {
-		if (failed_connector == connector)
-			break;
-		drm_connector_unregister(connector);
-	}
-	mutex_unlock(&dev->mode_config.mutex);
-
-	return ret;
-}
-
 static struct drm_driver kirin_drm_driver = {
-	.driver_features	= DRIVER_GEM | DRIVER_MODESET | DRIVER_PRIME |
-				  DRIVER_ATOMIC | DRIVER_RENDER,
+	.driver_features	= DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC | DRIVER_RENDER,
 	.fops				= &kirin_drm_fops,
 
-	.gem_free_object	= drm_gem_cma_free_object,
-	.gem_vm_ops		= &drm_gem_cma_vm_ops,
-	.dumb_create		= kirin_gem_cma_dumb_create,
-	.dumb_map_offset	= drm_gem_cma_dumb_map_offset,
-	.dumb_destroy		= drm_gem_dumb_destroy,
-
-	.prime_handle_to_fd	= drm_gem_prime_handle_to_fd,
-	.prime_fd_to_handle	= drm_gem_prime_fd_to_handle,
-	.gem_prime_export	= drm_gem_prime_export,
-	.gem_prime_import	= drm_gem_prime_import,
-	.gem_prime_get_sg_table = drm_gem_cma_prime_get_sg_table,
-	.gem_prime_import_sg_table = drm_gem_cma_prime_import_sg_table,
-	.gem_prime_vmap		= drm_gem_cma_prime_vmap,
-	.gem_prime_vunmap	= drm_gem_cma_prime_vunmap,
-	.gem_prime_mmap		= drm_gem_cma_prime_mmap,
+	DRM_GEM_DMA_DRIVER_OPS,
+	DRM_FBDEV_DMA_DRIVER_OPS,
 
 	.name			= "kirin",
 	.desc			= "Hisilicon Kirin SoCs' DRM Driver",
-	.date			= "20170309",
 	.major			= 1,
 	.minor			= 0,
 };
 
-#ifdef CONFIG_OF
 /* NOTE: the CONFIG_OF case duplicates the same code as exynos or imx
  * (or probably any other).. so probably some room for some helpers
  */
@@ -238,12 +175,6 @@ static int compare_of(struct device *dev, void *data)
 {
 	return dev->of_node == data;
 }
-#else
-static int compare_dev(struct device *dev, void *data)
-{
-	return dev == data;
-}
-#endif
 
 static int kirin_drm_bind(struct device *dev)
 {
@@ -257,7 +188,6 @@ static int kirin_drm_bind(struct device *dev)
 	if (!drm_dev)
 		return -ENOMEM;
 
-	drm_dev->platformdev = to_platform_device(dev);
 
 	ret = kirin_drm_kms_init(drm_dev);
 	if (ret)
@@ -267,14 +197,12 @@ static int kirin_drm_bind(struct device *dev)
 	if (ret)
 		goto err_kms_cleanup;
 
-	/* connectors should be registered after drm device register */
-	ret = kirin_drm_connectors_register(drm_dev);
-	if (ret)
-		goto err_drm_dev_unregister;
-
-	DRM_INFO("Initialized %s %d.%d.%d %s on minor %d\n",
+	DRM_INFO("Initialized %s %d.%d.%d on minor %d\n",
 		 driver->name, driver->major, driver->minor, driver->patchlevel,
-		 driver->date, drm_dev->primary->index);
+		 drm_dev->primary->index);
+	
+	drm_client_setup(drm_dev, NULL);
+	dsi_set_output_client(drm_dev);
 
 	return 0;
 
@@ -351,11 +279,10 @@ static int kirin_drm_platform_probe(struct platform_device *pdev)
 	return 0;
 }
 
-static int kirin_drm_platform_remove(struct platform_device *pdev)
+static void kirin_drm_platform_remove(struct platform_device *pdev)
 {
 	component_master_del(&pdev->dev, &kirin_drm_ops);
 	dc_ops = NULL;
-	return 0;
 }
 
 static const struct of_device_id kirin_drm_dt_ids[] = {

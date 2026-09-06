@@ -1,3 +1,5 @@
+#include <drm/drm_crtc.h>
+#include <drm/drm_plane.h>
 /*
  * Copyright (c) 2016 Linaro Limited.
  * Copyright (c) 2014-2016 Hisilicon Limited.
@@ -20,8 +22,6 @@
 #include <linux/bug.h>
 #include <linux/iommu.h>
 
-#include <linux/ion.h>
-#include <linux/hisi/hisi_ion.h>
 
 /*******************************************************************************
 **
@@ -2958,8 +2958,7 @@ struct dss_hw_ctx {
 	struct iommu_domain *mmu_domain;
 	struct ion_client *ion_client;
 	struct ion_handle *ion_handle;
-	struct iommu_map_format iommu_format;
-	char __iomem *screen_base;
+		char __iomem *screen_base;
 	unsigned long smem_start;
 	unsigned long screen_size;
 };

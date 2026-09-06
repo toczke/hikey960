@@ -1,3 +1,6 @@
+#include <drm/drm_framebuffer.h>
+#include <drm/drm_fb_dma_helper.h>
+#include <drm/drm_gem_dma_helper.h>
 #include <drm/drm_device.h>
 #include <drm/drm_file.h>
 #include <drm/drm_print.h>
@@ -26,8 +29,9 @@
 #include <drm/drm_atomic.h>
 #include <drm/drm_atomic_helper.h>
 #include <drm/drm_plane_helper.h>
-#include <drm/drm_gem_cma_helper.h>
-#include <drm/drm_fb_cma_helper.h>
+#include <drm/drm_gem_dma_helper.h>
+#include <drm/drm_gem_framebuffer_helper.h>
+#include <drm/drm_fbdev_dma.h>
 
 #include "kirin_drm_dpe_utils.h"
 #include "kirin_drm_drv.h"
@@ -1020,9 +1024,9 @@ void hisi_dss_smmu_on(struct dss_hw_ctx *ctx)
 	set_reg(smmu_base + SMMU_SMRx_NS + 38 * 0x4, 0x1, 32, 0); /*cmd sec stream id*/
 
 	/*TTBR0*/
-	domain_data = (struct iommu_domain_data *)(ctx->mmu_domain->priv);
-	phy_pgd_base = (uint32_t)(domain_data->phy_pgd_base);
-	set_reg(smmu_base + SMMU_CB_TTBR0, phy_pgd_base, 32, 0);
+	//domain_data = (struct iommu_domain_data *)(ctx->mmu_domain->priv);
+	//phy_pgd_base = (uint32_t)(domain_data->phy_pgd_base);
+	//set_reg(smmu_base + SMMU_CB_TTBR0, phy_pgd_base, 32, 0);
 }
 
 void hisifb_dss_on(struct dss_hw_ctx *ctx)
@@ -1118,7 +1122,7 @@ void hisi_fb_pan_display(struct drm_plane *plane)
 	struct dss_hw_ctx *ctx = acrtc->ctx;
 
 	struct kirin_drm_private *priv = plane->dev->dev_private;
-	struct kirin_fbdev *fbdev = to_kirin_fbdev(priv->fbdev);
+	struct drm_gem_dma_object *obj;
 
 	bool afbcd = false;
 	bool mmu_enable = true;
@@ -1143,19 +1147,17 @@ void hisi_fb_pan_display(struct drm_plane *plane)
 	mode = &acrtc->base.state->mode;
 	adj_mode = &acrtc->base.state->adjusted_mode;
 
-	bpp = fb->bits_per_pixel / 8;
+	bpp = fb->format->cpp[0];
 	stride = fb->pitches[0];
 
-	if (fbdev)
-		display_addr = (u32)fbdev->smem_start + src_y * stride;
-	else
-		printk("JDB: fbdev is null?\n");
+	obj = drm_fb_dma_get_gem_obj(fb, 0);
+	display_addr = obj->dma_addr + fb->offsets[0] + src_y * stride + src_x * bpp;
 
 	rect.left = 0;
 	rect.right = src_w - 1;
 	rect.top = 0;
 	rect.bottom = src_h - 1;
-	hal_fmt = dss_get_format(fb->pixel_format);
+	hal_fmt = dss_get_format(fb->format->format);
 
 	DRM_DEBUG("channel%d: src:(%d,%d, %dx%d) crtc:(%d,%d, %dx%d), rect(%d,%d,%d,%d),"
 		"fb:%dx%d, pixel_format=%d, stride=%d, paddr=0x%x, bpp=%d, bits_per_pixel=%d.\n",
@@ -1163,7 +1165,7 @@ void hisi_fb_pan_display(struct drm_plane *plane)
 		crtc_x, crtc_y, crtc_w, crtc_h,
 		rect.left, rect.top, rect.right, rect.bottom,
 		fb->width, fb->height, hal_fmt,
-		stride, display_addr, bpp, fb->bits_per_pixel);
+		stride, display_addr, bpp, (fb->format->cpp[0] * 8));
 
 	hfp = mode->hsync_start - mode->hdisplay;
 	hbp = mode->htotal - mode->hsync_end;

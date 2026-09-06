@@ -1,3 +1,5 @@
+#include <drm/drm_fourcc.h>
+#include <drm/drm_framebuffer.h>
 #include <drm/drm_device.h>
 #include <drm/drm_file.h>
 #include <drm/drm_print.h>
@@ -36,8 +38,9 @@
 #include <drm/drm_atomic.h>
 #include <drm/drm_atomic_helper.h>
 #include <drm/drm_plane_helper.h>
-#include <drm/drm_gem_cma_helper.h>
-#include <drm/drm_fb_cma_helper.h>
+#include <drm/drm_gem_dma_helper.h>
+#include <drm/drm_gem_framebuffer_helper.h>
+#include <drm/drm_fbdev_dma.h>
 
 #include "kirin_drm_drv.h"
 
@@ -192,10 +195,9 @@ static void dss_power_down(struct dss_crtc *acrtc)
 }
 #endif
 
-static int dss_enable_vblank(struct drm_device *dev, unsigned int pipe)
+static int dss_enable_vblank(struct drm_crtc *crtc)
 {
-	struct kirin_drm_private *priv = dev->dev_private;
-	struct dss_crtc *acrtc = to_dss_crtc(priv->crtc[pipe]);
+	struct dss_crtc *acrtc = to_dss_crtc(crtc);
 	struct dss_hw_ctx *ctx = acrtc->ctx;
 
 	if (!ctx->power_on)
@@ -204,10 +206,9 @@ static int dss_enable_vblank(struct drm_device *dev, unsigned int pipe)
 	return 0;
 }
 
-static void dss_disable_vblank(struct drm_device *dev, unsigned int pipe)
+static void dss_disable_vblank(struct drm_crtc *crtc)
 {
-	struct kirin_drm_private *priv = dev->dev_private;
-	struct dss_crtc *acrtc = to_dss_crtc(priv->crtc[pipe]);
+	struct dss_crtc *acrtc = to_dss_crtc(crtc);
 	struct dss_hw_ctx *ctx = acrtc->ctx;
 
 	if (!ctx->power_on) {
@@ -264,7 +265,7 @@ static irqreturn_t dss_irq_handler(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
-static void dss_crtc_enable(struct drm_crtc *crtc)
+static void dss_crtc_enable(struct drm_crtc *crtc, struct drm_atomic_state *state)
 {
 	struct dss_crtc *acrtc = to_dss_crtc(crtc);
 	struct dss_hw_ctx *ctx = acrtc->ctx;
@@ -305,8 +306,7 @@ static void dss_crtc_mode_set_nofb(struct drm_crtc *crtc)
 	dss_ldi_set_mode(acrtc);
 }
 
-static void dss_crtc_atomic_begin(struct drm_crtc *crtc,
-				  struct drm_crtc_state *old_state)
+static void dss_crtc_atomic_begin(struct drm_crtc *crtc, struct drm_atomic_state *state)
 {
 	struct dss_crtc *acrtc = to_dss_crtc(crtc);
 	struct dss_hw_ctx *ctx = acrtc->ctx;
@@ -315,8 +315,7 @@ static void dss_crtc_atomic_begin(struct drm_crtc *crtc,
 		(void)dss_power_up(acrtc);
 }
 
-static void dss_crtc_atomic_flush(struct drm_crtc *crtc,
-				  struct drm_crtc_state *old_state)
+static void dss_crtc_atomic_flush(struct drm_crtc *crtc, struct drm_atomic_state *state)
 
 {
 	struct drm_pending_vblank_event *event = crtc->state->event;
@@ -335,7 +334,7 @@ static void dss_crtc_atomic_flush(struct drm_crtc *crtc,
 }
 
 static const struct drm_crtc_helper_funcs dss_crtc_helper_funcs = {
-	.enable		= dss_crtc_enable,
+	.atomic_enable	= dss_crtc_enable,
 	.disable	= dss_crtc_disable,
 	.mode_set_nofb	= dss_crtc_mode_set_nofb,
 	.atomic_begin	= dss_crtc_atomic_begin,
@@ -347,9 +346,10 @@ static const struct drm_crtc_funcs dss_crtc_funcs = {
 	.set_config	= drm_atomic_helper_set_config,
 	.page_flip	= drm_atomic_helper_page_flip,
 	.reset		= drm_atomic_helper_crtc_reset,
-	.set_property = drm_atomic_helper_crtc_set_property,
 	.atomic_duplicate_state	= drm_atomic_helper_crtc_duplicate_state,
 	.atomic_destroy_state	= drm_atomic_helper_crtc_destroy_state,
+	.enable_vblank	= dss_enable_vblank,
+	.disable_vblank	= dss_disable_vblank,
 };
 
 static int dss_crtc_init(struct drm_device *dev, struct drm_crtc *crtc,
@@ -384,9 +384,9 @@ static int dss_crtc_init(struct drm_device *dev, struct drm_crtc *crtc,
 	return 0;
 }
 
-static int dss_plane_atomic_check(struct drm_plane *plane,
-				  struct drm_plane_state *state)
+static int dss_plane_atomic_check(struct drm_plane *plane, struct drm_atomic_state *state_)
 {
+	struct drm_plane_state *state = drm_atomic_get_new_plane_state(state_, plane);
 	struct drm_framebuffer *fb = state->fb;
 	struct drm_crtc *crtc = state->crtc;
 	struct drm_crtc_state *crtc_state;
@@ -403,7 +403,7 @@ static int dss_plane_atomic_check(struct drm_plane *plane,
 	if (!crtc || !fb)
 		return 0;
 
-	fmt = dss_get_format(fb->pixel_format);
+	fmt = dss_get_format(fb->format->format);
 	if (fmt == HISI_FB_PIXEL_FORMAT_UNSUPPORT)
 		return -EINVAL;
 
@@ -429,15 +429,15 @@ static int dss_plane_atomic_check(struct drm_plane *plane,
 	return 0;
 }
 
-static void dss_plane_atomic_update(struct drm_plane *plane,
-				    struct drm_plane_state *old_state)
+static void dss_plane_atomic_update(struct drm_plane *plane, struct drm_atomic_state *state_)
 {
+	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state_, plane);
 	hisi_fb_pan_display(plane);
 }
 
-static void dss_plane_atomic_disable(struct drm_plane *plane,
-				     struct drm_plane_state *old_state)
+static void dss_plane_atomic_disable(struct drm_plane *plane, struct drm_atomic_state *state_)
 {
+	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state_, plane);
 	//struct dss_plane *aplane = to_dss_plane(plane);
 }
 
@@ -450,7 +450,7 @@ static const struct drm_plane_helper_funcs dss_plane_helper_funcs = {
 static struct drm_plane_funcs dss_plane_funcs = {
 	.update_plane	= drm_atomic_helper_update_plane,
 	.disable_plane	= drm_atomic_helper_disable_plane,
-	.set_property = drm_atomic_helper_plane_set_property,
+	
 	.destroy = drm_plane_cleanup,
 	.reset = drm_atomic_helper_plane_reset,
 	.atomic_duplicate_state = drm_atomic_helper_plane_duplicate_state,
@@ -470,7 +470,7 @@ static int dss_plane_init(struct drm_device *dev, struct dss_plane *aplane,
 		return ret;
 
 	ret = drm_universal_plane_init(dev, &aplane->base, 1, &dss_plane_funcs,
-				       fmts, fmts_cnt, type, NULL);
+				       fmts, fmts_cnt, NULL, type, NULL);
 	if (ret) {
 		DRM_ERROR("fail to init plane, ch=%d\n", aplane->ch);
 		return ret;
@@ -488,7 +488,7 @@ static int dss_enable_iommu(struct platform_device *pdev, struct dss_hw_ctx *ctx
 	dev = &pdev->dev;
 
 	/* create iommu domain */
-	ctx->mmu_domain = iommu_domain_alloc(dev->bus);
+	ctx->mmu_domain = iommu_paging_domain_alloc(&pdev->dev);
 	if (!ctx->mmu_domain) {
 		pr_err("iommu_domain_alloc failed!\n");
 		return -EINVAL;
@@ -610,7 +610,7 @@ static int dss_dts_parse(struct platform_device *pdev, struct dss_hw_ctx *ctx)
 
 static int dss_drm_init(struct drm_device *dev)
 {
-	struct platform_device *pdev = dev->platformdev;
+	struct platform_device *pdev = to_platform_device(dev->dev);
 	struct dss_data *dss;
 	struct dss_hw_ctx *ctx;
 	struct dss_crtc *acrtc;
@@ -678,16 +678,13 @@ static int dss_drm_init(struct drm_device *dev)
 
 	disable_irq(ctx->irq);
 
-	dev->driver->get_vblank_counter = drm_vblank_no_hw_counter;
-	dev->driver->enable_vblank = dss_enable_vblank;
-	dev->driver->disable_vblank = dss_disable_vblank;
-
+			
 	return 0;
 }
 
 static void dss_drm_cleanup(struct drm_device *dev)
 {
-	struct platform_device *pdev = dev->platformdev;
+	struct platform_device *pdev = to_platform_device(dev->dev);
 	struct dss_data *dss = platform_get_drvdata(pdev);
 	struct drm_crtc *crtc = &dss->acrtc.base;
 
