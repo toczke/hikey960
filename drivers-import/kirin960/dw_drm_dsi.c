@@ -1540,7 +1540,7 @@ static int dsi_parse_dt(struct platform_device *pdev, struct dw_dsi *dsi)
 			return -ENXIO;
 	}
 
-	dsi->gpio_mux = devm_gpiod_get(&pdev->dev, "mux", GPIOD_OUT_HIGH);
+	dsi->gpio_mux = devm_gpiod_get_optional(&pdev->dev, "mux", GPIOD_OUT_HIGH);
 	if (IS_ERR(dsi->gpio_mux))
 		return PTR_ERR(dsi->gpio_mux);
 	/* set dsi default output to panel */
@@ -1613,14 +1613,18 @@ static int dsi_probe(struct platform_device *pdev)
 		return ret;
 
 	ret = dsi_parse_dt(pdev, dsi);
-	if (ret)
+	if (ret) {
+		DRM_ERROR("dsi_parse_dt failed: %d\n", ret);
 		goto err_host_unregister;
+	}
 
 	platform_set_drvdata(pdev, data);
 
 	ret = component_add(dev, &dsi_ops);
-	if (ret)
+	if (ret) {
+		DRM_ERROR("component_add failed: %d\n", ret);
 		goto err_host_unregister;
+	}
 
 	return 0;
 
