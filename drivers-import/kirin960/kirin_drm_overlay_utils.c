@@ -1035,6 +1035,8 @@ void hisifb_dss_on(struct dss_hw_ctx *ctx)
 	hisi_dss_qos_on(ctx);
 	/* mif on*/
 	hisi_dss_mif_on(ctx);
+	/* FORCIBLY ENABLE GLOBAL SMMU BYPASS (DISABLE SMMU) */
+	set_reg(ctx->base + DSS_SMMU_OFFSET + SMMU_SCR, 0x1, 1, 0);
 }
 
 void hisi_dss_mctl_on(struct dss_hw_ctx *ctx)
