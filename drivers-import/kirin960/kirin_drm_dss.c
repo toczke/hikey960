@@ -481,24 +481,6 @@ static int dss_plane_init(struct drm_device *dev, struct dss_plane *aplane,
 	return 0;
 }
 
-static int dss_enable_iommu(struct platform_device *pdev, struct dss_hw_ctx *ctx)
-{
-	struct device *dev = NULL;
-
-	dev = &pdev->dev;
-
-	/* create iommu domain */
-	ctx->mmu_domain = iommu_paging_domain_alloc(&pdev->dev);
-	if (!ctx->mmu_domain) {
-		pr_err("iommu_domain_alloc failed!\n");
-		return -EINVAL;
-	}
-
-	iommu_attach_device(ctx->mmu_domain, dev);
-
-	return 0;
-}
-
 static int dss_dts_parse(struct platform_device *pdev, struct dss_hw_ctx *ctx)
 {
 	struct device *dev = &pdev->dev;
@@ -602,8 +584,6 @@ static int dss_dts_parse(struct platform_device *pdev, struct dss_hw_ctx *ctx)
 		DSS_MAX_PXL0_CLK_144M, (uint64_t)clk_get_rate(ctx->dss_pxl0_clk));
 
 	/* regulator enable */
-
-	dss_enable_iommu(pdev, ctx);
 
 	return 0;
 }
