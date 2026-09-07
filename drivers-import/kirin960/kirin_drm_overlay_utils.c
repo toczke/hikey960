@@ -22,6 +22,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301, USA.
  *
+#include <linux/dma-mapping.h>
  */
 
 #include <drm/drm_crtc.h>
@@ -1029,14 +1030,44 @@ void hisi_dss_smmu_on(struct dss_hw_ctx *ctx)
 	//set_reg(smmu_base + SMMU_CB_TTBR0, phy_pgd_base, 32, 0);
 }
 
+static u64 *fake_pgd = NULL;
+static dma_addr_t fake_pgd_dma = 0;
+
 void hisifb_dss_on(struct dss_hw_ctx *ctx)
 {
+	void __iomem *smmu_base;
 	/* dss qos on*/
 	hisi_dss_qos_on(ctx);
 	/* mif on*/
 	hisi_dss_mif_on(ctx);
-	/* FORCIBLY ENABLE GLOBAL SMMU BYPASS (DISABLE SMMU) */
-	set_reg(ctx->base + DSS_SMMU_OFFSET + SMMU_SCR, 0x1, 1, 0);
+	
+	smmu_base = ctx->base + DSS_SMMU_OFFSET;
+
+	if (!fake_pgd) {
+		fake_pgd = dma_alloc_coherent(&ctx->pdev->dev, 32, &fake_pgd_dma, GFP_KERNEL);
+		if (fake_pgd) {
+			fake_pgd[0] = 0x00000000000005C1ULL;
+			fake_pgd[1] = 0x00000000400005C1ULL;
+			fake_pgd[2] = 0x00000000800005C1ULL;
+			fake_pgd[3] = 0x00000000C00005C1ULL;
+		}
+	}
+
+	if (fake_pgd) {
+		set_reg(smmu_base + SMMU_SCR, 0x0, 1, 0);  /*global bypass cancel*/
+		set_reg(smmu_base + SMMU_SCR, 0x1, 8, 20); /*ptw_mid*/
+		set_reg(smmu_base + SMMU_SCR, 0xf, 4, 16); /*pwt_pf*/
+		set_reg(smmu_base + SMMU_SCR, 0x7, 3, 3);  /*interrupt cachel1 cach3l2 en*/
+		set_reg(smmu_base + SMMU_LP_CTRL, 0x1, 1, 0);  /*auto_clk_gt_en*/
+		set_reg(smmu_base + SMMU_CB_TTBCR, 0x1, 1, 0); /*Long Descriptor*/
+		set_reg(smmu_base + SMMU_ERR_RDADDR, 0x7FF00000, 32, 0);
+		set_reg(smmu_base + SMMU_ERR_WRADDR, 0x7FFF0000, 32, 0);
+		set_reg(smmu_base + SMMU_SMRx_NS + 36 * 0x4, 0x1, 32, 0); 
+		set_reg(smmu_base + SMMU_SMRx_NS + 37 * 0x4, 0x1, 32, 0); 
+		set_reg(smmu_base + SMMU_SMRx_NS + 38 * 0x4, 0x1, 32, 0); 
+
+		outp32(smmu_base + SMMU_CB_TTBR0, (u32)fake_pgd_dma);
+	}
 }
 
 void hisi_dss_mctl_on(struct dss_hw_ctx *ctx)
@@ -1125,7 +1156,7 @@ void hisi_fb_pan_display(struct drm_plane *plane)
 	struct drm_gem_dma_object *obj;
 
 	bool afbcd = false;
-	bool mmu_enable = false;
+	bool mmu_enable = true;
 	dss_rect_ltrb_t rect;
 	u32 bpp;
 	u32 stride;
@@ -1203,7 +1234,7 @@ void hisi_dss_online_play(struct drm_plane *plane, drm_dss_layer_t *layer)
 	struct dss_hw_ctx *ctx = acrtc->ctx;
 
 	bool afbcd = false;
-	bool mmu_enable = false;
+	bool mmu_enable = true;
 	dss_rect_ltrb_t rect;
 	u32 bpp;
 	u32 stride;
