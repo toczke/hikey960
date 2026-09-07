@@ -11,7 +11,7 @@ index 188c1093a66e..8ed83cffaa34 100644
 +		return MODE_CLOCK_HIGH;
 +
 +	if (drm_mode_vrefresh(mode) < 48)
-+		return MODE_BAD_VREFRESH;
++		return MODE_BAD_VVALUE;
 +
  	/* Check max clock for each lane */
  	if (mode->clock * bpp > adv->info->max_lane_freq_khz * adv->num_dsi_lanes)

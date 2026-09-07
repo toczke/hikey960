@@ -1283,7 +1283,7 @@ dsi_connector_mode_valid(struct drm_connector *connector,
 		return MODE_CLOCK_HIGH;
 
 	if (drm_mode_vrefresh(mode) < 48)
-		return MODE_BAD_VREFRESH;
+		return MODE_BAD_VVALUE;
 
 	return MODE_OK;
 }
