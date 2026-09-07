@@ -1098,6 +1098,7 @@ static int dsi_host_attach(struct mipi_dsi_host *host,
 {
 	struct dw_dsi *dsi = host_to_dsi(host);
 	u32 id = mdsi->channel >= 1 ? OUT_PANEL : OUT_HDMI;
+	int ret;
 
 	if (mdsi->lanes < 1 || mdsi->lanes > 4) {
 		DRM_ERROR("dsi device params invalid\n");
@@ -1111,13 +1112,19 @@ static int dsi_host_attach(struct mipi_dsi_host *host,
 
 	DRM_INFO("host attach, client name=[%s], id=%d\n", mdsi->name, id);
 
+	ret = component_add(host->dev, &dsi_ops);
+	if (ret) {
+		DRM_ERROR("component_add failed in attach: %d\n", ret);
+		return ret;
+	}
+
 	return 0;
 }
 
 static int dsi_host_detach(struct mipi_dsi_host *host,
 			   struct mipi_dsi_device *mdsi)
 {
-	/* do nothing */
+	component_del(host->dev, &dsi_ops);
 	return 0;
 }
 
@@ -1620,12 +1627,6 @@ static int dsi_probe(struct platform_device *pdev)
 
 	platform_set_drvdata(pdev, data);
 
-	ret = component_add(dev, &dsi_ops);
-	if (ret) {
-		DRM_ERROR("component_add failed: %d\n", ret);
-		goto err_host_unregister;
-	}
-
 	return 0;
 
 err_host_unregister:
@@ -1635,8 +1636,8 @@ err_host_unregister:
 
 static void dsi_remove(struct platform_device *pdev)
 {
-	component_del(&pdev->dev, &dsi_ops);
-
+	struct dsi_data *data = platform_get_drvdata(pdev);
+	mipi_dsi_host_unregister(&data->dsi.host);
 }
 
 static const struct of_device_id dsi_of_match[] = {
