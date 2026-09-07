@@ -1188,7 +1188,7 @@ void hisi_fb_pan_display(struct drm_plane *plane)
 	hisi_dss_mctl_mutex_unlock(ctx);
 	hisi_dss_unflow_handler(ctx, true);
 
-	// enable_ldi(acrtc);
+	enable_ldi(acrtc);
 	hisi_dss_wait_for_complete(ctx);
 }
 
@@ -1250,6 +1250,6 @@ void hisi_dss_online_play(struct drm_plane *plane, drm_dss_layer_t *layer)
 	hisi_dss_mctl_mutex_unlock(ctx);
 	hisi_dss_unflow_handler(ctx, true);
 
-	// enable_ldi(acrtc);
+	enable_ldi(acrtc);
 	hisi_dss_wait_for_complete(ctx);
 }
