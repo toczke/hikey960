@@ -1110,33 +1110,7 @@ void hisi_dss_unflow_handler(struct dss_hw_ctx *ctx, bool unmask)
 
 static int hisi_dss_wait_for_complete(struct dss_hw_ctx *ctx)
 {
-	int ret = 0;
-	u32 times = 0;
-	u32 prev_vactive0_end = 0;
-
-	prev_vactive0_end = ctx->vactive0_end_flag;
-
-REDO:
-	ret = wait_event_interruptible_timeout(ctx->vactive0_end_wq,
-		(prev_vactive0_end != ctx->vactive0_end_flag),
-		msecs_to_jiffies(300));
-	if (ret == -ERESTARTSYS) {
-		if (times < 50) {
-			times++;
-			mdelay(10);
-			goto REDO;
-		}
-	}
-
-	if (ret <= 0) {
-		DRM_ERROR("wait_for vactive0_end_flag timeout! ret=%d.\n", ret);
-
-		ret = -ETIMEDOUT;
-	} else {
-		ret = 0;
-	}
-
-	return ret;
+	return 0;
 }
 
 void hisi_fb_pan_display(struct drm_plane *plane)

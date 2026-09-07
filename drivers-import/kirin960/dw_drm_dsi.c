@@ -250,46 +250,24 @@ static const struct dsi_phy_range dphy_range_info[] = {
 
 void dsi_set_output_client(struct drm_device *dev)
 {
-	enum dsi_output_client client;
-	struct drm_connector *connector;
 	struct drm_encoder *encoder;
-	struct dw_dsi *dsi;
-
-	mutex_lock(&dev->mode_config.mutex);
+	struct dw_dsi *dsi = NULL;
 
 	/* find dsi encoder */
-	drm_for_each_encoder(encoder, dev)
-		if (encoder->encoder_type == DRM_MODE_ENCODER_DSI)
+	drm_for_each_encoder(encoder, dev) {
+		if (encoder->encoder_type == DRM_MODE_ENCODER_DSI) {
+			dsi = encoder_to_dsi(encoder);
 			break;
-	dsi = encoder_to_dsi(encoder);
-
-	/* find HDMI connector */
-	struct drm_connector_list_iter conn_iter;
-drm_connector_list_iter_begin(dev, &conn_iter);
-drm_for_each_connector_iter(connector, &conn_iter) {
-		if (connector->connector_type == DRM_MODE_CONNECTOR_HDMIA)
-			break;
+		}
 	}
-	drm_connector_list_iter_end(&conn_iter);
+	if (!dsi)
+		return;
 
-	/*
-	 * set the proper dsi output client
-	 */
-	client = connector->status == connector_status_connected ?
-		OUT_HDMI : OUT_PANEL;
-	if (client != dsi->cur_client) {
-		/* associate bridge and dsi encoder */
-	
-
-		gpiod_set_value_cansleep(dsi->gpio_mux, client);
-		dsi->cur_client = client;
-		/* let the userspace know panel connector status has changed */
-		drm_kms_helper_hotplug_event(dev);
-		DRM_INFO("client change to %s\n", client == OUT_HDMI ?
-				 "HDMI" : "panel");
-	}
-
-	mutex_unlock(&dev->mode_config.mutex);
+	/* On HiKey960, permanently route DSI to the onboard ADV7533 HDMI bridge */
+	if (dsi->gpio_mux)
+		gpiod_set_value_cansleep(dsi->gpio_mux, 1);
+	dsi->cur_client = OUT_HDMI;
+	DRM_INFO("[drm] DSI hardware mux permanently locked to HDMI (ADV7533)\n");
 }
 EXPORT_SYMBOL(dsi_set_output_client);
 
@@ -1552,8 +1530,10 @@ static int dsi_parse_dt(struct platform_device *pdev, struct dw_dsi *dsi)
 	dsi->gpio_mux = devm_gpiod_get_optional(&pdev->dev, "mux", GPIOD_OUT_HIGH);
 	if (IS_ERR(dsi->gpio_mux))
 		return PTR_ERR(dsi->gpio_mux);
-	/* set dsi default output to panel */
-	dsi->cur_client = OUT_PANEL;
+	/* set dsi default output to HDMI */
+	dsi->cur_client = OUT_HDMI;
+	if (dsi->gpio_mux)
+		gpiod_set_value_cansleep(dsi->gpio_mux, 1);
 
 	/*dis-reset*/
 	/*ip_reset_dis_dsi0, ip_reset_dis_dsi1*/
