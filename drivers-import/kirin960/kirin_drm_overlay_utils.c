@@ -1079,7 +1079,6 @@ void hisi_dss_mctl_on(struct dss_hw_ctx *ctx)
 	}
 	mctl_base = ctx->base +
 		g_dss_module_ovl_base[DSS_MCTL0][MODULE_MCTL_BASE];
-	mctl_sys_base = ctx->base + DSS_MCTRL_SYS_OFFSET;
 
 	set_reg(mctl_base + MCTL_CTL_EN, 0x1, 32, 0);
 	set_reg(mctl_base + MCTL_CTL_MUTEX_ITF, 0x1, 32, 0);
