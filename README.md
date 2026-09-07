@@ -49,6 +49,7 @@ We have successfully ported the HiKey960 to a modern headless server environment
 | **60-Pin HS Header** | Unsupported | MIPI CSI lanes inactive due to missing ISP blobs. |
 | **Graphics** (Mali G71 MP8) | Working | `panfrost` driver functional. CMA size reduced to 64MB to prevent boot panics. |
 | **Display** (HDMI) | **Fully Operational** | Full interactive Linux console (`fbcon` / `tty1`) and native Wayland graphical desktop environment (Weston Desktop Shell) cleanly displayed on physical external HDMI displays at 720p60! Full pipeline: Kirin 960 DPE -> MIPI DSI (4 lanes) -> ADV7533 bridge -> HDMI TV/monitor. SMMU TrustZone lockup resolved, DSI continuous HS mode enabled, DSI mux GPIO20 automated in DTB, exact 72.0 MHz 1600x750 line rate timings calibrated, RGB/BGR color channel swap corrected, and automatic initialization service active. |
+| **Video Codec** (VPU) | **Ported to 7.1** | Hardware video decoding (H.265 Main 10, H.264, MPEG1/2/4, VC-1, VP6/8) and encoding (H.265/H.264 up to 4K@30fps / 4x 1080p@30fps) ported to Linux 7.1 with modern DMA coherent buffers and dma-buf zero-copy sharing. |
 
 ## GitHub Actions CI
 This repository is equipped with a fully automated **GitHub Actions** workflow (`.github/workflows/kernel-build.yml`). 

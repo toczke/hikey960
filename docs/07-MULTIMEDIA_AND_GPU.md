@@ -32,9 +32,18 @@ The ARM Mali-G71 (Bifrost architecture) GPU is fully initialized and accelerated
 *   **Open Source Drivers:** We utilize the mainline `panfrost` driver, which natively supports Bifrost GPUs.
 *   **Boot Stability Fix:** Previously, attempting to initialize the GPU alongside the Kirin memory management unit led to hard kernel panics (`SError`) at `[ 0.000000]` during boot. This was traced to a CMA (Contiguous Memory Allocator) collision. By reducing `CONFIG_CMA_SIZE_MBYTES` from 256MB to 64MB, the kernel boots flawlessly and Panfrost successfully powers up the 8-core Mali-G71.
 
-## 3. Hardware Video Acceleration (VPU)
-*   **Decoding/Encoding:** The Kirin 960 hardware video decoders require proprietary Huawei binary blobs (traditionally using the OpenMAX/OMX API from Android 8/9).
-*   **Mainline Status:** These closed-source blobs cannot be integrated into modern V4L2 (Video for Linux 2) or Codec2 frameworks. Consequently, all video decoding or encoding on this board must be performed purely in software by the CPU (A73/A53 cores). This is the only multimedia subsystem that remains permanently disabled on mainline Linux.
+## 3. Hardware Video Acceleration (VPU / hi_vcodec) - Ported to Linux 7.1
+The Kirin 960 (Hi3660 SoC) contains a dedicated hardware Video Processing Unit (VPU) composed of independent hardware decode (`vdec`) and encode (`venc`) engines:
+*   **Decoder Capabilities (Inside Decoder):**
+    *   **H.265 / HEVC:** Main Profile, High Tier, Main 10 (10-bit) / High Tier up to 4K @ 60fps.
+    *   **H.264 / AVC:** Baseline Profile (BP), Main Profile (MP), High Profile (HP).
+    *   **Legacy Codecs:** MPEG-1, MPEG-2, MPEG-4, VC-1, VP6, VP8, DIVX3, RealVideo 8/9.
+*   **Encoder Capabilities (Inside Encoder):**
+    *   **H.265 / HEVC & H.264 / AVC:** Up to 3840x2400 @ 30fps (or 4 * 1080p @ 30fps simultaneous stream encoding).
+*   **Modern Linux 7.1 Kernel Port (`drivers-import/vcodec/`):**
+    *   **Modern DMA Memory Management:** Removed obsolete Android ION (`ion_alloc`, `ion_client`, `hisi_ion.h`) and proprietary SMMU dependencies. Replaced with standard Linux DMA coherent allocation (`dma_alloc_coherent`), `kmalloc(GFP_DMA)`, and `dma_buf` zero-copy buffer sharing.
+    *   **Kernel API Modernization:** Updated `class_create` to modern single-argument syntax (Linux 6.4+), switched procfs to `struct proc_ops` and `pde_data` (Linux 5.6+/5.17+), replaced obsolete `set_fs(KERNEL_DS)` with `kernel_write`, updated platform driver remove to `void`, and fixed scheduler clock imports.
+    *   **Device Tree Integration:** Added `vdec@e8800000` (IRQs 290-297, clock `HI3660_CLK_GATE_VDEC`) and `venc@e8900000` (IRQs 298-299, clocks `HI3660_CLK_GATE_VENC` and `HI3660_VENC_VOLT_HOLD`) nodes directly to `hi3660.dtsi` via `patches/0007-hikey960-vpu-node.patch`.
 
 ## Summary
 The modern kernel build on this repository statically embeds (`CONFIG_DRM=y`) both the Panfrost GPU driver and the custom Kirin960 DRM driver. The pipeline successfully binds DPE, DSI, and the ADV7533 bridge, allocates the framebuffer device (`kirindrmfb`), maps physical CMA memory, and cleanly displays the interactive serial/tty1 console on external HDMI displays.
