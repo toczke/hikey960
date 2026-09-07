@@ -1066,6 +1066,7 @@ void hisifb_dss_on(struct dss_hw_ctx *ctx)
 		set_reg(smmu_base + SMMU_SMRx_NS + 38 * 0x4, 0x1, 32, 0); 
 
 		outp32(smmu_base + SMMU_CB_TTBR0, (u32)fake_pgd_dma);
+		outp32(smmu_base + SMMU_SCACHEI_ALL, 0x1);
 	}
 }
 
