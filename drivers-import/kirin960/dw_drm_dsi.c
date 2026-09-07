@@ -322,10 +322,9 @@ static void get_dsi_phy_ctrl(struct dw_dsi *dsi,
 	bpp = mipi_dsi_pixel_format_to_bpp(dsi->client[id].format);
 	if (bpp < 0)
 		return;
-	if (mode->clock > 80000)
-	    dsi->client[id].lanes = 4;
-	else
-	    dsi->client[id].lanes = 3;
+	/* Ensure lanes is valid (default to client requested lanes, e.g. 4) */
+	if (dsi->client[id].lanes < 1 || dsi->client[id].lanes > 4)
+		dsi->client[id].lanes = 4;
 	if (dsi->client[id].phy_clock)
 		dphy_req_kHz = dsi->client[id].phy_clock;
 	else

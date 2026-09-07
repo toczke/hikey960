@@ -1,8 +1,11 @@
---- a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts	2026-09-06 21:23:24.514787602 +0200
-+++ b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts	2026-09-06 21:24:49.787995532 +0200
-@@ -570,12 +570,21 @@
+--- a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts	2026-09-07 14:53:47.312633505 +0200
++++ b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts	2026-09-07 14:54:27.474297549 +0200
+@@ -571,14 +571,23 @@
+ 
+ 	adv7533: adv7533@39 {
  		status = "okay";
- 		compatible = "adi,adv7533";
+-		compatible = "adi,adv7533";
++		compatible = "adi,adv7535", "adi,adv7533";
  		reg = <0x39>;
 +		v1p2-supply = <&ldo3>;
 +		avdd-supply = <&ldo3>;

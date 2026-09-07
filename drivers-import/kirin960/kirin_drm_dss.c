@@ -132,8 +132,8 @@ static void dss_ldi_set_mode(struct dss_crtc *acrtc)
 	if (ret) {
 		DRM_ERROR("failed to set pixel clk %dHz (%d)\n", clk_Hz, ret);
 	}
-	adj_mode->clock = clk_get_rate(ctx->dss_pxl0_clk) / 1000;
-	DRM_INFO("dss_pxl0_clk = %u\n",  adj_mode->clock);
+	DRM_INFO("dss_pxl0_clk requested = %d Hz, actual = %lu Hz\n",
+		 clk_Hz, clk_get_rate(ctx->dss_pxl0_clk));
 
 	dpe_init(acrtc);
 }

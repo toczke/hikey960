@@ -156,7 +156,7 @@ static const struct file_operations kirin_drm_fops = {
 };
 
 static struct drm_driver kirin_drm_driver = {
-	.driver_features	= DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC | DRIVER_RENDER,
+	.driver_features	= DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC,
 	.fops				= &kirin_drm_fops,
 
 	DRM_GEM_DMA_DRIVER_OPS,
