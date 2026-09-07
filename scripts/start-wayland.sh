@@ -8,8 +8,13 @@ mkdir -p "$XDG_RUNTIME_DIR" && chmod 0700 "$XDG_RUNTIME_DIR"
 killall weston 2>/dev/null || true
 sleep 0.5
 
+# Auto-detect optimal display mode based on connected screen & ADV7533 limits
+if [ -x /usr/local/bin/hikey960-hdmi-autores.py ]; then
+  /usr/local/bin/hikey960-hdmi-autores.py || true
+fi
+
 # Launch Weston Desktop Shell on DRM card1
-weston --drm-device=card1 --current-mode --continue-without-input --tty=2 --log=/var/log/weston.log &
+weston --drm-device=card1 --continue-without-input --tty=2 --log=/var/log/weston.log &
 WESTON_PID=$!
 
 # Wait for Wayland socket to appear
