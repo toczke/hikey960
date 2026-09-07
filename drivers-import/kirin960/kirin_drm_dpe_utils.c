@@ -554,7 +554,7 @@ void dpe_interrupt_unmask(struct dss_crtc *acrtc)
 	dss_base = ctx->base;
 
 	unmask = ~0;
-	unmask &= ~(BIT_DPP_INTS | BIT_ITF0_INTS | BIT_MMU_IRPT_NS);
+	unmask &= ~(BIT_DPP_INTS | BIT_ITF0_INTS);
 	outp32(dss_base + GLB_CPU_PDP_INT_MSK, unmask);
 
 	unmask = ~0;
