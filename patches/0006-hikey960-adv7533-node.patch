@@ -22,6 +22,7 @@
  				reg = <0>;
 +				adv7533_in: endpoint {
 +					remote-endpoint = <&dsi_out0>;
++					data-lanes = <0 1 2 3>;
 +				};
  			};
  			port@1 {
