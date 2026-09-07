@@ -1,0 +1,30 @@
+diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+index d59b4863b..537a9c726 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_job.c
++++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+@@ -474,8 +474,23 @@ static void panfrost_job_handle_err(struct panfrost_device *pfdev,
+ 		job->jc = job_read(pfdev, JS_TAIL_LO(js)) |
+ 			  ((u64)job_read(pfdev, JS_TAIL_HI(js)) << 32);
+ 
+-		/* The job will be resumed, don't signal the fence */
+-		signal_fence = false;
++		/*
++		 * HW_ISSUE_TMIX_8438 (Mali-G71 errata):
++		 * When a hard-stop immediately follows a soft-stop, the GPU
++		 * may incorrectly report STOPPED instead of TERMINATED.
++		 * Detect this: if job->jc is 0 after reading JS_TAIL, a
++		 * hard-stop was issued and the job should be treated as
++		 * cancelled rather than rescheduled.
++		 */
++		if (panfrost_has_hw_issue(pfdev, HW_ISSUE_TMIX_8438) &&
++		    job->jc == 0) {
++			dev_dbg(pfdev->base.dev,
++				"js%d: G71 TMIX_8438: spurious STOPPED -> TERMINATED\n", js);
++			dma_fence_set_error(job->done_fence, -ECANCELED);
++		} else {
++			/* The job will be resumed, don't signal the fence */
++			signal_fence = false;
++		}
+ 	} else if (js_status == DRM_PANFROST_EXCEPTION_TERMINATED) {
+ 		/* Job has been hard-stopped, flag it as canceled */
+ 		dma_fence_set_error(job->done_fence, -ECANCELED);

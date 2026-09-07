@@ -1,0 +1,28 @@
+--- a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts	2026-09-07 14:53:47.312633505 +0200
++++ b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts	2026-09-07 14:54:27.474297549 +0200
+@@ -571,14 +571,24 @@
+ 
+ 	adv7533: adv7533@39 {
+ 		status = "okay";
+-		compatible = "adi,adv7533";
++		compatible = "adi,adv7535", "adi,adv7533";
+ 		reg = <0x39>;
++		v1p2-supply = <&ldo3>;
++		avdd-supply = <&ldo3>;
++		dvdd-supply = <&ldo3>;
++		pvdd-supply = <&ldo3>;
++		a2vdd-supply = <&ldo3>;
++		pd-gpios = <&gpio5 1 0>;
+ 		adi,dsi-lanes = <4>;
++		adi,disable-timing-generator;
+ 		ports {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			port@0 {
+ 				reg = <0>;
++				adv7533_in: endpoint {
++					remote-endpoint = <&dsi_out0>;
++				};
+ 			};
+ 			port@1 {
+ 				reg = <1>;

@@ -28,29 +28,30 @@ jobs:
       run: |
         git clone --depth 1 -b linux-7.1.y https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git linux-src
 
+    - name: Apply Custom Patches
+      working-directory: ./linux-src
+      run: |
+        if [ -d "../patches" ]; then
+          for p in ../patches/*.patch; do
+            echo "Applying $p"
+            patch -p1 < "$p"
+          done
+        fi
+
+
+    - name: Inject Kirin 960 DRM Driver
+      working-directory: ./linux-src
+      run: |
+        cp -r ../drivers-import/kirin960 drivers/gpu/drm/hisilicon/
+        echo "source \"drivers/gpu/drm/hisilicon/kirin960/Kconfig\"" >> drivers/gpu/drm/hisilicon/Kconfig
+        echo "obj-y += kirin960/" >> drivers/gpu/drm/hisilicon/Makefile
+
     - name: Configure Kernel
       working-directory: ./linux-src
       run: |
-        make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- defconfig
-        
-        # Apply critical config overrides for HiKey960 (Storage, PMIC, USB, GPU)
-        ./scripts/config --enable CONFIG_SCSI_UFSHCD
-        ./scripts/config --enable CONFIG_SCSI_UFSHCD_PLATFORM
-        ./scripts/config --enable CONFIG_SCSI_UFS_HISI
-        ./scripts/config --enable CONFIG_EXT4_FS
-        ./scripts/config --enable CONFIG_COMMON_CLK_HI3660
-        ./scripts/config --enable CONFIG_RESET_CONTROLLER
-        ./scripts/config --enable CONFIG_MFD_HI6421_PMIC
-        ./scripts/config --enable CONFIG_REGULATOR
-        ./scripts/config --enable CONFIG_REGULATOR_HI6421V530
-        ./scripts/config --enable CONFIG_REGULATOR_FIXED_VOLTAGE
-        ./scripts/config --enable CONFIG_USB_ROLE_SWITCH
-        ./scripts/config --enable CONFIG_TYPEC
-        ./scripts/config --disable CONFIG_USB_DWC3_HOST
-        ./scripts/config --disable CONFIG_USB_DWC3_GADGET
-        ./scripts/config --disable CONFIG_DRM_PANFROST
-        ./scripts/config --disable CONFIG_DRM_HISI_KIRIN
-        ./scripts/config --disable CONFIG_DRM_HISI_KIRIN960
+        # Use full HiKey960 config from working Armbian 7.1.10 kernel
+        cp ../configs/hikey960-defconfig .config
+        make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
         
         # Fix BT DMA and baud rate bugs directly in DTB by deleting 'dmas' and 'max-speed'
         sed -i '/&uart4 {/a \\t/delete-property/ dmas;' arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
@@ -77,18 +78,13 @@ jobs:
         echo "KERNEL_VERSION=$KVER" >> $GITHUB_ENV
         echo "Built kernel version: $KVER"
 
-    - name: Upload Kernel Image
+    - name: Upload Kernel Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: hikey960-kernel-${{ env.KERNEL_VERSION }}
-        path: linux-src/arch/arm64/boot/Image.gz
-        retention-days: 7
-
-    - name: Upload Compiled DTBs
-      uses: actions/upload-artifact@v4
-      with:
-        name: hikey960-dtbs-${{ env.KERNEL_VERSION }}
-        path: linux-src/arch/arm64/boot/dts/hisilicon/*.dtb
+        name: hikey960-kernel-artifacts-${{ env.KERNEL_VERSION }}
+        path: |
+          linux-src/arch/arm64/boot/Image.gz
+          linux-src/arch/arm64/boot/dts/hisilicon/*.dtb
         retention-days: 7
 
     - name: Create GitHub Release
@@ -99,8 +95,7 @@ jobs:
         body: |
           Automated kernel build for HiKey960.
           - Kernel version: ${{ env.KERNEL_VERSION }}
-          - Includes DTB fixes for Panfrost and Bluetooth
-          - Includes config optimizations for UFS, USB, and PMIC
+          - Includes DTB fixes for Panfrost GPU and Bluetooth
         files: |
           linux-src/arch/arm64/boot/Image.gz
           linux-src/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dtb

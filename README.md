@@ -9,20 +9,20 @@ This repository documents the **complete, end-to-end process** for compiling a m
             `:]x**j-,'                 -------------
        .,+t***********z\<"             OS: Armbian 26.8.3 bookworm aarch64
        ?******************;            Host: HiKey960
-      '*n` .'`^,;;,^`'. ,cc.           Kernel: Linux 7.1.10-edge-arm64
-      -<.                .[l           Uptime: 35 mins
-     //     ^^      ^^    \\           Packages: 440 (dpkg)
+      '*n` .'`^,;;,^`'. ,cc.           Kernel: Linux 7.1.13+
+      -<.                .[l           Uptime: 11 mins
+     //     ^^      ^^    \\           Packages: 491 (dpkg)
      !^         ^^         ":          Shell: bash 5.2.15
-    'tt}`     !~]rj_     ")t/.         Terminal: /dev/pts/0
-    Itttt?'   ~~]rr]   `{tttt,         CPU: hi3660 (4+4) @ 2.36 GHz
-    \tttttt!""I_]r("""~tttttt1         Memory: 645.18 MiB / 3.79 GiB (17%)
-  '_tttttttttttt)ftttttttttttti.       Swap: 0 B / 1.89 GiB (0%)
- \*ztttttttttttttttttttttttttf**[      Disk (/): 7.13 GiB / 28.12 GiB (25%) - ext4
-l**c)tttttttttttttttttttttttt(z**,     Disk (/mnt/storage): 618.92 GiB / 3.58 TiB (17%) - ext4
-.z*x.`tttttttttttttttttttttttt.`u*n    Disk (/tmp): 48.00 KiB / 1.86 GiB (0%) - ext4
->`   (tttttttttttttttttttttt]   "I     Disk (/var/log): 1.95 MiB / 46.84 MiB (4%) - ext4
-     ,tttttttttttttttttttttt`          Local IP (wlan0): 192.168.x.x/24
-     ./tttttfttttttttfttttt(           Locale: en_US.UTF-8
+    'tt}`     !~]rj_     ")t/.         Display (HDMI-A-1): 1920x1080, 60 Hz
+    Itttt?'   ~~]rr]   `{tttt,         Terminal: /dev/pts/0 9.2p1 Debian-2+deb12u10
+    \tttttt!""I_]r("""~tttttt1         CPU: hi3660 (4+4) @ 2.36 GHz
+  '_tttttttttttt)ftttttttttttti.       GPU: Hisilicon hi3660-mali [Integrated]
+ \*ztttttttttttttttttttttttttf**[      Memory: 341.53 MiB / 3.79 GiB (9%)
+l**c)tttttttttttttttttttttttt(z**,     Swap: Disabled
+.z*x.`tttttttttttttttttttttttt.`u*n    Disk (/): 8.13 GiB / 28.12 GiB (29%) - ext4
+>`   (tttttttttttttttttttttt]   "I     Local IP (wlan0): 192.168.x.x/24
+     ,tttttttttttttttttttttt`          Locale: en_US.UTF-8
+     ./tttttfttttttttfttttt(           
       'I)))(\()(tt))|\()({;'           
         .~~~~~~~|)~~~~~~~<                                     
         '[)))))1|()))))))?                                     
@@ -46,8 +46,9 @@ We have successfully ported the HiKey960 to a modern headless server environment
 | **Expansion** (M.2 PCIe Gen2) | Working | Kernel pre-configured with `igc`/`igb`/`e1000e` and `ahci`. Supports networking or SATA adapters (e.g., ASM1166). |
 | **Processor** (Kirin 960 4GB) | Working | SMP and CPU frequency scaling operate natively without modifications. |
 | **40-Pin LS Header** | Working | UART, I2C, SPI, GPIO supported. `spidev` nodes require DTB patch. **Strictly 1.8V logic.** |
-| **60-Pin HS Header** | Unsupported | MIPI CSI/DSI lanes inactive due to missing ISP blobs and disabled DRM. |
-| **Graphics** (Mali G71 MP8) | Disabled | `CONFIG_DRM_PANFROST` intentionally unset to ensure stability and prevent SError kernel panics on headless servers. |
+| **60-Pin HS Header** | Unsupported | MIPI CSI lanes inactive due to missing ISP blobs. |
+| **Graphics** (Mali G71 MP8) | Working | `panfrost` driver functional. CMA size reduced to 64MB to prevent boot panics. |
+| **Display** (HDMI) | **Fully Operational** | Full interactive Linux console (`fbcon` / `tty1`) cleanly displayed on physical external HDMI display at 720p60! Full pipeline: Kirin 960 DPE -> MIPI DSI (4 lanes) -> ADV7535 bridge -> HDMI TV/monitor. SMMU TrustZone lockup resolved, DSI continuous HS mode enabled, DSI mux GPIO20 automated in DTB, exact 72.0 MHz 1600x750 line rate timings calibrated, and automatic console initialization service active. |
 
 ## GitHub Actions CI
 This repository is equipped with a fully automated **GitHub Actions** workflow (`.github/workflows/kernel-build.yml`). 
@@ -58,11 +59,11 @@ Whenever a change is pushed to `main`, it will automatically:
 4. Build the `Image.gz` and `.dtb` files.
 5. Automatically create a **GitHub Release** with the compiled, production-ready kernel files attached as artifacts for easy downloading.
 
-## The Challenge
-Nobody does this because the Hisilicon firmware is fundamentally broken in several ways:
-1.  **EDK2 NVRAM Hardcoding:** The stock UEFI bootloader ("Grub" entry) ignores standard EFI partition UUIDs. It hardcodes the EFI System Partition (ESP) to **Partition Index 7** and **LBA 73984**. Custom partition tables (like Armbian's default `maxroot`) shift this LBA, breaking auto-boot completely.
-2.  **Sparse Image Parser Bug:** The HiKey960's `fastboot` implementation crashes (`Unsupported Chunk Type: 0xFFFF`) when flashing large, modern rootfs images.
-3.  **Kernel Fragility:** Modern mainline kernels often break compatibility with the closed-source Wi-Fi/Bluetooth binaries or bootloader chain.
+## Challenges Overcome
+Nobody ported this board to modern Linux because the Hisilicon firmware is fundamentally broken in several ways. This repository systematically resolves all of them:
+1.  **EDK2 NVRAM Hardcoding:** The stock UEFI bootloader ignores standard EFI partition UUIDs, hardcoding the ESP to **Partition Index 7** and **LBA 73984**. Custom partition tables shift this LBA, breaking auto-boot. **Solution:** We provide and flash the stock `prm_ptable.img` to lock the LBA in place, ensuring reliable auto-booting.
+2.  **Sparse Image Parser Bug:** The HiKey960's `fastboot` crashes (`Unsupported Chunk Type: 0xFFFF`) when flashing large, modern rootfs images. **Solution:** Our flashing documentation provides the exact chunk-split workarounds to safely flash modern Armbian images.
+3.  **Kernel Fragility & Hardware Regressions:** Mainline kernels broke compatibility with the Wi-Fi/Bluetooth UART bus and entirely dropped the proprietary display drivers. **Solution:** Our CI pipeline applies on-the-fly Device Tree (DTB) patches to fix Bluetooth DMA/baud-rate timeouts, modifies CMA allocation to stabilize the GPU, and injects a manually ported Kirin DRM driver to restore physical HDMI output.
 
 ## Documentation Workflow
 
@@ -74,7 +75,7 @@ Please read the documentation in the following order to successfully build and f
 4.  [04-FREEZING_KERNEL_UPDATES.md](docs/04-FREEZING_KERNEL_UPDATES.md) - **CRITICAL:** Locking kernel packages via `apt-mark` to prevent automated updates from overwriting our DTB fixes and bricking the system.
 5.  [05-GPIO_EXPANSION_HEADER.md](docs/05-GPIO_EXPANSION_HEADER.md) - Hardware specifications, 1.8V logic limits, full 40-pin layout, and SPI/PWM device tree configuration.
 6.  [06-HS_EXPANSION_HEADER.md](docs/06-HS_EXPANSION_HEADER.md) - Details on the 60-pin HS connector, MIPI CSI/DSI limitations, and ISP hardware blockers on mainline Linux.
-7.  [07-MULTIMEDIA_AND_GPU.md](docs/07-MULTIMEDIA_AND_GPU.md) - Why the HDMI port and Mali-G71 GPU are intentionally disabled for server stability.
+7.  [07-MULTIMEDIA_AND_GPU.md](docs/07-MULTIMEDIA_AND_GPU.md) - How the Mali-G71 GPU and HDMI display pipeline (DPE/DSI) were ported to Linux 7.1.
 8.  [08-BOARD_SWITCHES.md](docs/08-BOARD_SWITCHES.md) - Hardware DIP switch configurations for Normal Boot, Fastboot, and Brick Recovery.
 
 ## Assets in this Repository
