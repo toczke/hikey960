@@ -611,7 +611,7 @@ static int dss_drm_init(struct drm_device *dev)
 	acrtc = &dss->acrtc;
 	acrtc->ctx = ctx;
 	acrtc->out_format = LCD_RGB888;
-	acrtc->bgr_fmt = LCD_RGB;
+	acrtc->bgr_fmt = LCD_BGR;
 
 	ret = dss_dts_parse(pdev, ctx);
 	if (ret)

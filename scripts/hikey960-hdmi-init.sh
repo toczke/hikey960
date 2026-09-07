@@ -77,7 +77,8 @@ i2cset -f -y 1 0x39 0x41 0x10 2>/dev/null || true
 i2cset -f -y 1 0x39 0xd6 0x50 2>/dev/null || true
 
 # Set LDI to normal display mode (scan fb0)
-busybox devmem 0xe867d028 32 0x00000001 2>/dev/null || true
+busybox devmem 0xe867d024 32 0x00002ec1
+  busybox devmem 0xe867d028 32 0x00000001 2>/dev/null || true
 
 # Prevent fbcon blanking
 echo 0 > /sys/class/graphics/fb0/blank 2>/dev/null || true
