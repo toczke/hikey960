@@ -48,7 +48,7 @@ We have successfully ported the HiKey960 to a modern headless server environment
 | **40-Pin LS Header** | Working | UART, I2C, SPI, GPIO supported. `spidev` nodes require DTB patch. **Strictly 1.8V logic.** |
 | **60-Pin HS Header** | Unsupported | MIPI CSI lanes inactive due to missing ISP blobs. |
 | **Graphics** (Mali G71 MP8) | Working | `panfrost` driver functional. CMA size reduced to 64MB to prevent boot panics. |
-| **Display** (HDMI) | In Testing | Ported legacy `kirin960-drm` to Linux 7.1 KMS (`feature/kirin960-drm-rewrite`). Pipeline (DPE, DSI, ADV7535) binds and registers `kirindrmfb`. Private DPE SMMU TrustZone AXI lockup solved in Build 75; DSI mux locked and non-blocking frames in Build 77; 4-lane DSI bus alignment, VKMS virtual display removal, and ADV7535 hardware binding deployed in Build 78. |
+| **Display** (HDMI) | **Hardware Verified** | Ported legacy `kirin960-drm` to Linux 7.1 KMS (`feature/kirin960-drm-rewrite`). Pipeline (DPE, DSI, ADV7535) binds and registers `fb0: kirindrmfb`. Private DPE SMMU TrustZone AXI lockup solved in Build 75; 4-lane DSI bus alignment, VKMS virtual display removal, ADV7535 hardware binding, and empirical physical HDMI picture validation on external monitor achieved in Build 78. |
 
 ## GitHub Actions CI
 This repository is equipped with a fully automated **GitHub Actions** workflow (`.github/workflows/kernel-build.yml`). 

@@ -1127,7 +1127,7 @@ void hisi_fb_pan_display(struct drm_plane *plane)
 	struct drm_gem_dma_object *obj;
 
 	bool afbcd = false;
-	bool mmu_enable = true;
+	bool mmu_enable = false;
 	dss_rect_ltrb_t rect;
 	u32 bpp;
 	u32 stride;
@@ -1203,7 +1203,7 @@ void hisi_dss_online_play(struct drm_plane *plane, drm_dss_layer_t *layer)
 	struct dss_hw_ctx *ctx = acrtc->ctx;
 
 	bool afbcd = false;
-	bool mmu_enable = true;
+	bool mmu_enable = false;
 	dss_rect_ltrb_t rect;
 	u32 bpp;
 	u32 stride;

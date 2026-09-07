@@ -1,6 +1,6 @@
 --- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi	2026-09-06 20:27:30.206212559 +0200
 +++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi	2026-09-06 20:52:54.874856964 +0200
-@@ -1193,6 +1193,70 @@
+@@ -1193,6 +1193,71 @@
  			phys = <&usb_phy>;
  			phy-names = "usb3-phy";
  		};
@@ -32,6 +32,7 @@
 +			reg = <0x0 0xE8601000 0x0 0x7F000>,
 +			      <0x0 0xFFF35000 0x0 0x1000>,
 +			      <0x0 0xE8A09000 0x0 0x1000>;
++			mux-gpios = <&gpio2 4 1>;
 +			clocks = <&crg_ctrl HI3660_CLK_GATE_TXDPHY0_REF>,
 +				 <&crg_ctrl HI3660_CLK_GATE_TXDPHY1_REF>,
 +				 <&crg_ctrl HI3660_CLK_GATE_TXDPHY0_CFG>,

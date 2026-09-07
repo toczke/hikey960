@@ -153,6 +153,7 @@ static const struct file_operations kirin_drm_fops = {
 	.read		= drm_read,
 	.llseek		= noop_llseek,
 	.mmap		= drm_gem_mmap,
+	.fop_flags	= FOP_UNSIGNED_OFFSET,
 };
 
 static struct drm_driver kirin_drm_driver = {

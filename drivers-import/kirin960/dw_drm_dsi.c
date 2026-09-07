@@ -845,8 +845,8 @@ static void dsi_mipi_init(struct dw_dsi *dsi, char __iomem *mipi_dsi_base)
 	** This defines how the processor requires the video line to be
 	** transported through the DSI link.
 	*/
-	/* video mode: low power mode*/
-	set_reg(mipi_dsi_base + MIPIDSI_VID_MODE_CFG_OFFSET, 0x3f, 6, 8);
+	/* video mode: keep continuous HS mode for ADV7535 bridge (do not enter LP in blanking) */
+	set_reg(mipi_dsi_base + MIPIDSI_VID_MODE_CFG_OFFSET, 0x0, 6, 8);
 	/* set_reg(mipi_dsi_base + MIPIDSI_VID_MODE_CFG_OFFSET, 0x0, 1, 14); */
 
 	/* TODO: fix blank display bug when set backlight*/
