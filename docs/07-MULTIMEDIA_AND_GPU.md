@@ -25,6 +25,7 @@ The HDMI pipeline has been ported to modern Linux 7.1 KMS on the `feature/kirin9
     *   **ADV7533 80 MHz Silicon Limit:** The onboard ADV7533 has a maximum hardware pixel clock limit of **80 MHz**. This permits stable **720p @ 60Hz** (72.0 MHz < 80 MHz), which modern displays scale cleanly to 1080p. Standard 1080p60 (requiring 148.5 MHz / 144.0 MHz) exceeds the chip's physical PLL limit and is hardware-unsupported on the ADV7533.
     *   **Color Channel Correction (RGB vs BGR):** Corrected red/blue color swapping on physical HDMI output by setting `acrtc->bgr_fmt = LCD_BGR` (setting bit 13 of `LDI_CTRL` to 1), mapping color components accurately to the ADV7533 input.
     *   **Automated Console Service:** Deployed `hikey960-hdmi-init.service` (`scripts/hikey960-hdmi-init.sh`) to automatically configure DPE line timings, set ADV7533 TMDS output driver (`0xd6 = 0x50`), and unblank the console on boot, providing an out-of-the-box interactive bash shell on `/dev/tty1`.
+    *   **Wayland Desktop Environment (Weston):** Fully verified running the reference Wayland compositor (`weston`) with native DRM backend on `/dev/dri/card1` (`scripts/start-wayland.sh`). Displays the complete Desktop Environment (top panel, clock, background, and `weston-terminal`) cleanly rendered on the external HDMI screen.
 
 ## 2. Mali-G71 GPU (Panfrost)
 The ARM Mali-G71 (Bifrost architecture) GPU is fully initialized and accelerated.
