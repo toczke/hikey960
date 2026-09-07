@@ -1,6 +1,8 @@
---- a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts	2026-09-07 14:53:47.312633505 +0200
-+++ b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts	2026-09-07 14:54:27.474297549 +0200
-@@ -571,14 +571,24 @@
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
+index c6056a85ce80..796957ee942e 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
++++ b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
+@@ -571,14 +571,25 @@ rt1711h_ep: endpoint@0 {
  
  	adv7533: adv7533@39 {
  		status = "okay";

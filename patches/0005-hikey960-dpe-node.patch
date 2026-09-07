@@ -1,6 +1,8 @@
---- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi	2026-09-06 20:27:30.206212559 +0200
-+++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi	2026-09-06 20:52:54.874856964 +0200
-@@ -1193,6 +1193,71 @@
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+index 374aa173bec6..a67c9d3fc2aa 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+@@ -1193,6 +1193,72 @@ dwc3: usb@ff100000 {
  			phys = <&usb_phy>;
  			phy-names = "usb3-phy";
  		};
@@ -72,3 +74,4 @@
 +		};
  	};
  };
+ 
