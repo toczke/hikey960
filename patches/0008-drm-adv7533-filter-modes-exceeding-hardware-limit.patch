@@ -1,0 +1,18 @@
+diff --git a/drivers/gpu/drm/bridge/adv7511/adv7533.c b/drivers/gpu/drm/bridge/adv7511/adv7533.c
+index 188c1093a66e..8ed83cffaa34 100644
+--- a/drivers/gpu/drm/bridge/adv7511/adv7533.c
++++ b/drivers/gpu/drm/bridge/adv7511/adv7533.c
+@@ -103,6 +103,13 @@ enum drm_mode_status adv7533_mode_valid(struct adv7511 *adv,
+ 	struct mipi_dsi_device *dsi = adv->dsi;
+ 	u8 bpp = mipi_dsi_pixel_format_to_bpp(dsi->format);
+ 
++	if (adv->info && adv->info->max_mode_clock_khz &&
++	    mode->clock > adv->info->max_mode_clock_khz)
++		return MODE_CLOCK_HIGH;
++
++	if (drm_mode_vrefresh(mode) < 48)
++		return MODE_BAD_VREFRESH;
++
+ 	/* Check max clock for each lane */
+ 	if (mode->clock * bpp > adv->info->max_lane_freq_khz * adv->num_dsi_lanes)
+ 		return MODE_CLOCK_HIGH;
