@@ -1093,6 +1093,8 @@ static int dw_drm_encoder_init(struct device *dev,
 	return 0;
 }
 
+static const struct component_ops dsi_ops;
+
 static int dsi_host_attach(struct mipi_dsi_host *host,
 			   struct mipi_dsi_device *mdsi)
 {
