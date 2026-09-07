@@ -486,6 +486,7 @@ static int dss_dts_parse(struct platform_device *pdev, struct dss_hw_ctx *ctx)
 	struct device *dev = &pdev->dev;
 	struct device_node *np = NULL;
 	int ret = 0;
+	ctx->dev = &pdev->dev;
 
 	np = of_find_compatible_node(NULL, NULL, DTS_COMP_DSS_NAME);
 	if (!np) {

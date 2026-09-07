@@ -993,7 +993,6 @@ static void hisi_dss_mif_on(struct dss_hw_ctx *ctx)
 void hisi_dss_smmu_on(struct dss_hw_ctx *ctx)
 {
 	void __iomem *smmu_base;
-	struct iommu_domain_data *domain_data = NULL;
 	uint32_t phy_pgd_base = 0;
 
 	if (!ctx) {
@@ -1044,7 +1043,7 @@ void hisifb_dss_on(struct dss_hw_ctx *ctx)
 	smmu_base = ctx->base + DSS_SMMU_OFFSET;
 
 	if (!fake_pgd) {
-		fake_pgd = dma_alloc_coherent(&ctx->pdev->dev, 32, &fake_pgd_dma, GFP_KERNEL);
+		fake_pgd = dma_alloc_coherent(ctx->dev, 32, &fake_pgd_dma, GFP_KERNEL);
 		if (fake_pgd) {
 			fake_pgd[0] = 0x00000000000005C1ULL;
 			fake_pgd[1] = 0x00000000400005C1ULL;
@@ -1073,7 +1072,6 @@ void hisifb_dss_on(struct dss_hw_ctx *ctx)
 void hisi_dss_mctl_on(struct dss_hw_ctx *ctx)
 {
 	char __iomem *mctl_base = NULL;
-	char __iomem *mctl_sys_base = NULL;
 
 	if (!ctx) {
 		DRM_ERROR("ctx is NULL!\n");
@@ -1146,7 +1144,6 @@ void hisi_fb_pan_display(struct drm_plane *plane)
 	struct drm_plane_state *state = plane->state;
 	struct drm_framebuffer *fb = state->fb;
 	struct drm_display_mode *mode;
-	struct drm_display_mode *adj_mode;
 
 	struct dss_plane *aplane = to_dss_plane(plane);
 	struct dss_crtc *acrtc = aplane->acrtc;
@@ -1176,7 +1173,6 @@ void hisi_fb_pan_display(struct drm_plane *plane)
 	u32 hfp, hbp, hsw, vfp, vbp, vsw;
 
 	mode = &acrtc->base.state->mode;
-	adj_mode = &acrtc->base.state->adjusted_mode;
 
 	bpp = fb->format->cpp[0];
 	stride = fb->pitches[0];
@@ -1227,7 +1223,6 @@ void hisi_dss_online_play(struct drm_plane *plane, drm_dss_layer_t *layer)
 {
 	struct drm_plane_state *state = plane->state;
 	struct drm_display_mode *mode;
-	struct drm_display_mode *adj_mode;
 
 	struct dss_plane *aplane = to_dss_plane(plane);
 	struct dss_crtc *acrtc = aplane->acrtc;
@@ -1248,7 +1243,6 @@ void hisi_dss_online_play(struct drm_plane *plane, drm_dss_layer_t *layer)
 	u32 hfp, hbp, hsw, vfp, vbp, vsw;
 
 	mode = &acrtc->base.state->mode;
-	adj_mode = &acrtc->base.state->adjusted_mode;
 
 	bpp = layer->img.bpp;
 	stride = layer->img.stride;

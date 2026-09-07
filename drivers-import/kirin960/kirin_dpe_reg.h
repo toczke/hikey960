@@ -2931,6 +2931,7 @@ enum hisi_fb_pixel_format {
 
 struct dss_hw_ctx {
 	void __iomem *base;
+	struct device *dev;
 	struct regmap *noc_regmap;
 	struct reset_control *reset;
 
