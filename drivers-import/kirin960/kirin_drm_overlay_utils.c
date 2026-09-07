@@ -1035,8 +1035,6 @@ void hisifb_dss_on(struct dss_hw_ctx *ctx)
 	hisi_dss_qos_on(ctx);
 	/* mif on*/
 	hisi_dss_mif_on(ctx);
-	/* smmu on*/
-	hisi_dss_smmu_on(ctx);
 }
 
 void hisi_dss_mctl_on(struct dss_hw_ctx *ctx)
