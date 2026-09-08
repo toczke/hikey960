@@ -46,6 +46,13 @@ jobs:
         echo "source \"drivers/gpu/drm/hisilicon/kirin960/Kconfig\"" >> drivers/gpu/drm/hisilicon/Kconfig
         echo "obj-y += kirin960/" >> drivers/gpu/drm/hisilicon/Makefile
 
+    - name: Inject Kirin 960 VPU Driver
+      working-directory: ./linux-src
+      run: |
+        cp -r ../drivers-import/vcodec drivers/
+        sed -i '/endmenu/i source "drivers/vcodec/Kconfig"' drivers/Kconfig
+        echo "obj-y += vcodec/" >> drivers/Makefile
+
 
     - name: Configure Kernel
       working-directory: ./linux-src
@@ -92,11 +99,13 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ env.KERNEL_VERSION }}
-        name: Kernel ${{ env.KERNEL_VERSION }}
+        name: Kernel ${{ env.KERNEL_VERSION }} (Testing / Pre-release)
+        prerelease: true
         body: |
-          Automated kernel build for HiKey960.
+          Automated test build for HiKey960.
           - Kernel version: ${{ env.KERNEL_VERSION }}
-          - Includes DTB fixes for Panfrost GPU and Bluetooth
+          - Status: Testing / Experimental Pre-release
+          - Includes DTB and DRM/GPU fixes
         files: |
           linux-src/arch/arm64/boot/Image.gz
           linux-src/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dtb

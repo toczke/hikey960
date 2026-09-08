@@ -1,6 +1,6 @@
 
 TOP      := drivers/../..
-VFMW_DIR := drivers/vcodec/hi_vcodec/vdec/vfmw
+VFMW_DIR := $(srctree)/drivers/vcodec/hi_vcodec/vdec/vfmw
  
 include $(VFMW_DIR)/vfmw_v4.0/firmware/product/HiVCodecV100/NOR_CFG/vfmw_make.cfg
 

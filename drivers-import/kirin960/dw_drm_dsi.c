@@ -1279,7 +1279,7 @@ static enum drm_mode_status
 dsi_connector_mode_valid(struct drm_connector *connector,
 			 const struct drm_display_mode *mode)
 {
-	if (mode->clock > 80000)
+	if (mode->clock > 148500)
 		return MODE_CLOCK_HIGH;
 
 	if (drm_mode_vrefresh(mode) < 48)

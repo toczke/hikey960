@@ -40,6 +40,7 @@ We have successfully ported the HiKey960 to a modern headless server environment
 | Component | Status | Configuration / Notes |
 | :--- | :--- | :--- |
 | **Storage** (32GB UFS 2.0) | Working | Restored stock partition table (EFI at LBA 73984) and compiled UFS/EXT4 drivers built-in. |
+| **Storage** (MicroSD Card) | Supported | Fully functional secondary storage alongside primary UFS (`dwmmc_k3` driver built-in). Boot remains on fast internal UFS. |
 | **Wi-Fi** (TI WL1837) | Working | Requires `firmware-ti-connectivity` package. Operates natively via `wlcore` drivers. |
 | **Bluetooth** (TI WL1837) | Working | Requires `bluez`, `rfkill`, and TI firmware. Requires DTB patch removing `dmas` and `max-speed` from UART4 to fix DMA and baud rate timeouts. Initializes automatically natively via `hci_ti`. |
 | **USB Ports** (3.0 / Type-C) | Working | DTB patch required. Forced `vcc3v3_hub` to `regulator-always-on` to bypass a mainline kernel power bug. |
@@ -49,7 +50,7 @@ We have successfully ported the HiKey960 to a modern headless server environment
 | **60-Pin HS Header** | Unsupported | MIPI CSI lanes inactive due to missing ISP blobs. |
 | **Graphics** (Mali G71 MP8) | Working | `panfrost` driver functional with silicon errata fixes (TMIX-8463, TMIX-8438). Full OpenGL ES 3.1 3D hardware acceleration under Wayland/Weston. |
 | **Display** (HDMI) | **Operational (720p60 verified, 1080p60 in testing)** | Full interactive Linux console (`fbcon` / `tty1`) and native Wayland graphical desktop environment (Weston Desktop Shell) cleanly displayed on physical external HDMI displays at 720p60! Full pipeline: Kirin 960 DPE -> MIPI DSI (4 lanes) -> ADV7533 bridge -> HDMI TV/monitor. Includes hardware 4-lane link negotiation, ADV7533 register 0x1c encoding fix, and automatic resolution negotiation. 1080p60 mode support currently in testing. |
-| **Video Codec** (VPU) | **Porting in progress** | Hardware video decoding (H.265 Main 10, H.264, MPEG1/2/4, VC-1, VP6/8) and encoding (H.265/H.264 up to 4K@30fps) using Hi3660 HiVDH/HiVEnc engines via Linux 7.1 compatibility layer (`ion_compat`). |
+| **Video Codec** (VPU) | **Ported (Build Verified)** | Hardware video decoding (H.265 Main 10, H.264, MPEG1/2/4, VC-1, VP6/8) and encoding (H.265/H.264 up to 4K@30fps) using Hi3660 HiVDH/HiVEnc engines via Linux 7.1 compatibility layer (`ion_compat`). Successfully compiled and linked into Linux 7.1 kernel. |
 
 ## GitHub Actions CI
 This repository is equipped with a fully automated **GitHub Actions** workflow (`.github/workflows/kernel-build.yml`). 
