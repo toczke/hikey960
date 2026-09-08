@@ -1,0 +1,16 @@
+[Unit]
+Description=HiKey960 HDMI Hotplug Watchdog
+After=hikey960-hdmi-init.service wayland-desktop.service
+Wants=wayland-desktop.service
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/bin/hikey960-hdmi-watchdog.sh
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
