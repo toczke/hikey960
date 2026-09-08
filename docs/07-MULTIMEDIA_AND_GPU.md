@@ -1,9 +1,9 @@
 # Multimedia, GPU, and HDMI
 
-The HiKey960 features a powerful ARM Mali-G71 MP8 GPU and a physical HDMI output port. While running a modern mainline Linux kernel (7.x) originally posed significant stability challenges for these subsystems, the `feature/kirin960-drm-rewrite` branch has successfully resurrected full 3D hardware acceleration and display output.
+The HiKey960 features a powerful ARM Mali-G71 MP8 GPU and a physical HDMI output port. While running a modern mainline Linux kernel (7.x) originally posed significant stability challenges for these subsystems, the `feature/kirin960-vpu-1080p` branch has successfully resurrected full 3D hardware acceleration and display output.
 
 ## 1. HDMI Output (Kirin DRM) - Fully Operational
-The HDMI pipeline has been ported to modern Linux 7.1 KMS on the `feature/kirin960-drm-rewrite` branch, fully verified on physical hardware, and is now **production ready**:
+The HDMI pipeline has been ported to modern Linux 7.1 KMS on the `feature/kirin960-vpu-1080p` branch, fully verified on physical hardware, and is now **production ready**:
 *   **Hardware Architecture:** The Kirin 960 SoC does not have a native HDMI controller. Instead, the display pipeline consists of three interconnected hardware blocks:
     *   **DPE** (Display Processing Engine) - The core 2D/composition rendering engine.
     *   **DSI** (Display Serial Interface) - Synopsys DesignWare MIPI DSI output interface.
@@ -22,7 +22,7 @@ The HDMI pipeline has been ported to modern Linux 7.1 KMS on the `feature/kirin9
 *   **Physical Display Breakthrough & Frequency Synchronization:**
     *   **Hardware Clock Constraint:** The Kirin 960 DPE pixel clock `clk_div_ldi0` is derived from `ppll2` (2880 MHz) via integer dividers. It can produce **72.0 MHz** (divider 40) or **144.0 MHz** (divider 20), but cannot produce standard 74.25 MHz or 148.5 MHz.
     *   **Horizontal Line Recalibration:** Standard 720p60 timings (`htotal = 1650`) produced 43.636 kHz horizontal frequency and 58.18 Hz vertical refresh rate, causing TVs to report *"Video format not supported"*. By tuning horizontal blanking to `htotal = 1600` (`hfp = 80, hsw = 40, hbp = 200`), the horizontal frequency becomes **exact 45.000 kHz** and the frame rate becomes **exact 60.000 Hz**, instantly recognized by any HDMI monitor or TV.
-    *   **ADV7533 80 MHz Silicon Limit:** The onboard ADV7533 has a maximum hardware pixel clock limit of **80 MHz**. This permits stable **720p @ 60Hz** (72.0 MHz < 80 MHz), which modern displays scale cleanly to 1080p. Standard 1080p60 (requiring 148.5 MHz / 144.0 MHz) exceeds the chip's physical PLL limit and is hardware-unsupported on the ADV7533.
+    *   **ADV7533 4-Lane Link & Register 0x1c Fix:** Upstream Linux drivers previously assumed an 80 MHz ceiling due to incomplete 4-lane initialization. We identified a critical silicon driver bug in `adv7533_dsi_power_on()`: register `0x1c` bits [7:6] encode lane count as `(lanes - 1) << 6`, whereas upstream wrote `dsi->lanes << 4` (which configured 4 lanes as only 2 lanes: `0x40`). With the correct `0xc0` encoding and `data-lanes = <0 1 2 3>` in the Device Tree, all 4 DSI data lanes are properly synchronized, enabling Full HD 1080p60 operation alongside 720p60.
     *   **Color Channel Correction (RGB vs BGR):** Corrected red/blue color swapping on physical HDMI output by setting `acrtc->bgr_fmt = LCD_BGR` (setting bit 13 of `LDI_CTRL` to 1), mapping color components accurately to the ADV7533 input.
     *   **Automated Console Service:** Deployed `hikey960-hdmi-init.service` (`scripts/hikey960-hdmi-init.sh`) to automatically configure DPE line timings, set ADV7533 TMDS output driver (`0xd6 = 0x50`), and unblank the console on boot, providing an out-of-the-box interactive bash shell on `/dev/tty1`.
     *   **Wayland Desktop Environment (Weston):** Fully verified running the reference Wayland compositor (`weston`) with native DRM backend on `/dev/dri/card1` (`scripts/start-wayland.sh`). Displays the complete Desktop Environment (top panel, clock, background, and `weston-terminal`) cleanly rendered on the external HDMI screen.
