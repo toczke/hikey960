@@ -1,8 +1,23 @@
 diff --git a/drivers/gpu/drm/bridge/adv7511/adv7533.c b/drivers/gpu/drm/bridge/adv7511/adv7533.c
-index 188c1093a66e..8ed83cffaa34 100644
+index 188c1093a66e..da328c3c4f29 100644
 --- a/drivers/gpu/drm/bridge/adv7511/adv7533.c
 +++ b/drivers/gpu/drm/bridge/adv7511/adv7533.c
-@@ -103,6 +103,13 @@ enum drm_mode_status adv7533_mode_valid(struct adv7511 *adv,
+@@ -68,7 +68,13 @@ void adv7533_dsi_power_on(struct adv7511 *adv)
+ 	struct mipi_dsi_device *dsi = adv->dsi;
+ 
+ 	/* set number of dsi lanes */
+-	regmap_write(adv->regmap_cec, 0x1c, dsi->lanes << 4);
++	/*
++	 * Set number of DSI lanes. Register 0x1c bits [7:6]:
++	 *   00 = 1 lane, 01 = 2 lanes, 10 = 3 lanes, 11 = 4 lanes
++	 * The correct encoding is (lanes - 1) << 6, NOT lanes << 4.
++	 * lanes << 4 encodes 4 lanes as 0x40 which the chip reads as 2 lanes.
++	 */
++	regmap_write(adv->regmap_cec, 0x1c, (dsi->lanes - 1) << 6);
+ 
+ 	if (adv->use_timing_gen) {
+ 		/* reset internal timing generator */
+@@ -103,6 +109,13 @@ enum drm_mode_status adv7533_mode_valid(struct adv7511 *adv,
  	struct mipi_dsi_device *dsi = adv->dsi;
  	u8 bpp = mipi_dsi_pixel_format_to_bpp(dsi->format);
  
