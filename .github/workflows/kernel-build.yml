@@ -26,17 +26,7 @@ jobs:
 
     - name: Fetch Linux Kernel Source
       run: |
-        for url in \
-          "https://kernel.googlesource.com/pub/scm/linux/kernel/git/stable/linux.git" \
-          "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git" \
-          "https://github.com/gregkh/linux.git"; do
-          echo "Attempting to clone from $url..."
-          if git clone --depth 1 -b linux-7.1.y "$url" linux-src; then
-            break
-          fi
-          rm -rf linux-src
-        done
-        test -d linux-src
+        git clone --depth 1 -b linux-7.1.y https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git linux-src
 
     - name: Apply Custom Patches
       working-directory: ./linux-src
