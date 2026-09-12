@@ -1,21 +1,9 @@
 --- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
 +++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-@@ -1272,6 +1272,51 @@
+@@ -1272,6 +1272,49 @@
  				};
  			};
  		};
-+
-+		reg_vdec: regulator-vdec {
-+			compatible = "regulator-fixed";
-+			regulator-name = "ldo_vdec";
-+			regulator-always-on;
-+		};
-+
-+		reg_venc: regulator-venc {
-+			compatible = "regulator-fixed";
-+			regulator-name = "ldo_venc";
-+			regulator-always-on;
-+		};
 +
 +		vdec: vdec@e8800000 {
 +			compatible = "hisi,kirin960-vdec";
@@ -51,5 +39,16 @@
 +			ldo_venc-supply = <&reg_venc>;
 +		};
  	};
++
++	reg_vdec: regulator-vdec {
++		compatible = "regulator-fixed";
++		regulator-name = "ldo_vdec";
++		regulator-always-on;
++	};
++
++	reg_venc: regulator-venc {
++		compatible = "regulator-fixed";
++		regulator-name = "ldo_venc";
++		regulator-always-on;
++	};
  };
- 

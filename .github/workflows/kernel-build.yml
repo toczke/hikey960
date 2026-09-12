@@ -2,9 +2,9 @@ name: ARM64 Kernel and DTB Build
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, feature/kirin960-vpu-1080p ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, master, feature/kirin960-vpu-1080p ]
   workflow_dispatch:
   schedule:
     - cron: "0 2 * * 0"
