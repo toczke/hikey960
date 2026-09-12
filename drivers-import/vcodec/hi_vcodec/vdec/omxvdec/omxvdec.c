@@ -968,6 +968,11 @@ static HI_S32 omxvdec_probe(struct platform_device *pltdev)
 {
     HI_S32 ret;
 
+    if (!pltdev || !pltdev->dev.of_node) {
+        printk(KERN_INFO "omxvdec_probe: skipping non-DT platform device\n");
+        return -ENODEV;
+    }
+
 #ifdef PLATFORM_KIRIN970
     HI_U32 fpga_cs = 0;
     HI_U32 fpga_es = 0;
@@ -1630,18 +1635,24 @@ HI_S32 __init OMXVDEC_DRV_ModInit(HI_VOID)
 {
     HI_S32 ret;
 
+#ifndef CONFIG_OF
     ret = platform_device_register(&omxvdec_device);
     if(ret < 0)
     {
         OmxPrint(OMX_FATAL, "%s call platform_device_register failed!\n", __func__);
         return ret;
     }
+#endif
 
     ret = platform_driver_register(&omxvdec_driver);
     if(ret < 0)
     {
         OmxPrint(OMX_FATAL, "%s call platform_driver_register failed!\n", __func__);
+#ifndef CONFIG_OF
         goto exit;
+#else
+        return ret;
+#endif
     }
 
 #ifdef USER_DISABLE_VDEC_PROC
@@ -1661,8 +1672,10 @@ HI_S32 __init OMXVDEC_DRV_ModInit(HI_VOID)
 
 exit1:
     platform_driver_unregister(&omxvdec_driver);
+#ifndef CONFIG_OF
 exit:
     platform_device_unregister(&omxvdec_device);
+#endif
 
     return ret;
 }
@@ -1670,7 +1683,9 @@ exit:
 HI_VOID __exit OMXVDEC_DRV_ModExit(HI_VOID)
 {
     platform_driver_unregister(&omxvdec_driver);
+#ifndef CONFIG_OF
     platform_device_unregister(&omxvdec_device);
+#endif
 
 #ifdef USER_DISABLE_VDEC_PROC
     omxvdec_exit_proc();

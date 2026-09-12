@@ -198,33 +198,21 @@ static HI_S32 VDEC_GetDtsConfigInfo(struct device *dev, VFMW_DTS_CONFIG_S *pDtsC
         return HI_FAILURE;
     }
 
-    pDtsConfig->MfdeSafeIrqNum = 326;//irq_of_parse_and_map(np, 4);
+    pDtsConfig->MfdeSafeIrqNum = irq_of_parse_and_map(np, 4);
     if (0 == pDtsConfig->MfdeSafeIrqNum)
-    {
-        printk(KERN_CRIT "%s irq_of_parse_and_map MfdeSafeIrqNum failed!\n", __func__);
-        return HI_FAILURE;
-    }
+        pDtsConfig->MfdeSafeIrqNum = 326;
 
-    pDtsConfig->ScdSafeIrqNum = 327;//irq_of_parse_and_map(np, 5);
+    pDtsConfig->ScdSafeIrqNum = irq_of_parse_and_map(np, 5);
     if (0 == pDtsConfig->ScdSafeIrqNum)
-    {
-        printk(KERN_CRIT "%s irq_of_parse_and_map ScdSafeIrqNum failed!\n", __func__);
-        return HI_FAILURE;
-    }
+        pDtsConfig->ScdSafeIrqNum = 327;
 
-    pDtsConfig->BpdSafeIrqNum = 328;//irq_of_parse_and_map(np, 6);
+    pDtsConfig->BpdSafeIrqNum = irq_of_parse_and_map(np, 6);
     if (0 == pDtsConfig->BpdSafeIrqNum)
-    {
-        printk(KERN_CRIT "%s irq_of_parse_and_map BpdSafeIrqNum failed!\n", __func__);
-        return HI_FAILURE;
-    }
+        pDtsConfig->BpdSafeIrqNum = 328;
 
-    pDtsConfig->SmmuSafeIrqNum = 329;//irq_of_parse_and_map(np, 7);
+    pDtsConfig->SmmuSafeIrqNum = irq_of_parse_and_map(np, 7);
     if (0 == pDtsConfig->SmmuSafeIrqNum)
-    {
-        printk(KERN_CRIT "%s irq_of_parse_and_map SmmuSafeIrqNum failed!\n", __func__);
-        return HI_FAILURE;
-    }
+        pDtsConfig->SmmuSafeIrqNum = 329;
 
     //Get reg base addr & size, return 0 if success
     ret = of_address_to_resource(np, 0, &res);
@@ -246,8 +234,16 @@ static HI_S32 VDEC_GetDtsConfigInfo(struct device *dev, VFMW_DTS_CONFIG_S *pDtsC
     }
 #endif
 
-    np_crg = of_find_compatible_node(HI_NULL, HI_NULL, "hisilicon,crgctrl");
+    np_crg = of_find_compatible_node(HI_NULL, HI_NULL, "hisilicon,hi3660-crgctrl");
+    if (!np_crg)
+        np_crg = of_find_compatible_node(HI_NULL, HI_NULL, "hisilicon,crgctrl");
+    if (!np_crg)
+    {
+        printk(KERN_CRIT "%s of_find_compatible_node crg failed!\n", __func__);
+        return HI_FAILURE;
+    }
     ret = of_address_to_resource(np_crg, 0, &res);
+    of_node_put(np_crg);
     if (ret)
     {
         printk(KERN_CRIT "%s of_address_to_resource crg failed! return %d\n", __func__, ret);
