@@ -22,7 +22,7 @@ if [ "$MODE" = "1920,1080" ]; then
   busybox devmem 0xe860104c 32 0x0000006f 2>/dev/null || true
   busybox devmem 0xe8601050 32 0x00000672 2>/dev/null || true
 
-  # ADV7535 CEC Timing Generator: 1080p
+  # ADV7533 CEC Timing Generator: 1080p (chip confirmed ADV7533; NOT ADV7535)
   # htotal=2200 (0x898)
   i2cset -f -y 1 0x3c 0x28 0x89 2>/dev/null || true
   i2cset -f -y 1 0x3c 0x29 0x80 2>/dev/null || true
@@ -73,7 +73,7 @@ else
   i2cset -f -y 1 0x3c 0x37 0x40 2>/dev/null || true
 fi
 
-# Common ADV7535 CEC/DSI-side settings
+# Common ADV7533 CEC/DSI-side settings (chip confirmed ADV7533 by I2C ID: 0x00=0x75, 0x01=0x33)
 i2cset -f -y 1 0x3c 0x16 0x18 2>/dev/null || true  # PLL clock divider: 4 lanes
 i2cset -f -y 1 0x3c 0x55 0x00 2>/dev/null || true  # CEC clock divider reset
 i2cset -f -y 1 0x3c 0x27 0x0b 2>/dev/null || true  # Timing gen bypass (use Kirin DPE timing)

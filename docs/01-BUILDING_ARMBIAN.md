@@ -57,9 +57,12 @@ Ensure the following flags are strictly set to built-in (`=y`) or disabled (`# i
 
 *   **Graphics / GPU (Stability Fix):**
     ```ini
-    # CONFIG_DRM_PANFROST is not set
+    CONFIG_DRM_PANFROST=y
+    CONFIG_CMA_SIZE_MBYTES=64
     ```
-    *(Disables the Mali G71 open-source driver to prevent SError hardware interrupts and hard lockups on headless servers)*
+    *(Keep Panfrost ENABLED. The stability fix is reducing CMA from 256MB to 64MB — `CONFIG_CMA_SIZE_MBYTES=64`. This prevents the `SError` hardware interrupts at boot caused by a CMA collision, NOT by Panfrost itself. Disabling `CONFIG_DRM_PANFROST` is incorrect and will break GPU support.)*
+
+    > **Changelog [2026-09-08]:** Previous versions of this doc incorrectly instructed `# CONFIG_DRM_PANFROST is not set`. This was wrong — `configs/hikey960-defconfig` (the CI ground truth) ships `CONFIG_DRM_PANFROST=y`. The SError panic was caused by a CMA collision (too much contiguous memory requested), not the GPU driver itself. The fix is `CONFIG_CMA_SIZE_MBYTES=64`, not disabling GPU. Do not re-add the disable instruction from old drafts.
 
 *   **Networking & Expansion (Optional but recommended):**
     ```ini

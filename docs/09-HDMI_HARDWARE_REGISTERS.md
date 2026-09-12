@@ -1,145 +1,116 @@
-# HiKey960 HDMI & ADV7533 Hardware Register Reference
+# HDMI Hardware Registers Reference (ADV7533 + DPE)
 
-This document provides a comprehensive breakdown of the hardware video pipeline, I2C register maps, clock configurations, and known working values for the **HiKey960 (Huawei Kirin 960 / Hi3660)** HDMI display subsystem.
-
----
-
-## 1. Hardware Pipeline Architecture
-
-The display pipeline consists of four distinct hardware stages:
-
-```
-+---------------------------+
-|  Kirin 960 SoC (Hi3660)   |
-|  Display Processing Engine|
-|  (DPE) @ 0xE8600000       |
-+-------------+-------------+
-              |
-              v (Parallel RGB / Pixel Stream)
-+-------------+-------------+
-|  DesignWare MIPI DSI Host |
-|  @ 0xE8601000             |
-+-------------+-------------+
-              |
-              v (MIPI DSI: 4 Data Lanes + 1 Clock Lane)
-+-------------+-------------+
-|  DSI Hardware MUX (U201)  | <--- Controlled by GPIO20 (&gpio2 4)
-+-------------+-------------+      LOW (0)  = Route to ADV7533 (HDMI)
-              |                    HIGH (1) = Route to 60-pin HS Header
-              v
-+-------------+-------------+
-|  Analog Devices ADV7533   |
-|  DSI-to-HDMI Bridge       | <--- I2C Bus 1: Main (0x39), CEC/DSI (0x3c)
-+-------------+-------------+
-              |
-              v (TMDS Clock + 3 Data Pairs: Red, Green, Blue)
-+-------------+-------------+
-|  Physical HDMI-A Connector| ===> External Monitor / TV
-+---------------------------+
-```
+> **Doc integrity notice [2026-09-08]:** This document was created during Phase 0 of the VPU bring-up work order.
+> All register values listed here are either `[VERIFIED ON HARDWARE]` (read/written from real board) or `[UNRESOLVED]` (conflicting information, pending a full register dump).
+>
+> A complete register dump of ADV7533 pages `0x39` and `0x3c` must be captured and saved to
+> `docs/register-dumps/adv7533-live-<date>.txt` before resolving the `[UNRESOLVED]` items below.
 
 ---
 
-## 2. I2C Bus and Slave Addresses
+## 1. Chip Identity
 
-The ADV7533 bridge chip is connected to **I2C Bus 1** (`/soc/i2c@ffd72000`). It exposes multiple I2C 7-bit slave addresses:
+**Chip: ADV7533** (NOT ADV7535)
 
-| I2C Address (7-bit) | Linux Sysfs Node | Purpose / Page Description |
-| :--- | :--- | :--- |
-| **`0x39`** | `1-0039` | **Main Register Page** (Power, Video Input Format, HDCP, Clock Delay, ADI Fixed) |
-| **`0x3c`** | `1-003c` | **CEC / DSI Control Page** (DSI Lane Count, Timing Gen, HDMI Output Enable) |
-| **`0x3f`** | `1-003f` | **EDID / DDC Read Page** (I2C pass-through to monitor's 24Cxx EDID EEPROM) |
-
----
-
-## 3. ADV7533 Main Page (`0x39`) Working Register Map
-
-Below is the verified working register map for the main register page (`0x39`):
-
-| Register (Hex) | Working Value | Name / Description | Bitfield Breakdown & Meaning |
-| :--- | :--- | :--- | :--- |
-| **`0x16`** | `0x20` | Input Format | `[7:6]=00` (RGB), `[5:4]=10` (4:4:4), `[3:2]=00` (8-bit), `[1:0]=00` |
-| **`0x41`** | `0x10` | Power Down Control | `[6]=0` (Powered Normal / Active), `[4]=1` (Reserved bit must be 1) |
-| **`0x42`** | `0xf0` | HPD & Monitor Status *(Read-Only)* | `[7]=1` (Interrupt), `[6]=1` (HPD High), `[5]=1` (HPD state), `[4]=1` (MSEN detected) |
-| **`0x55`** | `0x02` | ADI Fixed Register | ADI recommended fixed value |
-| **`0x98`** | `0x03` | ADI Fixed Register | ADI recommended fixed value |
-| **`0x9a`** | `0xe0` | ADI Fixed Register | ADI recommended fixed value |
-| **`0x9c`** | `0x30` | ADI Fixed Register | ADI recommended fixed value |
-| **`0x9d`** | `0x61` | ADI Fixed Register | ADI recommended fixed value |
-| **`0x9e`** | `0x18` / `0x14` | PLL & TMDS Lock Status *(Read-Only)* | `[4]=1` (DSI PLL Locked!), `[3]=1` (TMDS Clock Locked at 1080p), `[2]=1` (Clock Detect) |
-| **`0xa2`** | `0xa4` | ADI Fixed Register | ADI recommended fixed value |
-| **`0xa3`** | `0xa4` | ADI Fixed Register | ADI recommended fixed value |
-| **`0xaf`** | `0x16` | HDCP / HDMI Mode | `[1]=1` (HDMI Mode enabled; 0=DVI), `[2]=1` (Frame encryption) |
-| **`0xba`** | `0x70` | Clock Delay / Input Phase | `[7:5]=011` (Input clock delay compensation for DSI receiver) |
-| **`0xd6`** | `0xd0` | **TMDS Output Enable Control** *(CRITICAL)* | `[7]=1`, `[6]=1`, `[4]=1` (**TMDS Transmitters Forced Active**). If TV input is cycled, chip resets this to `0x40` (disabling output). Restored by watchdog service. |
-| **`0xde`** | `0x82` | ADI Fixed Register | ADI recommended fixed value |
-| **`0xe0`** | `0xd0` | ADI Fixed Register | ADI recommended fixed value |
-| **`0xe4`** | `0x40` | ADI Fixed Register | ADI recommended fixed value |
-| **`0xe5`** | `0x80` | ADI Fixed Register | ADI recommended fixed value |
-| **`0xf9`** | `0x00` | ADI Fixed Register | ADI recommended fixed value |
-
----
-
-## 4. ADV7533 CEC / DSI Control Page (`0x3c`) Working Register Map
-
-The second register page (`0x3c`) controls the MIPI-DSI receiver and internal timing generation:
-
-| Register (Hex) | Working Value | Name / Description | Bitfield Breakdown & Meaning |
-| :--- | :--- | :--- | :--- |
-| **`0x00`** | `0x75` | Chip ID High *(Read-Only)* | Upper byte of ADV7533 identification |
-| **`0x01`** | `0x33` | Chip ID Low *(Read-Only)* | Lower byte of ADV7533 identification (`75 33` = ADV7533) |
-| **`0x03`** | `0x89` | HDMI Enable | `[7]=1` (HDMI Output Enabled), `[3]=1`, `[0]=1` |
-| **`0x05`** | `0xc8` | CEC Fixed Sequence | ADI recommended fixed value |
-| **`0x15`** | `0xd0` | CEC Fixed Sequence | ADI recommended fixed value |
-| **`0x17`** | `0xd0` | CEC Fixed Sequence | ADI recommended fixed value |
-| **`0x1c`** | `0x40` | **DSI Lane Count** *(CRITICAL)* | **`lanes << 4` encoding**: `1 lane = 0x10`, `2 lanes = 0x20`, `3 lanes = 0x30`, **`4 lanes = 0x40`**. *(Do NOT write `0xc0`; `0xc0` disables the receiver).* |
-| **`0x24`** | `0x20` | CEC Fixed Sequence | ADI recommended fixed value |
-| **`0x27`** | `0x0b` | Timing Generator Control | `0x0b` = **Internal Timing Generator Disabled** (Bypass mode: passes video timings directly from Kirin DPE). |
-| **`0x55`** | `0x00` | Test Mode | `0x00` = Normal mode (test pattern generation disabled) |
-| **`0x57`** | `0x11` | CEC Fixed Sequence | ADI recommended fixed value |
-
----
-
-## 5. DSI Clocks & Video Timing Matrix
-
-| Parameter | Standard 720p60 | Standard 1080p60 | Downstream HiKey960 Note |
-| :--- | :--- | :--- | :--- |
-| **Active Resolution** | 1280 x 720 | 1920 x 1080 | Progressive scan |
-| **Frame Rate** | 60.00 Hz | 60.00 Hz | Standard consumer TV rate |
-| **Pixel Clock (`pixel_clk`)** | **74.250 MHz** | **148.500 MHz** | Required by HDMI Spec 1.4b |
-| **DPE Clock (`clk_ldi0`)** | 72.000 MHz | 144.000 MHz | Downstream HiKey960 PLL constraint (2.88 GHz / 20 / 40) |
-| **DSI Lane Rate** | 441.6 Mbps / lane | 883.2 Mbps / lane | (Kirin 960 PHY multiplier) |
-| **DSI Lane Byte Clock** | 55.200 MHz | 110.400 MHz | `lane_clock / 8` |
-| **DSI Lanes Active** | 4 lanes | 4 lanes | Encoded in reg `0x1c` as `0x40` |
-
-> [!WARNING]
-> **Clock Discrepancy (144 MHz vs 148.5 MHz):**
-> The Kirin 960 `clk_ppll2` runs at 2880 MHz. Dividing by 20 produces exactly **144.0 MHz** instead of the HDMI standard **148.5 MHz**.
-> While flexible PC computer monitors lock onto 144 MHz without issue, strict consumer televisions (such as Philips / Samsung) measure the horizontal sync frequency and reject 144 MHz as an **"Unsupported Video Format"** (`Format wideo nieobsługiwany`).
-
----
-
-## 6. Diagnostic & Recovery Commands
-
-Run these commands directly on the board to inspect and verify hardware health:
+`[VERIFIED ON HARDWARE]` — Confirmed by direct I2C reads:
 
 ```bash
-# 1. Check if monitor is physically connected (HPD & MSEN)
-# Expected output: 0xf0 (Bits [6:4] high)
-i2cget -f -y 1 0x39 0x42
-
-# 2. Check ADV7533 DSI PLL Lock status
-# Expected output: 0x14 or 0x12 (Bit 4 = 1 means PLL is locked)
-i2cget -f -y 1 0x39 0x9e
-
-# 3. Check DSI Lane Count
-# Expected output: 0x40 (4 lanes)
-i2cget -f -y 1 0x3c 0x1c
-
-# 4. Check HDMI Output Enable
-# Expected output: 0x89 (HDMI active)
-i2cget -f -y 1 0x3c 0x03
-
-# 5. Full Register Refresh Script
-/usr/local/bin/adv7533-refresh.sh
+i2cget -f -y 1 0x3c 0x00   # → 0x75  (Chip Revision high byte)
+i2cget -f -y 1 0x3c 0x01   # → 0x33  (Chip Revision low byte)
 ```
+
+The value pair `0x75 0x33` uniquely identifies the **ADV7533**. The ADV7535 would return different bytes. Any prior documentation or script comment referring to "ADV7535" is incorrect and has been removed.
+
+---
+
+## 2. I2C Address Map
+
+| Address | Function |
+|---|---|
+| `0x39` | Main / HDMI register page |
+| `0x3c` | CEC / DSI-side register page |
+
+---
+
+## 3. Registers Currently Written by `hikey960-hdmi-init.sh`
+
+All values below are `[VERIFIED ON HARDWARE]` — they are the live values written at boot and confirmed not to cause lockup or HDCP enable.
+
+### Page `0x3c` (CEC/DSI side)
+
+| Register | Value | Description | Source |
+|---|---|---|---|
+| `0x16` | `0x18` | PLL clock divider — configured for 4 DSI lanes | `hikey960-hdmi-init.sh` line 77, commit ec7993a2 |
+| `0x55` | `0x00` | CEC clock divider reset | `hikey960-hdmi-init.sh` line 78 |
+| `0x27` | `0x0b` | Timing generator bypass (use Kirin DPE timing source) | `hikey960-hdmi-init.sh` line 79 |
+
+#### Register `0x1c` (DSI lane count) — `[VERIFIED ON HARDWARE — docs/register-dumps/adv7533-live-2026-09-12.txt]`
+
+- **Measured live value:** `0x40`
+- **Bit encoding:** Bits [6:4] encode lane count: `lanes << 4` (so `4 << 4 = 0x40` for 4 lanes).
+- **Resolution of prior conflict:** Prior documentation had an erroneous claim that upstream's `0x40` was a bug and should be `0xc0` (`(lanes-1)<<6`). Direct hardware measurement confirmed that the register reads `0x40` on the active, working display pipeline with TMDS locked. The `0xc0` claim has been removed as incorrect.
+
+### Page `0x39` (Main/HDMI side)
+
+| Register | Value | Description | Source |
+|---|---|---|---|
+| `0xd6` | `0x50` | TMDS transmitter ON + HPD detect override | `hikey960-hdmi-init.sh` line 84, commit ec7993a2 |
+| `0xaf` | `0x02` | HDMI mode, HDCP encryption OFF | `hikey960-hdmi-init.sh` line 85, commit ec7993a2 |
+| `0x16` | `0x20` | Input color format: RGB 4:4:4 | `hikey960-hdmi-init.sh` line 86 |
+| `0x44` | `0x10` | AVI InfoFrame packet enable | `hikey960-hdmi-init.sh` line 87 |
+
+#### Register `0x9e` (TMDS/PLL lock status) — `[VERIFIED ON HARDWARE — docs/register-dumps/adv7533-live-2026-09-12.txt]`
+
+- **Measured live value:** `0x14`
+- **Bit breakdown:**
+  - Bit 4 (`0x10`): TMDS clock detected
+  - Bit 2 (`0x04`): ADV7533 internal PLL locked
+- **Conclusion:** Confirms the ADV7533 PLL and TMDS clock generation are actively locked and operating under the deployed configuration (`0x3c 0x16=0x18`, `0x3c 0x1c=0x40`).
+
+---
+
+## 4. DPE (Display Processing Engine) Registers
+
+`[VERIFIED ON HARDWARE — commit ec7993a2]`
+
+Base address: `0xe8600000`
+
+| Address | Value Written | Description |
+|---|---|---|
+| `0xe867d000` | `0x00ef0050` (720p) / `0x00bf0058` (1080p) | LDI HRZ_CTRL0: horizontal front/back porch |
+| `0xe8601048` | `0x0000001f` (720p) / `0x00000021` (1080p) | DSI HSA (horizontal sync active) |
+| `0xe860104c` | `0x00000099` (720p) / `0x0000006f` (1080p) | DSI HBP (horizontal back porch) |
+| `0xe8601050` | `0x000004cb` (720p) / `0x00000672` (1080p) | DSI HLINE (total horizontal line length) |
+| `0xe867d024` | `0x00002ec1` | LDI display mode — normal scan of fb0 |
+| `0xe867d028` | `0x00000001` | LDI enable |
+
+---
+
+## 5. Safe Register Write Protocol
+
+> **CRITICAL:** Do not issue `i2cset 0x39 0x41 0x50` — this is the power-down command and resets ALL registers including `0xaf`, causing the HDCP bit to be re-set and the TV/monitor to reject the HDMI stream. This bug existed in the original init script and was fixed in commit ec7993a2.
+
+The correct sequence for initializing TMDS and disabling HDCP without power-cycling:
+1. Write `0x3c 0x16 0x18` (PLL/lane config)
+2. Write `0x3c 0x55 0x00` (CEC reset)
+3. Write `0x3c 0x27 0x0b` (timing bypass)
+4. Write `0x39 0xd6 0x50` (TMDS ON)
+5. Write `0x39 0xaf 0x02` (HDMI mode, HDCP OFF)
+6. Write `0x39 0x16 0x20` (RGB 4:4:4)
+7. Write `0x39 0x44 0x10` (AVI InfoFrame)
+
+---
+
+## 6. Full Register Dump
+`[VERIFIED ON HARDWARE — docs/register-dumps/adv7533-live-2026-09-12.txt]`
+
+A complete dump of both ADV7533 pages (`0x39` and `0x3c`) was captured from the running board with HDMI attached and Weston desktop active on 2026-09-12.
+
+Key findings:
+1. **Lane Count (`0x3c 0x1c`):** Reads `0x40`. Confirms `lanes << 4` (`4 << 4 = 0x40`). The conflicting claim of `0xc0` has been removed.
+2. **PLL/TMDS Lock (`0x39 0x9e`):** Reads `0x14` (Bit 4 = TMDS clock detected, Bit 2 = PLL locked). Confirms stable active clocking.
+3. **Chip ID (`0x3c 0x00`, `0x01`):** Reads `0x75 0x33`, verifying the chip is ADV7533 (not ADV7535).
+4. **HPD & State (`0x39 0x42`):** Reads `0xf0` (HPD high, monitor sense active).
+
+The full raw dump is stored at:
+[`docs/register-dumps/adv7533-live-2026-09-12.txt`](docs/register-dumps/adv7533-live-2026-09-12.txt)
