@@ -1,6 +1,6 @@
---- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-@@ -1272,6 +1272,49 @@
+--- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi	2026-09-12 21:33:01.277179329 +0200
++++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi	2026-09-12 21:33:09.634566967 +0200
+@@ -1272,6 +1272,52 @@
  				};
  			};
  		};
@@ -38,7 +38,7 @@
 +			venc_qos_mode = <0x2>;
 +			ldo_venc-supply = <&reg_venc>;
 +		};
- 	};
++	};
 +
 +	reg_vdec: regulator-vdec {
 +		compatible = "regulator-fixed";
@@ -50,5 +50,6 @@
 +		compatible = "regulator-fixed";
 +		regulator-name = "ldo_venc";
 +		regulator-always-on;
-+	};
+ 	};
  };
+ 
