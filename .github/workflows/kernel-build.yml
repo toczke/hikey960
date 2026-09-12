@@ -22,11 +22,29 @@ jobs:
     - name: Install Toolchain and Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y gcc-aarch64-linux-gnu build-essential bc bison flex libssl-dev make device-tree-compiler
+        sudo apt-get install -y gcc-aarch64-linux-gnu build-essential bc bison flex libssl-dev make device-tree-compiler ccache curl tar xz-utils
+
+    - name: Setup ccache Cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ccache
+        key: hikey960-kernel-ccache-${{ runner.os }}-${{ hashFiles('configs/hikey960-defconfig') }}
+        restore-keys: |
+          hikey960-kernel-ccache-${{ runner.os }}-
+
+    - name: Configure ccache
+      run: |
+        ccache --max-size=5G
+        ccache -z
 
     - name: Fetch Linux Kernel Source
       run: |
-        git clone --depth 1 -b linux-7.1.y https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git linux-src
+        echo "Downloading official Linux 7.1.13 from cdn.kernel.org..."
+        curl -fSL https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-7.1.13.tar.xz -o linux-7.1.13.tar.xz
+        mkdir -p linux-src
+        tar -xf linux-7.1.13.tar.xz -C linux-src --strip-components=1
+        rm linux-7.1.13.tar.xz
+        echo "Kernel source ready in linux-src"
 
     - name: Apply Custom Patches
       working-directory: ./linux-src
@@ -37,7 +55,6 @@ jobs:
             patch -p1 < "$p"
           done
         fi
-
 
     - name: Inject Kirin 960 DRM Driver
       working-directory: ./linux-src
@@ -53,13 +70,12 @@ jobs:
         sed -i '/endmenu/i source "drivers/vcodec/Kconfig"' drivers/Kconfig
         echo "obj-y += vcodec/" >> drivers/Makefile
 
-
     - name: Configure Kernel
       working-directory: ./linux-src
       run: |
         # Use full HiKey960 config from working Armbian 7.1.10 kernel
         cp ../configs/hikey960-defconfig .config
-        make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
+        make ARCH=arm64 CROSS_COMPILE="ccache aarch64-linux-gnu-" olddefconfig
         
         # Fix BT DMA and baud rate bugs directly in DTB by deleting 'dmas' and 'max-speed'
         sed -i '/&uart4 {/a \\t/delete-property/ dmas;' arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
@@ -71,18 +87,22 @@ jobs:
     - name: Build Kernel (Image.gz)
       working-directory: ./linux-src
       run: |
-        make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) Image.gz
+        make ARCH=arm64 CROSS_COMPILE="ccache aarch64-linux-gnu-" -j$(nproc) Image.gz
 
     - name: Build Device Tree Blobs (DTB)
       working-directory: ./linux-src
       run: |
-        make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) dtbs
+        make ARCH=arm64 CROSS_COMPILE="ccache aarch64-linux-gnu-" -j$(nproc) dtbs
+
+    - name: Show ccache Statistics
+      run: |
+        ccache -s
 
     - name: Extract Kernel Version
       id: kver
       working-directory: ./linux-src
       run: |
-        KVER=$(make -s ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- kernelrelease)
+        KVER=$(make -s ARCH=arm64 CROSS_COMPILE="ccache aarch64-linux-gnu-" kernelrelease)
         echo "KERNEL_VERSION=$KVER" >> $GITHUB_ENV
         echo "Built kernel version: $KVER"
 
