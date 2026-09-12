@@ -139,7 +139,7 @@ Target capabilities:
 
 | Patch | Status |
 |---|---|
-| `patches/0007-hikey960-vpu-node.patch` — DT nodes for `vdec@e8800000`, `venc@e8900000` | `[NOT YET IMPLEMENTED]` — to be written in Phase 2 |
+| `patches/0007-hikey960-vpu-node.patch` — DT nodes for `vdec@e8800000`, `venc@e8900000` | `[BUILDS ONLY, UNTESTED]` — written in Phase 2, DTB compiles cleanly |
 
 ---
 
@@ -150,5 +150,5 @@ Target capabilities:
 | HDMI output (720p60) | `[VERIFIED ON HARDWARE — docs/register-dumps/adv7533-live-2026-09-12.txt]` | Weston running; 72.0 MHz pixel clock |
 | HDMI output (1080p60) | `[BUILDS ONLY, UNTESTED]` | Init script configured; display confirmation pending |
 | Mali-G71 GPU (Panfrost) | `[VERIFIED ON HARDWARE]` | Weston DRM rendering confirmed, commit ec7993a2 |
-| VPU decode (H.264/HEVC/etc.) | `[NOT YET IMPLEMENTED]` | DT nodes missing; source audit pending |
+| VPU decode (H.264/HEVC/etc.) | `[BUILDS ONLY, UNTESTED]` | DT nodes written in patch 0007; source audit completed (`docs/10-VPU_SOURCE_AUDIT.md`); probe verification underway |
 | VPU encode (H.264/H.265) | `[NOT YET IMPLEMENTED]` | No C glue layer; blocked on decoder |

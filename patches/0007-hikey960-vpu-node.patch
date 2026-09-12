@@ -1,0 +1,54 @@
+--- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+@@ -1272,6 +1272,51 @@
+ 				};
+ 			};
+ 		};
++
++		reg_vdec: regulator-vdec {
++			compatible = "regulator-fixed";
++			regulator-name = "ldo_vdec";
++			regulator-always-on;
++		};
++
++		reg_venc: regulator-venc {
++			compatible = "regulator-fixed";
++			regulator-name = "ldo_venc";
++			regulator-always-on;
++		};
++
++		vdec: vdec@e8800000 {
++			compatible = "hisi,kirin960-vdec";
++			reg = <0x0 0xe8800000 0x0 0x20000>;
++			interrupts = <GIC_SPI 290 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 291 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 292 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 293 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 294 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 295 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 296 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 297 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&crg_ctrl HI3660_CLK_GATE_VDEC>;
++			clock-names = "clk_vdec";
++			dec_clk_rate = <480000000 200000000>;
++			vdec_fpga = <0>;
++			vdec_qos_mode = <0x2>;
++			ldo_vdec-supply = <&reg_vdec>;
++		};
++
++		venc: venc@e8900000 {
++			compatible = "hisi,kirin960-venc";
++			reg = <0x0 0xe8900000 0x0 0x20000>;
++			interrupts = <GIC_SPI 298 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 299 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&crg_ctrl HI3660_CLK_GATE_VENC>,
++				 <&crg_ctrl HI3660_VENC_VOLT_HOLD>;
++			clock-names = "clk_venc", "venc_volt_hold";
++			enc_clk_rate = <645000000 534000000>;
++			venc_fpga = <0>;
++			venc_qos_mode = <0x2>;
++			ldo_venc-supply = <&reg_venc>;
++		};
+ 	};
+ };
+ 
