@@ -36,6 +36,22 @@ void *vmalloc(unsigned long size)
 }
 EXPORT_SYMBOL(vmalloc);
 
+#include <linux/stdarg.h>
+
+#undef printk
+asmlinkage __visible int printk(const char *fmt, ...)
+{
+	va_list args;
+	int r;
+
+	va_start(args, fmt);
+	r = vprintk(fmt, args);
+	va_end(args);
+
+	return r;
+}
+EXPORT_SYMBOL(printk);
+
 /* Stack protector canary for assembly objects referencing global canary */
 #ifndef __stack_chk_guard
 unsigned long __stack_chk_guard = 0xdeadbeef12345678UL;
