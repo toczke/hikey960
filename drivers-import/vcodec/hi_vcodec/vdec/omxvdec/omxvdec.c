@@ -6,6 +6,8 @@
 #include <linux/clk.h>
 #include <linux/of.h>
 #include <linux/io.h>
+#include <linux/dma-mapping.h>
+#include "platform/kirin/memory.h"
 
 /*lint -e774*/
 
@@ -401,6 +403,12 @@ static long omxvdec_ioctl(struct file *fd, unsigned int code, unsigned long arg)
             {
                 OmxPrint(OMX_FATAL, "%s %d: case call bind_buffer failed!\n", __func__, __LINE__);
                 return -EFAULT;
+            }
+
+            if (vdec_msg.out && copy_to_user(vdec_msg.out, &user_buf, sizeof(OMXVDEC_BUF_DESC)))
+            {
+                OmxPrint(OMX_FATAL, "%s %d: case call copy_to_user failed!\n", __func__, __LINE__);
+                return -EIO;
             }
             break;
 
@@ -953,6 +961,25 @@ static long omxvdec_compat_ioctl(struct file *fd, unsigned int code, unsigned lo
 }
 #endif //CONFIG_COMPAT
 
+static int omxvdec_mmap(struct file *filp, struct vm_area_struct *vma)
+{
+    unsigned long phys_addr = (unsigned long)vma->vm_pgoff << PAGE_SHIFT;
+    size_t size = vma->vm_end - vma->vm_start;
+    struct device *dev = g_pOmxVdec ? g_pOmxVdec->device : NULL;
+    HI_U8 *virt_addr = NULL;
+
+    if (VDEC_MEM_GetVirAddr_FromPhyAddr(&virt_addr, (HI_U32)phys_addr, size) != HI_SUCCESS) {
+        printk(KERN_ERR "omxvdec_mmap: phys 0x%lx size %zu not found in mem nodes\n", phys_addr, size);
+        return -EINVAL;
+    }
+
+    if (dev) {
+        return dma_mmap_coherent(dev, vma, virt_addr, (dma_addr_t)phys_addr, size);
+    } else {
+        return remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff, size, vma->vm_page_prot);
+    }
+}
+
 static const struct file_operations omxvdec_fops = {
 
     .owner          = THIS_MODULE,
@@ -961,6 +988,7 @@ static const struct file_operations omxvdec_fops = {
 #ifdef CONFIG_COMPAT //Modified for 64-bit platform
     .compat_ioctl   = omxvdec_compat_ioctl,
 #endif //CONFIG_COMPAT
+    .mmap           = omxvdec_mmap,
     .release        = omxvdec_release,
 };
 

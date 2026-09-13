@@ -1573,13 +1573,13 @@ HI_S32 channel_bind_user_buffer(OMXVDEC_CHAN_CTX *pchan, OMXVDEC_BUF_DESC *puser
 {
     HI_S32 ret;
 
-    if (HI_NULL == pchan || HI_NULL == puser_buf || 0 == puser_buf->phyaddr)
+    if (HI_NULL == pchan || HI_NULL == puser_buf)
     {
         OmxPrint(OMX_FATAL, "%s param invalid!\n", __func__);
         return HI_FAILURE;
     }
 
-    if (OMX_USE_NATIVE != puser_buf->buffer_type || PORT_DIR_OUTPUT != puser_buf->dir)
+    if (OMX_USE_NATIVE != puser_buf->buffer_type)
     {
         OmxPrint(OMX_FATAL, "%s BT or dir invalid!\n", __func__);
         return HI_FAILURE;
@@ -1599,7 +1599,7 @@ HI_S32 channel_bind_user_buffer(OMXVDEC_CHAN_CTX *pchan, OMXVDEC_BUF_DESC *puser
     }
 
     /*in order to deal with when using android_native_buffer, the stride is not match!*/
-    if (pchan->out_stride != puser_buf->out_frame.stride)
+    if (PORT_DIR_OUTPUT == puser_buf->dir && pchan->out_stride != puser_buf->out_frame.stride)
     {
         pchan->out_stride = puser_buf->out_frame.stride;
     }
@@ -1611,7 +1611,7 @@ HI_S32 channel_unbind_user_buffer(OMXVDEC_CHAN_CTX *pchan, OMXVDEC_BUF_DESC *pus
 {
     HI_S32 ret;
 
-    if (HI_NULL == pchan || HI_NULL == puser_buf || 0 == puser_buf->phyaddr)
+    if (HI_NULL == pchan || HI_NULL == puser_buf)
     {
         OmxPrint(OMX_FATAL, "%s param invalid!\n", __func__);
         return HI_FAILURE;
