@@ -917,20 +917,12 @@ OSAL_SemInit:
 .LBB165:
 	.file 4 "/mnt/disk/jenkins/ci/workspace/chipset_pipeline_release/opensource/component_code/vendor/huawei/extra/build/build_script/kirin_kernel_release/kernel/include/linux/semaphore.h"
 	.loc 4 35 0
-	mov	w2, 20141
-	add	x1, x0, 32
-	movk	w2, 0xdead, lsl 16
-	str	w2, [x0,4]
-	mov	w2, -1
-	str	w2, [x0,8]
-	mov	x2, -1
-	strh	wzr, [x0]
-	str	x2, [x0,16]
 	mov	w2, 1
-	strh	wzr, [x0,2]
-	str	w2, [x0,24]
-	str	x1, [x0,32]
-	str	x1, [x0,40]
+	str	wzr, [x0]
+	str	w2, [x0,4]
+	add	x1, x0, 8
+	str	x1, [x0,8]
+	str	x1, [x0,16]
 .LBE165:
 .LBE164:
 .LBE163:
@@ -2461,20 +2453,12 @@ OSAL_SEMA_INTIT:
 .LBB316:
 .LBB317:
 	.loc 4 35 0
-	mov	w2, 20141
-	add	x1, x0, 32
-	movk	w2, 0xdead, lsl 16
-	str	w2, [x0,4]
-	mov	w2, -1
-	str	w2, [x0,8]
-	mov	x2, -1
-	strh	wzr, [x0]
-	str	x2, [x0,16]
 	mov	w2, 1
-	strh	wzr, [x0,2]
-	str	w2, [x0,24]
-	str	x1, [x0,32]
-	str	x1, [x0,40]
+	str	wzr, [x0]
+	str	w2, [x0,4]
+	add	x1, x0, 8
+	str	x1, [x0,8]
+	str	x1, [x0,16]
 .LBE317:
 .LBE316:
 	.loc 1 269 0

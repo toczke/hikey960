@@ -3156,6 +3156,8 @@ OSAL_ProcCreate:
 	.loc 1 720 0
 	.cfi_startproc
 .LVL357:
+	mov	w0, 0
+	ret
 	stp	x29, x30, [sp, -48]!
 	.cfi_def_cfa_offset 48
 	.cfi_offset 29, -48
@@ -3273,6 +3275,7 @@ OSAL_ProcDestroy:
 	.loc 1 768 0
 	.cfi_startproc
 .LVL369:
+	ret
 	stp	x29, x30, [sp, -48]!
 	.cfi_def_cfa_offset 48
 	.cfi_offset 29, -48
@@ -3356,6 +3359,8 @@ OSAL_ProcInit:
 .LFB2672:
 	.loc 1 793 0
 	.cfi_startproc
+	mov	w0, 0
+	ret
 	stp	x29, x30, [sp, -32]!
 	.cfi_def_cfa_offset 32
 	.cfi_offset 29, -32
@@ -3460,6 +3465,7 @@ OSAL_ProcExit:
 .LFB2673:
 	.loc 1 847 0
 	.cfi_startproc
+	ret
 	stp	x29, x30, [sp, -80]!
 	.cfi_def_cfa_offset 80
 	.cfi_offset 29, -80

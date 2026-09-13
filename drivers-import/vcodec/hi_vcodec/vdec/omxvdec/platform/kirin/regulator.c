@@ -232,6 +232,8 @@ static HI_S32 VDEC_GetDtsConfigInfo(struct device *dev, VFMW_DTS_CONFIG_S *pDtsC
         printk(KERN_CRIT "%s Regulator_GetSmmuBasePhy failed!\n", __func__);
         return HI_FAILURE;
     }
+#else
+    pDtsConfig->SmmuPageBaseAddr = 0xE8A00000;
 #endif
 
     np_crg = of_find_compatible_node(HI_NULL, HI_NULL, "hisilicon,hi3660-crgctrl");
