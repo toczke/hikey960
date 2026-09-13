@@ -4375,6 +4375,17 @@ venc_of_match:
 	.zero	109
 	.zero	8
 	.zero	200
+	.section	.rodata,"a",%progbits
+	.align	3
+	.type	__exitcall_VENC_DRV_ModExit, %object
+	.size	__exitcall_VENC_DRV_ModExit, 8
+__exitcall_VENC_DRV_ModExit:
+	.xword	0
+	.align	3
+	.type	__initcall_VENC_DRV_ModInit6, %object
+	.size	__initcall_VENC_DRV_ModInit6, 8
+__initcall_VENC_DRV_ModInit6:
+	.xword	0
 	.data
 	.align	3
 .LANCHOR2 = . + 0

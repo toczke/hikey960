@@ -145,6 +145,32 @@ VFMW_DRV_Exit:
 	.cfi_endproc
 .LFE1497:
 	.size	VFMW_DRV_Exit, .-VFMW_DRV_Exit
+	.section	.rodata,"a",%progbits
+	.type	__kstrtab_VFMW_GetFunction, %object
+	.size	__kstrtab_VFMW_GetFunction, 17
+__kstrtab_VFMW_GetFunction:
+	.string	"VFMW_GetFunction"
+	.align	3
+	.type	__kcrctab_VFMW_GetFunction, %object
+	.size	__kcrctab_VFMW_GetFunction, 8
+__kcrctab_VFMW_GetFunction:
+	.xword	0
+	.align	3
+	.type	__ksymtab_VFMW_GetFunction, %object
+	.size	__ksymtab_VFMW_GetFunction, 16
+__ksymtab_VFMW_GetFunction:
+	.xword	VFMW_GetFunction
+	.xword	__kstrtab_VFMW_GetFunction
+	.align	3
+	.type	__exitcall_VFMW_DRV_ModExit, %object
+	.size	__exitcall_VFMW_DRV_ModExit, 8
+__exitcall_VFMW_DRV_ModExit:
+	.xword	0
+	.align	3
+	.type	__initcall_VFMW_DRV_ModInit6, %object
+	.size	__initcall_VFMW_DRV_ModInit6, 8
+__initcall_VFMW_DRV_ModInit6:
+	.xword	0
 	.data
 	.align	3
 .LANCHOR0 = . + 0
