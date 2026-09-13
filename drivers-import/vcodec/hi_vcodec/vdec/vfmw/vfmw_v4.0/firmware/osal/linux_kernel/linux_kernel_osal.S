@@ -920,9 +920,8 @@ OSAL_SemInit:
 	mov	w2, 1
 	str	wzr, [x0]
 	str	w2, [x0,4]
-	add	x1, x0, 8
-	str	x1, [x0,8]
-	str	x1, [x0,16]
+	str	xzr, [x0,8]
+	str	xzr, [x0,16]
 .LBE165:
 .LBE164:
 .LBE163:
@@ -2456,9 +2455,8 @@ OSAL_SEMA_INTIT:
 	mov	w2, 1
 	str	wzr, [x0]
 	str	w2, [x0,4]
-	add	x1, x0, 8
-	str	x1, [x0,8]
-	str	x1, [x0,16]
+	str	xzr, [x0,8]
+	str	xzr, [x0,16]
 .LBE317:
 .LBE316:
 	.loc 1 269 0
