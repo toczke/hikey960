@@ -1631,15 +1631,26 @@ static struct platform_device omxvdec_device = {
     },
 };
 
+extern HI_S32 VFMW_DRV_ModInit(HI_VOID);
+extern HI_VOID VFMW_DRV_ModExit(HI_VOID);
+
 HI_S32 __init OMXVDEC_DRV_ModInit(HI_VOID)
 {
     HI_S32 ret;
+
+    ret = VFMW_DRV_ModInit();
+    if (ret != HI_SUCCESS)
+    {
+        OmxPrint(OMX_FATAL, "%s call VFMW_DRV_ModInit failed!\n", __func__);
+        return ret;
+    }
 
 #ifndef CONFIG_OF
     ret = platform_device_register(&omxvdec_device);
     if(ret < 0)
     {
         OmxPrint(OMX_FATAL, "%s call platform_device_register failed!\n", __func__);
+        VFMW_DRV_ModExit();
         return ret;
     }
 #endif
@@ -1651,6 +1662,7 @@ HI_S32 __init OMXVDEC_DRV_ModInit(HI_VOID)
 #ifndef CONFIG_OF
         goto exit;
 #else
+        VFMW_DRV_ModExit();
         return ret;
 #endif
     }
@@ -1676,6 +1688,7 @@ exit1:
 exit:
     platform_device_unregister(&omxvdec_device);
 #endif
+    VFMW_DRV_ModExit();
 
     return ret;
 }
@@ -1695,6 +1708,7 @@ HI_VOID __exit OMXVDEC_DRV_ModExit(HI_VOID)
 #endif
 #endif
 
+    VFMW_DRV_ModExit();
 }
 
 

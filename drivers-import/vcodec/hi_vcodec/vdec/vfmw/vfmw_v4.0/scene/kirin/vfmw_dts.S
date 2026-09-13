@@ -519,24 +519,6 @@ __func__.37617:
 	.size	__func__.37621, 18
 __func__.37621:
 	.string	"VFMW_GetDtsConfig"
-	.section	___kcrctab+VFMW_SetDtsConfig,"a",%progbits
-	.align	3
-	.type	__kcrctab_VFMW_SetDtsConfig, %object
-	.size	__kcrctab_VFMW_SetDtsConfig, 8
-__kcrctab_VFMW_SetDtsConfig:
-	.xword	__crc_VFMW_SetDtsConfig
-	.section	___ksymtab+VFMW_SetDtsConfig,"a",%progbits
-	.align	3
-	.type	__ksymtab_VFMW_SetDtsConfig, %object
-	.size	__ksymtab_VFMW_SetDtsConfig, 16
-__ksymtab_VFMW_SetDtsConfig:
-	.xword	VFMW_SetDtsConfig
-	.xword	__kstrtab_VFMW_SetDtsConfig
-	.section	__ksymtab_strings,"a",%progbits
-	.type	__kstrtab_VFMW_SetDtsConfig, %object
-	.size	__kstrtab_VFMW_SetDtsConfig, 18
-__kstrtab_VFMW_SetDtsConfig:
-	.string	"VFMW_SetDtsConfig"
 	.section	.rodata.str1.8,"aMS",%progbits,1
 	.align	3
 .LC0:

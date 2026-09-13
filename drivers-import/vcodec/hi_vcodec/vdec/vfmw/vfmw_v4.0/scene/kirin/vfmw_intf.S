@@ -145,36 +145,6 @@ VFMW_DRV_Exit:
 	.cfi_endproc
 .LFE1497:
 	.size	VFMW_DRV_Exit, .-VFMW_DRV_Exit
-	.section	__ksymtab_strings,"a",%progbits
-	.type	__kstrtab_VFMW_GetFunction, %object
-	.size	__kstrtab_VFMW_GetFunction, 17
-__kstrtab_VFMW_GetFunction:
-	.string	"VFMW_GetFunction"
-	.section	___kcrctab+VFMW_GetFunction,"a",%progbits
-	.align	3
-	.type	__kcrctab_VFMW_GetFunction, %object
-	.size	__kcrctab_VFMW_GetFunction, 8
-__kcrctab_VFMW_GetFunction:
-	.xword	__crc_VFMW_GetFunction
-	.section	___ksymtab+VFMW_GetFunction,"a",%progbits
-	.align	3
-	.type	__ksymtab_VFMW_GetFunction, %object
-	.size	__ksymtab_VFMW_GetFunction, 16
-__ksymtab_VFMW_GetFunction:
-	.xword	VFMW_GetFunction
-	.xword	__kstrtab_VFMW_GetFunction
-	.section	.exitcall.exit,"aw",%progbits
-	.align	3
-	.type	__exitcall_VFMW_DRV_ModExit, %object
-	.size	__exitcall_VFMW_DRV_ModExit, 8
-__exitcall_VFMW_DRV_ModExit:
-	.xword	VFMW_DRV_ModExit
-	.section	.initcall6.init,"aw",%progbits
-	.align	3
-	.type	__initcall_VFMW_DRV_ModInit6, %object
-	.size	__initcall_VFMW_DRV_ModInit6, 8
-__initcall_VFMW_DRV_ModInit6:
-	.xword	VFMW_DRV_ModInit
 	.data
 	.align	3
 .LANCHOR0 = . + 0
