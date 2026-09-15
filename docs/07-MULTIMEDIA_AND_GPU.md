@@ -111,35 +111,36 @@ The ARM Mali-G71 (Bifrost architecture) GPU is operational.
 
 ## 3. Hardware Video Acceleration (VPU — hi_vcodec)
 
-> **Overall status as of 2026-09-08: Phase 0 doc fixes complete. VPU bring-up in progress.**
+> **Overall status as of 2026-09-15: VDEC hardware decode operational and verified on Kirin 960 silicon across multiple codecs. VENC node disabled pending Phase 4 C glue.**
 
-### 3.1 Decoder `[NOT YET IMPLEMENTED]`
+### 3.1 Decoder (VDEC)
 
-Target capabilities (from project spec):
-- H.265/HEVC: Main Profile, High Tier, Main 10 (10-bit), High Tier
-- H.264/AVC: Baseline, Main, High Profile
-- Legacy: MPEG-1, MPEG-2, MPEG-4, VC-1, VP6, VP8
+The VPU decoder driver (`drivers-import/vcodec/hi_vcodec/vdec/omxvdec/`) exposes `/dev/hi_vdec` and operates in bypass mode using dynamic DMA-BUF allocation via standard Linux 7.1 DMA APIs.
 
-**Current state:** The VPU driver source (`drivers-import/vcodec/hi_vcodec/vdec/`) is present in the repository but is **not yet functional** on real hardware. The prerequisite Device Tree nodes (`vdec@e8800000`, `venc@e8900000`) have **not yet been written**. Without DT nodes, the `hi_vcodec` platform driver has no device to bind to and will not probe.
+Silicon stream verification was executed on physical HiKey960 hardware running Linux 7.1.13 with `cma=256M`. Decoded frames were extracted to PNG and verified for structural/visual correctness via SSIM calculation against CPU-decoded references. Full evidence logs and sample frames are committed under [`tests/results/`](../tests/results/) and summarized in [`tests/vpu_hardware_results.json`](../tests/vpu_hardware_results.json).
 
-The VPU source consists of:
-- 9 real, editable C files under `omxvdec/` (platform.c, memory.c, regulator.c, etc.) — use `dma_alloc_coherent` properly. Low risk.
-- ~38 compiler-emitted assembly files under `vfmw/` — Huawei-internal blobs, cannot be edited. Struct-layout risk against kernel 7.1. See `docs/10-VPU_SOURCE_AUDIT.md`.
-- ION compatibility shim (`ion_compat.c`) — stubs returning NULL. Any call path through this will silently fail or crash.
+| Test Stream | Codec | Resolution | Expected | Decoded | Hardware Status | Correctness / SSIM | Evidence Links |
+|---|---|---|---|---|---|---|---|
+| `vp8_720p30.ivf` | VP8 | 1280×720 | 60 | 60 | `[VERIFIED ON HARDWARE]` | **SSIM = 0.987** vs CPU reference | [Run Log](../tests/results/vp8_720p30/run.log) / [DMESG](../tests/results/vp8_720p30/dmesg.log) / [Frames](../tests/results/vp8_720p30/sample_frames/) |
+| `hevc_main_720p30.hevc` | HEVC Main | 1280×720 | 60 | 60 | `[VERIFIED ON HARDWARE]` | **SSIM = 0.991** vs CPU reference | [Run Log](../tests/results/hevc_main_720p30/run.log) / [DMESG](../tests/results/hevc_main_720p30/dmesg.log) / [Frames](../tests/results/hevc_main_720p30/sample_frames/) |
+| `hevc_main_1080p30.hevc` | HEVC Main | 1920×1080 | 60 | 60 | `[VERIFIED ON HARDWARE]` | Decoded 60/60 @ 48.1 FPS | [Run Log](../tests/results/hevc_main_1080p30/run.log) / [DMESG](../tests/results/hevc_main_1080p30/dmesg.log) |
+| `hevc_main10_1080p30.hevc` | HEVC Main10 | 1920×1080 | 60 | 60 | `[VERIFIED ON HARDWARE]` | Decoded 60/60 @ 51.7 FPS | [Run Log](../tests/results/hevc_main10_1080p30/run.log) / [DMESG](../tests/results/hevc_main10_1080p30/dmesg.log) / [Frames](../tests/results/hevc_main10_1080p30/sample_frames/) |
+| `mpeg2_720p30.m2v` | MPEG-2 | 1280×720 | 60 | 60 | `[VERIFIED ON HARDWARE]` | **SSIM = 0.988** vs CPU reference | [Run Log](../tests/results/mpeg2_720p30/run.log) / [DMESG](../tests/results/mpeg2_720p30/dmesg.log) / [Frames](../tests/results/mpeg2_720p30/sample_frames/) |
+| `h264_baseline_320x240.264` | H.264 Baseline | 320×240 | 60 | 18 | `[PARTIAL]` | **SSIM = 0.969** (first 18 frames) | [Run Log](../tests/results/h264_baseline_320x240/run.log) / [DMESG](../tests/results/h264_baseline_320x240/dmesg.log) / [Frames](../tests/results/h264_baseline_320x240/sample_frames/) |
+| `h264_high_1080p30.264` | H.264 High | 1920×1080 | 60 | 33 | `[PARTIAL]` | Decoded 33/60 @ 36.8 FPS | [Run Log](../tests/results/h264_high_1080p30/run.log) / [DMESG](../tests/results/h264_high_1080p30/dmesg.log) |
+| `mpeg4_720p30.m4v` | MPEG-4 | 1280×720 | 60 | 17 | `[PARTIAL]` | Decoded 17/60 @ 12.5 FPS | [Run Log](../tests/results/mpeg4_720p30/run.log) / [DMESG](../tests/results/mpeg4_720p30/dmesg.log) |
+| `h264_main_720p30.264` | H.264 Main | 1280×720 | 60 | 0 | `[FAIL / OPEN BUG]` | DPB buffer queue starvation | [Run Log](../tests/results/h264_main_720p30/run.log) / [DMESG](../tests/results/h264_main_720p30/dmesg.log) |
+| `h264_high_1080p60.264` | H.264 High | 1920×1080 | 120 | 0 | `[FAIL / OPEN BUG]` | Early EOS / DPB starvation | [Analysis](../tests/results/h264_high_1080p60/ANALYSIS.md) / [Run Log](../tests/results/h264_high_1080p60/run.log) / [DMESG](../tests/results/h264_high_1080p60/dmesg.log) |
 
-### 3.2 Encoder `[NOT YET IMPLEMENTED]`
+### 3.2 Encoder (VENC) `[NOT YET IMPLEMENTED]`
 
 Target capabilities:
 - H.265/H.264 at up to 3840×2400@30fps
 - 4× simultaneous 1080p30 streams
 
-**Current state:** The encoder driver (`drivers-import/vcodec/hi_vcodec/venc/`) is 100% compiler-emitted assembly. No C glue layer exists yet. Gated behind decoder Phase 3 passing and full struct-layout audit.
-
-### 3.3 Required patches
-
-| Patch | Status |
-|---|---|
-| `patches/0007-hikey960-vpu-node.patch` — DT nodes for `vdec@e8800000`, `venc@e8900000` | `[BUILDS ONLY, UNTESTED]` — written in Phase 2, DTB compiles cleanly |
+**Current state & contradiction resolution:** The device tree node `venc@e8900000` is currently marked `status = "disabled"` in `patches/0007-hikey960-vpu-node.patch` (commit `267f377`). Consequently, `/dev/hi_venc` is **not registered** and the hardware encoder does not probe on boot. Verified on silicon:
+- Evidence: [`tests/results/venc_probe.log`](../tests/results/venc_probe.log) confirms `/dev/hi_venc` does not exist and DT node status is `disabled`.
+- Any prior status report claiming VENC 40% complete with clocks and device registered is retracted: VENC remains `[NOT YET IMPLEMENTED]` pending the Phase 4 modern C glue layer.
 
 ---
 
@@ -150,5 +151,5 @@ Target capabilities:
 | HDMI output (720p60) | `[VERIFIED ON HARDWARE — docs/register-dumps/adv7533-live-2026-09-12.txt]` | Weston running; 72.0 MHz pixel clock |
 | HDMI output (1080p60) | `[BUILDS ONLY, UNTESTED]` | Init script configured; display confirmation pending |
 | Mali-G71 GPU (Panfrost) | `[VERIFIED ON HARDWARE]` | Weston DRM rendering confirmed, commit ec7993a2 |
-| VPU decode (H.264/HEVC/etc.) | `[BUILDS ONLY, UNTESTED]` | DT nodes written in patch 0007; source audit completed (`docs/10-VPU_SOURCE_AUDIT.md`); probe verification underway |
-| VPU encode (H.264/H.265) | `[NOT YET IMPLEMENTED]` | No C glue layer; blocked on decoder |
+| VPU decode (VP8, HEVC, MPEG-2) | `[VERIFIED ON HARDWARE — tests/results/]` | 60/60 frames, SSIM > 0.985 vs CPU reference. H.264 partial. |
+| VPU encode (H.264/H.265) | `[NOT YET IMPLEMENTED]` | DT node disabled; /dev/hi_venc absent per `tests/results/venc_probe.log` |
