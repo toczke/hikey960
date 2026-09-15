@@ -239,30 +239,27 @@ mpeg4_720p30:          27 frames
 # Then run h264_main_720p30 and count how many frames total come out
 ```
 
-### Issue 3: hevc_main_1080p30 — 0 frames always
+### Issue 3: hevc_main_1080p30 — RESOLVED (60/60 Frames)
 
-**Symptom:** 0 frames even on a fresh boot. SEQ_INFO_CHG arrives (when CMA is clean), rebind succeeds, but no OUTPUT_DONE messages ever arrive.
+**Resolution:** `hevc_main_1080p30.hevc` decodes **60/60 frames cleanly at 48.07 FPS** with `vdec_test_6398` on fresh CMA. The earlier 0-frame failure was solely caused by CMA fragmentation from previous runs.
 
-**Root cause:** **UNKNOWN.** `hevc_main10_1080p30` (10-bit HEVC 1080p) works perfectly (60/60), but `hevc_main_1080p30` (8-bit HEVC 1080p) produces 0 frames. This is bizarre — 10-bit should be harder. 
+### Issue 4: Cleanup Path Kernel Oops (SOLVED / Root-Caused)
 
-Hypotheses:
-  - The 8-bit HEVC 1080p stream may have a codec profile/level the driver doesn't handle (Main@L4.0 vs Main10@L4.0)
-  - A `pixel_format` field in the channel config may need to differ for 8-bit vs 10-bit HEVC
-  - The `hevc_main_1080p30.hevc` stream file itself may be corrupt or use features the VDH doesn't support
+**Symptom:** Kernel oops in `VDEC_MEM_UnmapAndRelease+0xe0/0x130` (`pc = b900069f`, write fault `WnR=1` to address `ffff800082f4503c`).
 
-**Key experiment:**
-```bash
-# Check if the HEVC 8-bit stream is parseable
-ffprobe /root/test_streams/hevc_main_1080p30.hevc
-# Check dmesg during a clean-boot run for any error codes
-dmesg | grep -i 'hevc\|err\|fail'
+**Root cause (Use-After-Free):**
+In `drivers-import/vcodec/hi_vcodec/vdec/omxvdec/processor_bpp.c:1339`:
+```c
+VDEC_MEM_UnmapAndRelease(&pBppContext->mem_buf);
 ```
+`pBppContext` is allocated inside `mem_buf.pStartVirAddr`. When `VDEC_MEM_UnmapAndRelease` calls `dma_free_coherent()`, the memory containing `pBppContext` is unmapped. Line 143 of `memory.c` then writes `psMBuf->pStartVirAddr = NULL;`, dereferencing the freshly unmapped memory.
 
-### Issue 4: Cleanup Path Segfault (minor)
-
-**Symptom:** After 320×240 H264 decode, kernel oops in `VDEC_MEM_UnmapAndRelease+0xe0` during channel cleanup. Fires AFTER all frames are decoded. Does not affect frame decode correctness.
-
-**Root cause:** `processor_release_inst → channel_release_inst` dereferences a pointer that was already freed during the `processor_work_in_bypass_mode` DPB flush.
+**Fix:** In `processor_release_inst()`, copy `pBppContext->mem_buf` to a local stack variable before unmapping:
+```c
+MEM_BUFFER_S mem_buf = pBppContext->mem_buf;
+gpBPPContext[pchan->processor_id] = HI_NULL;
+VDEC_MEM_UnmapAndRelease(&mem_buf);
+```
 
 ---
 
@@ -279,9 +276,10 @@ Modify `send_input_packet` to NOT immediately feed the next NAL after `INPUT_DON
 Check if the Hisilicon VDH supports a VDEC_IOCTL_CHAN_FLUSH (analogous to OMX EmptyThisBuffer with EOS). Look in `omxvdec.c` ioctl table for a flush command. Using a hardware flush IOCTL instead of an EOS NAL packet may properly drain the DPB.
 
 **Approach C — Check max output buffer re-queue:**
-After each OUTPUT_DONE, we re-queue the buffer. But `rebind_output_buffers` sets `out_count` to `max_num + 7`. Check if the driver limits the number of concurrently-queued output buffers. If so, the VDH may stall when the FIFO is full.
+Do not bind more buffers than `max_num` (`req_count = count + 7` overflows internal tables). Keep `count = s->max_frame_num`.
 
-### P1 — Fix hevc_main_1080p30 (Issue 3)
+### P1 — Apply the `processor_release_inst` UAF fix to kernel driver
+Apply the 3-line fix to `processor_bpp.c` so channel cleanup never oopses again.
 
 Compare channel config between `hevc_main_1080p30` and `hevc_main10_1080p30`. The only difference should be `bitdepth` or `pixel_format` in the OMXVDEC_CHAN_CFG struct.
 
