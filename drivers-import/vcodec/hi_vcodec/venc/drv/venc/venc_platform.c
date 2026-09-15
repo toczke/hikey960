@@ -39,19 +39,40 @@ extern OPTM_VENC_CHN_S g_stVencChn[VENC_MAX_CHN_NUM];
 static int venc_open(struct inode *inode, struct file *file)
 {
 	int ret = 0;
+	int i;
 
 	mutex_lock(&g_venc_ioctl_mutex);
 	if (atomic_inc_return(&g_venc_open_count) == 1) {
-		ret = Venc_Regulator_Enable();
-		if (ret == HI_SUCCESS) {
-			VENC_DRV_BoardInit();
-			pr_info("[VENC] First open: board and hardware power initialized\n");
-		} else {
-			pr_err("[VENC] Venc_Regulator_Enable failed during open\n");
-			atomic_dec(&g_venc_open_count);
-			mutex_unlock(&g_venc_ioctl_mutex);
-			return -EIO;
+		/*
+		 * Initialize all channel handles to -1 (0xFFFFFFFF) BEFORE
+		 * calling BoardInit. The legacy assembly CreateChn checks
+		 * g_stVencChn[i].hVEncHandle for 0xFFFFFFFF to find free
+		 * channel slots. Since g_stVencChn lives in BSS (all zeros),
+		 * no channels would ever appear free without this init.
+		 *
+		 * hVEncHandle is at offset 24 in each 744-byte channel entry.
+		 */
+		/*
+		 * The assembly in drv_venc.S/BoardInit compares handles against
+		 * mov x1, #0xffffffff (= 0x00000000FFFFFFFF on AArch64).
+		 * Original code had HI_HANDLE as 32-bit, so (HI_HANDLE)-1 = 0xFFFFFFFF
+		 * zero-extended to 64-bit = 0x00000000FFFFFFFF.
+		 * With HI_HANDLE=HI_U64, (HI_HANDLE)-1 = 0xFFFFFFFFFFFFFFFF which
+		 * does NOT match. Use explicit 0xFFFFFFFF to match the assembly.
+		 */
+		for (i = 0; i < VENC_MAX_CHN_NUM; i++) {
+			g_stVencChn[i].hVEncHandle = (HI_HANDLE)0xFFFFFFFF;
+			g_stVencChn[i].hSource = (HI_HANDLE)0xFFFFFFFF;
 		}
+		h_pre_enc_handle = (HI_HANDLE)0xFFFFFFFF;
+
+		/*
+		 * BoardInit internally calls Venc_Regulator_Enable(),
+		 * initializes spin locks, and prints entry/exit messages.
+		 * No need to call Venc_Regulator_Enable() separately.
+		 */
+		VENC_DRV_BoardInit();
+		pr_info("[VENC] First open: board and hardware power initialized\n");
 	}
 	mutex_unlock(&g_venc_ioctl_mutex);
 
