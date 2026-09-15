@@ -429,9 +429,24 @@ static void __exit venc_driver_exit(void)
 	platform_driver_unregister(&venc_platform_driver);
 }
 
+/*
+ * Compatibility wrapper for drv_venc_efl.S which was compiled against Linux 4.9
+ * where __mutex_init was an exported out-of-line function. In modern Linux 7.x,
+ * __mutex_init is static inline in <linux/mutex.h>, so we provide the out-of-line
+ * assembly symbol here.
+ */
+asm(
+	".global __mutex_init\n"
+	".type __mutex_init, %function\n"
+	"__mutex_init:\n"
+	"	b mutex_init_generic\n"
+	".size __mutex_init, . - __mutex_init\n"
+);
+
 module_init(venc_driver_init);
 module_exit(venc_driver_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("HiKey960 Kirin 960 Hardware Video Encoder (VENC) Driver");
 MODULE_AUTHOR("Huawei / HiSilicon / Modernized for Linux 7.x");
+
