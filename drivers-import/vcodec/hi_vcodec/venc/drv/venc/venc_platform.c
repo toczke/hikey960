@@ -23,6 +23,7 @@
 #include "drv_venc.h"
 #include "drv_omxvenc.h"
 #include "drv_venc_ioctl.h"
+#include "drv_venc_efl.h"
 #include "venc_regulator.h"
 
 #define VENC_DEV_NAME "hi_venc"
@@ -69,10 +70,23 @@ static int venc_open(struct inode *inode, struct file *file)
 		/*
 		 * BoardInit internally calls Venc_Regulator_Enable(),
 		 * initializes spin locks, and prints entry/exit messages.
-		 * No need to call Venc_Regulator_Enable() separately.
 		 */
 		VENC_DRV_BoardInit();
-		pr_info("[VENC] First open: board and hardware power initialized\n");
+
+		/*
+		 * Open VEDU: maps hardware registers, initializes IRQ and interrupt
+		 * registers, and spawns the VencTask worker thread which initializes
+		 * the g_VENC_Event waitqueue.
+		 */
+		ret = VENC_DRV_EflOpenVedu();
+		if (ret != HI_SUCCESS) {
+			pr_err("[VENC] VENC_DRV_EflOpenVedu failed: %d\n", ret);
+			VENC_DRV_BoardDeinit();
+			atomic_dec(&g_venc_open_count);
+			mutex_unlock(&g_venc_ioctl_mutex);
+			return -EIO;
+		}
+		pr_info("[VENC] First open: board and hardware power initialized, VEDU opened\n");
 	}
 	mutex_unlock(&g_venc_ioctl_mutex);
 
@@ -98,6 +112,7 @@ static int venc_release(struct inode *inode, struct file *file)
 	}
 
 	if (atomic_dec_and_test(&g_venc_open_count)) {
+		VENC_DRV_EflCloseVedu();
 		VENC_DRV_BoardDeinit();
 		Venc_Regulator_Disable(HI_TRUE);
 		pr_info("[VENC] Last close: board and hardware power powered down\n");
