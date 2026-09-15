@@ -1,12 +1,19 @@
 #ifndef __DRV_VENC_H__
 #define __DRV_VENC_H__
 
+#ifndef _STRUCT_TIMEVAL
+#define _STRUCT_TIMEVAL
+struct timeval {
+    long tv_sec;
+    long tv_usec;
+};
+#endif
+
 #include <linux/kthread.h>
 
 #include "drv_venc_efl.h"
 #include "drv_venc_ioctl.h"
 #include "hi_unf_venc.h"
-#include <linux/hisi-iommu.h>
 #include <linux/iommu.h>
 
 #ifdef __cplusplus

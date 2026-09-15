@@ -82,6 +82,7 @@ typedef struct hiVENC_INFO_MAP_S
     HI_HANDLE                hVencChn;
     venc_user_buf*           VencMapBuffer;
 }VENC_INFO_MAP_S;
+typedef struct hiVENC_INFO_MAP_S VENC_INFO_MMZ_MAP_S;
 
 typedef struct hiVENC_MMZ_PHY_S
 {

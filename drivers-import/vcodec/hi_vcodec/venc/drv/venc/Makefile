@@ -14,7 +14,7 @@ subdir-ccflags-y += -DPLATFORM_HI3660
 
 obj-$(CONFIG_HI_VCODEC_VENC_HI3660) += hi_omxvenc.o
 hi_omxvenc-objs :=  venc_regulator.o     \
-                    drv_venc_intf.o      \
+                    venc_platform.o      \
                     drv_venc_efl.o       \
                     drv_venc_osal.o      \
                     drv_venc.o           \
@@ -24,20 +24,4 @@ hi_omxvenc-objs :=  venc_regulator.o     \
                     drv_venc_queue_mng.o \
                     drv_venc_proc.o      \
                     hal_venc.o           \
-                    hi_drv_mem.o
-
-
-#obj-m += venc.o
-#venc-y :=           venc_regulator.o     \
-                    drv_venc_intf.o      \
-                    drv_venc_efl.o       \
-                    drv_venc_osal.o      \
-                    drv_venc.o           \
-                    drv_omxvenc.o        \
-                    drv_omxvenc_efl.o    \
-                    drv_venc_buf_mng.o   \
-                    drv_venc_queue_mng.o \
-                    drv_venc_proc.o      \
-                    hal_venc.o           \
-                    hi_drv_mem.o
-
+                    venc_memory.o

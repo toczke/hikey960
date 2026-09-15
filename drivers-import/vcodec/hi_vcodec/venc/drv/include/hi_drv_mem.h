@@ -10,7 +10,7 @@
 
 #include "hi_drv_venc.h"
 #include <linux/math64.h>
-#include <linux/hisi/hisi_ion.h>
+struct ion_handle;
 #ifdef __cplusplus
 #if __cplusplus
 extern "C"{
