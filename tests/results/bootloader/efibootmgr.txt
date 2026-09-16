@@ -1,4 +1,4 @@
-BootCurrent: 0002
+BootCurrent: 0009
 Timeout: 1 seconds
 BootOrder: 0000,0001,0002,0003,0004,0005,0006,0007,0008,0009
 Boot0000* UiApp	MemoryMapped(11,0xbf924000,0xbfc7ae3f)/FvFile(462caa21-7614-4503-836e-8ab6f4662331)

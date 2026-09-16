@@ -8942,9 +8942,14 @@ VeduHal_CfgReg:
 	.loc 1 2247 0
 	adrp	x5, g_hisi_mmu_domain
 	ldr	x5, [x5,#:lo12:g_hisi_mmu_domain]
-	.loc 1 2248 0
+	cbz	x5, .Lskip_mmu_cfg
 	ldr	x5, [x5,72]
+	cbz	x5, .Lskip_mmu_cfg
 	ldr	x22, [x5,16]
+	b	.Ldone_mmu_cfg
+.Lskip_mmu_cfg:
+	mov	x22, xzr
+.Ldone_mmu_cfg:
 	.loc 1 2249 0
 	mov	w5, w22
 	bl	HI_PRINT

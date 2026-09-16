@@ -25,7 +25,11 @@
 
 /* Globals referenced by core assembly */
 HI_U32 g_voltHold = 0;
-void *g_hisi_mmu_domain = NULL;
+static u64 s_dummy_mmu_data[8] = { 0 };
+static void *s_dummy_mmu_domain[16] = {
+	[9] = (void *)s_dummy_mmu_data, /* offset 72: domain->priv pointer */
+};
+void *g_hisi_mmu_domain = (void *)s_dummy_mmu_domain;
 
 static struct device    *g_pVencDev = NULL;
 static struct regulator *g_pVencRegulator = NULL;

@@ -17,4 +17,4 @@ Data area starts at byte 149504 (sector 292)
          0 hidden sectors
     131072 sectors total
 Checking for unused clusters.
-/dev/sdd7: 9 files, 3560/32695 clusters
+/dev/sdd7: 8 files, 1149/32695 clusters
