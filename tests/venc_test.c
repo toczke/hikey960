@@ -14,6 +14,7 @@
 #include <sys/mman.h>
 #include <sys/time.h>
 #include <linux/dma-heap.h>
+#include <linux/dma-buf.h>
 
 #include "include/hi_type.h"
 #include "include/hi_unf_common.h"
@@ -208,6 +209,10 @@ static int venc_session_init(venc_session_t *s, int venc_fd, int is_hevc, int wi
             perror("ioctl CMD_VENC_KEN_MAP output");
             return -1;
         }
+        printf("[VENC_TEST] Out buf %d: ptr=%p bufaddr=0x%llx phy=0x%llx kern=0x%llx fd=%d\n",
+               i, s->out_ptrs[i], (unsigned long long)s->out_ubufs[i].bufferaddr,
+               (unsigned long long)s->out_ubufs[i].bufferaddr_Phy,
+               (unsigned long long)s->out_ubufs[i].kernelbufferaddr, s->out_fds[i]);
     }
 
     return 0;
@@ -392,6 +397,9 @@ int main(int argc, char *argv[]) {
                 uint8_t *y_ptr = (uint8_t *)session.in_ptrs[in_idx];
                 uint8_t *uv_ptr = y_ptr + session.stride * height;
 
+                struct dma_buf_sync in_sync_start = { .flags = DMA_BUF_SYNC_START | DMA_BUF_SYNC_WRITE };
+                ioctl(session.in_fds[in_idx], DMA_BUF_IOCTL_SYNC, &in_sync_start);
+
                 if (fin_yuv) {
                     size_t read_bytes = fread(y_ptr, 1, width * height, fin_yuv);
                     read_bytes += fread(uv_ptr, 1, width * height / 2, fin_yuv);
@@ -401,6 +409,9 @@ int main(int argc, char *argv[]) {
                 } else {
                     fill_nv12_pattern(y_ptr, uv_ptr, width, height, session.stride, frames_queued);
                 }
+
+                struct dma_buf_sync in_sync_end = { .flags = DMA_BUF_SYNC_END | DMA_BUF_SYNC_WRITE };
+                ioctl(session.in_fds[in_idx], DMA_BUF_IOCTL_SYNC, &in_sync_end);
 
                 session.in_ubufs[in_idx].data_len = session.in_len;
                 session.in_ubufs[in_idx].timestamp = (HI_U64)(frames_queued * 1000000ULL / fps);
@@ -436,11 +447,28 @@ int main(int argc, char *argv[]) {
                     uint32_t len = getmsg.msg_info_omx.buf.data_len;
                     uint32_t offset = getmsg.msg_info_omx.buf.offset;
                     uint32_t flags = getmsg.msg_info_omx.buf.flags;
-
+                    printf("[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0x%llx phy=0x%llx kern=0x%llx len=%u out_idx=%d\n",
+                           (unsigned long long)getmsg.msg_info_omx.buf.bufferaddr,
+                           (unsigned long long)getmsg.msg_info_omx.buf.bufferaddr_Phy,
+                           (unsigned long long)getmsg.msg_info_omx.buf.kernelbufferaddr,
+                           len, out_idx);
                     if (out_idx >= 0 && len > 0) {
-                        if (fout) {
-                            fwrite((uint8_t *)session.out_ptrs[out_idx] + offset, 1, len, fout);
+                        struct dma_buf_sync sync_start = { .flags = DMA_BUF_SYNC_START | DMA_BUF_SYNC_READ };
+                        ioctl(session.out_fds[out_idx], DMA_BUF_IOCTL_SYNC, &sync_start);
+
+                        uint8_t *src = (uint8_t *)session.out_ptrs[out_idx] + offset;
+                        printf("[VENC_TEST] MSG: out_idx=%d len=%u offset=%u flags=0x%08x [", out_idx, len, offset, flags);
+                        for (int b = 0; b < (len < 16 ? len : 16); b++) {
+                            printf("%02x ", src[b]);
                         }
+                        printf("]\n");
+
+                        if (fout) {
+                            fwrite(src, 1, len, fout);
+                        }
+
+                        struct dma_buf_sync sync_end = { .flags = DMA_BUF_SYNC_END | DMA_BUF_SYNC_READ };
+                        ioctl(session.out_fds[out_idx], DMA_BUF_IOCTL_SYNC, &sync_end);
                         total_bytes += len;
 
                         if (flags & OMXVENC_BUFFERFLAG_CODECCONFIG) {

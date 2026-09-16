@@ -8966,11 +8966,8 @@ VeduHal_CfgReg:
 	str	w0, [x19,14600]
 	.loc 1 2258 0
 	ldr	w1, [x19,15872]
-	ldr	w0, [x20,5968]
 	and	w1, w1, -2
-	and	w0, w0, 1
-	orr	w0, w1, w0
-	str	w0, [x19,15872]
+	str	w1, [x19,15872]
 	.loc 1 2259 0
 	ldr	w1, [x19,15888]
 	ldr	w0, [x20,5972]
@@ -9282,6 +9279,11 @@ VeduHal_CfgReg:
 	ldr	w0, [x19,14348]
 	orr	w0, w0, 1
 	str	w0, [x19,14348]
+	mvn	w0, wzr
+	str	w0, [x19,15892]
+	str	w0, [x19,15896]
+	str	w0, [x19,13824]
+	str	w0, [x19,13840]
 	.loc 1 2309 0
 	ldr	w0, [x21,7040]
 	cbz	w0, .L125

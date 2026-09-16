@@ -31337,7 +31337,7 @@ VENC_DRV_EflCreateVenc:
 	.loc 1 5677 0
 	ldr	x1, [x19]
 	.loc 1 5676 0
-	ldr	w2, [x21,332]
+	mov	w2, 1
 	str	w2, [x19,7028]
 	.loc 1 5677 0
 	ldr	w2, [x21,336]
@@ -31605,12 +31605,9 @@ VENC_DRV_EflCreateVenc:
 	beq	.L2720
 .L2641:
 	.loc 1 5780 0
-	ldr	w0, [x19,7040]
-	.loc 1 5783 0
 	ldr	x1, [x19]
-	.loc 1 5780 0
-	cmp	w0, 1
-	beq	.L2721
+	mov	w0, 1
+	b	.L2721
 	.loc 1 5883 0
 	mov	w0, 1
 	str	w0, [x1,5968]
