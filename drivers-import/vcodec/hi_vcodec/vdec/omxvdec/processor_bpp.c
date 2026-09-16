@@ -1285,7 +1285,8 @@ HI_S32 processor_create_inst(OMXVDEC_CHAN_CTX *pchan, HI_U32 color_format)
         pBppContext->pThread = kthread_create(processor_thread, (HI_VOID *)pBppContext, name_array);
         if (HI_NULL == pBppContext->pThread || IS_ERR(pBppContext->pThread))
         {
-            VDEC_MEM_UnmapAndRelease(&pBppContext->mem_buf);
+            MEM_BUFFER_S local_mem_buf = pBppContext->mem_buf;
+            VDEC_MEM_UnmapAndRelease(&local_mem_buf);
             printk(KERN_ALERT "Create processor_thread %d failed!\n", i);
             ret = HI_FAILURE;
         }
@@ -1336,8 +1337,11 @@ HI_S32 processor_release_inst(OMXVDEC_CHAN_CTX *pchan)
         pBppContext->pThread = HI_NULL;
     }
     
-    VDEC_MEM_UnmapAndRelease(&pBppContext->mem_buf);
-    gpBPPContext[pchan->processor_id] = HI_NULL;
+    {
+        MEM_BUFFER_S local_mem_buf = pBppContext->mem_buf;
+        gpBPPContext[pchan->processor_id] = HI_NULL;
+        VDEC_MEM_UnmapAndRelease(&local_mem_buf);
+    }
 
     VDEC_UP_INTERRUPTIBLE(&gBPPMut);
         
