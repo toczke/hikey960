@@ -1,0 +1,12 @@
+[  524.878595] enter omxvdec_open , open_count : 0
+[  524.878662] enter channel_init 
+[  524.878734] VDEC_Regulator_Enable_Kirin960, call regulator_enable 
+[  524.894828] vfmw channel create success ChanID 2
+[  524.936937] syntax value : range 0 primaries 0 matrix 2 transfer 0
+[  524.936995] EVNT Color Aspects report
+[  541.289483] Last frame report failed!
+[  541.446685] VCTRL_DestroyChanWithOption VCTRL_StopChan ChanID 2!
+[  541.447407] decoder_release_stream can't find Chan(0).
+[  541.447582] VCTRL_DestroyChanWithOption vfmw destroy chan and free chan resource success, ChanID 2!
+[  541.633250] VDEC_Regulator_Disable_Kirin960, call regulator_disable
+[  541.633985] exit omxvdec_release , open_count : 0

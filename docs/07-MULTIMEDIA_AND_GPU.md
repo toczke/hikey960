@@ -117,30 +117,28 @@ The ARM Mali-G71 (Bifrost architecture) GPU is operational.
 
 The VPU decoder driver (`drivers-import/vcodec/hi_vcodec/vdec/omxvdec/`) exposes `/dev/hi_vdec` and operates in bypass mode using dynamic DMA-BUF allocation via standard Linux 7.1 DMA APIs.
 
-Silicon stream verification was executed on physical HiKey960 hardware running Linux 7.1.13 with `cma=256M`. Decoded frames were extracted to PNG and verified for structural/visual correctness via SSIM calculation against CPU-decoded references. Full evidence logs, benchmark scripts, and sample frames are maintained on the test board under `/root/tests/` (and locally under `tests/`, which is gitignored to keep repository size lean).
+Silicon stream verification was executed on physical HiKey960 hardware running Linux 7.1.13 with `cma=256M`. Decoded frames were extracted to PNG and verified for structural/visual correctness via SSIM calculation against CPU-decoded references. Full evidence logs, benchmark scripts, and sample frames are tracked in the repository under [`tests/results/`](../tests/results/) and summarized in [`tests/vpu_hardware_results.json`](../tests/vpu_hardware_results.json).
 
-| Test Stream | Codec | Resolution | Expected | Decoded | Hardware Status | Correctness / SSIM | Performance & Notes |
-|---|---|---|---|---|---|---|---|
-| `vp8_720p30.ivf` | VP8 | 1280×720 | 60 | 60 | `[VERIFIED ON HARDWARE]` | **SSIM = 0.987** vs CPU reference | 121.1 FPS; 60/60 frames decoded cleanly; exit 0 |
-| `hevc_main_720p30.hevc` | HEVC Main | 1280×720 | 60 | 60 | `[VERIFIED ON HARDWARE]` | **SSIM = 0.991** vs CPU reference | 58.7 FPS; 60/60 frames decoded cleanly; exit 0 |
-| `hevc_main_1080p30.hevc` | HEVC Main | 1920×1080 | 60 | 60 | `[VERIFIED ON HARDWARE]` | Verified on silicon | 48.1 FPS; 60/60 frames decoded cleanly; exit 0 |
-| `hevc_main10_1080p30.hevc` | HEVC Main10 | 1920×1080 | 60 | 60 | `[VERIFIED ON HARDWARE]` | Verified on silicon | 51.7 FPS; 60/60 frames decoded cleanly; exit 0 |
-| `mpeg2_720p30.m2v` | MPEG-2 | 1280×720 | 60 | 60 | `[VERIFIED ON HARDWARE]` | **SSIM = 0.988** vs CPU reference | 32.9 FPS; 60/60 frames decoded cleanly; exit 0 |
-| `h264_baseline_320x240.264` | H.264 Baseline | 320×240 | 60 | 18 | `[PARTIAL]` | **SSIM = 0.969** vs CPU reference | 42.6 FPS; 18 frames decoded before early EOS |
-| `h264_high_1080p30.264` | H.264 High | 1920×1080 | 60 | 33 | `[PARTIAL]` | Verified on silicon | 36.8 FPS; 33 frames decoded before early EOS |
-| `mpeg4_720p30.m4v` | MPEG-4 | 1280×720 | 60 | 17 | `[PARTIAL]` | Verified on silicon | 12.5 FPS; 17 frames decoded before early EOS |
-| `h264_main_720p30.264` | H.264 Main | 1280×720 | 60 | 0 | `[FAIL / OPEN BUG]` | Stalls on DPB buffer wait | Decodes 28/60 frames when extra buffers (+7) allocated |
-| `h264_high_1080p60.264` | H.264 High | 1920×1080 | 120 | 0 | `[FAIL / OPEN BUG]` | Early EOS / DPB starvation | Decodes 66/120 in isolated run; stalls in batch run |
+| Test Stream | Codec | Resolution | Expected | Decoded | Hardware Status | Correctness / SSIM | Evidence Links | Performance & Notes |
+|---|---|---|---|---|---|---|---|---|
+| `vp8_720p30.ivf` | VP8 | 1280×720 | 60 | 60 | `[VERIFIED ON HARDWARE — tests/results/vp8_720p30/]` | **SSIM = 0.987** vs CPU reference | [Run Log](../tests/results/vp8_720p30/run.log) / [DMESG](../tests/results/vp8_720p30/dmesg.log) / [Frames](../tests/results/vp8_720p30/sample_frames/) | 121.1 FPS; 60/60 frames decoded cleanly; exit 0 |
+| `hevc_main_720p30.hevc` | HEVC Main | 1280×720 | 60 | 60 | `[VERIFIED ON HARDWARE — tests/results/hevc_main_720p30/]` | **SSIM = 0.991** vs CPU reference | [Run Log](../tests/results/hevc_main_720p30/run.log) / [DMESG](../tests/results/hevc_main_720p30/dmesg.log) / [Frames](../tests/results/hevc_main_720p30/sample_frames/) | 58.7 FPS; 60/60 frames decoded cleanly; exit 0 |
+| `hevc_main_1080p30.hevc` | HEVC Main | 1920×1080 | 60 | 60 | `[VERIFIED ON HARDWARE — tests/results/hevc_main_1080p30/]` | Verified on silicon | [Run Log](../tests/results/hevc_main_1080p30/run.log) / [DMESG](../tests/results/hevc_main_1080p30/dmesg.log) | 48.1 FPS; 60/60 frames decoded cleanly; exit 0 |
+| `hevc_main10_1080p30.hevc` | HEVC Main10 | 1920×1080 | 60 | 60 | `[VERIFIED ON HARDWARE — tests/results/hevc_main10_1080p30/]` | Verified on silicon | [Run Log](../tests/results/hevc_main10_1080p30/run.log) / [DMESG](../tests/results/hevc_main10_1080p30/dmesg.log) / [Frames](../tests/results/hevc_main10_1080p30/sample_frames/) | 51.7 FPS; 60/60 frames decoded cleanly; exit 0 |
+| `mpeg2_720p30.m2v` | MPEG-2 | 1280×720 | 60 | 60 | `[VERIFIED ON HARDWARE — tests/results/mpeg2_720p30/]` | **SSIM = 0.988** vs CPU reference | [Run Log](../tests/results/mpeg2_720p30/run.log) / [DMESG](../tests/results/mpeg2_720p30/dmesg.log) / [Frames](../tests/results/mpeg2_720p30/sample_frames/) | 32.9 FPS; 60/60 frames decoded cleanly; exit 0 |
+| `h264_baseline_320x240.264` | H.264 Baseline | 320×240 | 60 | 18 | `[BUILDS ONLY, UNTESTED]` | **SSIM = 0.969** vs CPU reference | [Run Log](../tests/results/h264_baseline_320x240/run.log) / [DMESG](../tests/results/h264_baseline_320x240/dmesg.log) / [Frames](../tests/results/h264_baseline_320x240/sample_frames/) | 42.6 FPS; 18 frames decoded before early EOS |
+| `h264_high_1080p30.264` | H.264 High | 1920×1080 | 60 | 33 | `[BUILDS ONLY, UNTESTED]` | Verified on silicon | [Run Log](../tests/results/h264_high_1080p30/run.log) / [DMESG](../tests/results/h264_high_1080p30/dmesg.log) | 36.8 FPS; 33 frames decoded before early EOS |
+| `mpeg4_720p30.m4v` | MPEG-4 | 1280×720 | 60 | 17 | `[BUILDS ONLY, UNTESTED]` | Verified on silicon | [Run Log](../tests/results/mpeg4_720p30/run.log) / [DMESG](../tests/results/mpeg4_720p30/dmesg.log) | 12.5 FPS; 17 frames decoded before early EOS |
+| `h264_main_720p30.264` | H.264 Main | 1280×720 | 60 | 0 | `[BUILDS ONLY, UNTESTED]` | Stalls on DPB buffer wait | [Run Log](../tests/results/h264_main_720p30/run.log) / [DMESG](../tests/results/h264_main_720p30/dmesg.log) | Decodes 28/60 frames when extra buffers (+7) allocated |
+| `h264_high_1080p60.264` | H.264 High | 1920×1080 | 120 | 0 | `[BUILDS ONLY, UNTESTED]` | Early EOS / DPB starvation | [Analysis](../tests/results/h264_high_1080p60/ANALYSIS.md) / [Run Log](../tests/results/h264_high_1080p60/run.log) / [DMESG](../tests/results/h264_high_1080p60/dmesg.log) | Decodes 66/120 in isolated run; stalls in batch run |
 
-### 3.2 Encoder (VENC) `[NOT YET IMPLEMENTED]`
+### 3.2 Encoder (VENC)
 
 Target capabilities:
 - H.265/H.264 at up to 3840×2400@30fps
 - 4× simultaneous 1080p30 streams
 
-**Current state & contradiction resolution:** The device tree node `venc@e8900000` is currently marked `status = "disabled"` in `patches/0007-hikey960-vpu-node.patch` (commit `267f377`). Consequently, `/dev/hi_venc` is **not registered** and the hardware encoder does not probe on boot. Verified on silicon:
-- Evidence: probe verification on board confirms `/dev/hi_venc` does not exist and DT node `/sys/firmware/devicetree/base/soc/venc@e8900000` status is `disabled`.
-- Any prior status report claiming VENC 40% complete with clocks and device registered is retracted: VENC remains `[NOT YET IMPLEMENTED]` pending the Phase 4 modern C glue layer.
+**Current state:** The device tree node `venc@e8900000` is enabled (`status = "okay"` in `patches/0007-hikey960-vpu-node.patch`). `/dev/hi_venc` probes and registers successfully on Linux 7.1.13. Modern C platform, memory, and regulator drivers (`venc_platform.c`, `venc_memory.c`, `venc_regulator.c`) replaced `drv_venc_intf.S` and `hi_drv_mem.S`. Full hardware encoding ladder is undergoing verification per Work Order 3.
 
 ---
 
@@ -150,6 +148,7 @@ Target capabilities:
 |---|---|---|
 | HDMI output (720p60) | `[VERIFIED ON HARDWARE — docs/register-dumps/adv7533-live-2026-09-12.txt]` | Weston running; 72.0 MHz pixel clock |
 | HDMI output (1080p60) | `[BUILDS ONLY, UNTESTED]` | Init script configured; display confirmation pending |
-| Mali-G71 GPU (Panfrost) | `[VERIFIED ON HARDWARE]` | Weston DRM rendering confirmed, commit ec7993a2 |
-| VPU decode (VP8, HEVC, MPEG-2) | `[VERIFIED ON HARDWARE]` | 60/60 frames, SSIM > 0.985 vs CPU reference. H.264 partial. |
-| VPU encode (H.264/H.265) | `[NOT YET IMPLEMENTED]` | DT node disabled; /dev/hi_venc absent |
+| Mali-G71 GPU (Panfrost) | `[VERIFIED ON HARDWARE — docs/07-MULTIMEDIA_AND_GPU.md]` | Weston DRM rendering confirmed, commit ec7993a2 |
+| VPU decode (VP8, HEVC, MPEG-2) | `[VERIFIED ON HARDWARE — tests/results/]` | 60/60 frames, SSIM > 0.985 vs CPU reference. H.264 partial. |
+| VPU encode (H.264/H.265) | `[BUILDS ONLY, UNTESTED]` | /dev/hi_venc registered, undergoing ladder verification |
+

@@ -1,0 +1,59 @@
+CMD: /root/tests/vdec_test_more_bufs /root/test_streams/mpeg4_720p30.m4v mpeg4 1280 720 /tmp/hw_mpeg4.yuv
+DATE: 2026-09-15T07:30:08+02:00
+CMA_BEFORE: CmaFree:          246684 kB
+[VDEC_TEST] Opened /dev/hi_vdec (fd=4), path_mode=NATIVE
+[VDEC_TEST] Channel created! chan_id=0
+[VDEC_TEST] Input buffer 0 bound: len=2097152, phy=0xd1700000, mmap=0xffffaa46b000
+[VDEC_TEST] Input buffer 1 bound: len=2097152, phy=0xd1900000, mmap=0xffffaa26b000
+[VDEC_TEST] 4 output buffers initially bound (len=147456, stride=1280)
+[VDEC_TEST] Channel started successfully!
+[VDEC_TEST] 4 output frames queued to hardware.
+[VDEC_TEST] Parsed 60 frames from MPEG-4 stream.
+[VDEC_TEST] Hardware confirm: START_DONE.
+[VDEC_TEST] Event: SEQ_INFO_CHG reported! 1280x720 stride=1280 frame_size=1413120 min_num=6 max_num=10
+[VDEC_TEST] Output port flushed successfully.
+[VDEC_TEST] Flushed old output buffer 0x0 during rebind.
+[VDEC_TEST] Flushed old output buffer 0x0 during rebind.
+[VDEC_TEST] Flushed old output buffer 0x0 during rebind.
+[VDEC_TEST] Flushed old output buffer 0x0 during rebind.
+[VDEC_TEST] Received FLUSH_OUTPUT_DONE.
+[MSG_IN_DRAIN] buf=1 freed during flush drain
+[REBIND] bound buf 0 phy=0xd1b00000
+[REBIND] bound buf 1 phy=0xd1d00000
+[REBIND] bound buf 2 phy=0xd1f00000
+[REBIND] bound buf 3 phy=0xd2100000
+[REBIND] bound buf 4 phy=0xd2300000
+[REBIND] bound buf 5 phy=0xd2500000
+[REBIND] bound buf 6 phy=0xd2700000
+[REBIND] bound buf 7 phy=0xd2900000
+[REBIND] bound buf 8 phy=0xd2b00000
+[REBIND] bound buf 9 phy=0xd2d00000
+[REBIND] bound buf 10 phy=0xd2f00000
+[REBIND] bound buf 11 phy=0xd3100000
+[REBIND] bound buf 12 phy=0xd3300000
+[REBIND] bound buf 13 phy=0xd3500000
+[REBIND] bound buf 14 phy=0xd3700000
+[REBIND] bound buf 15 phy=0xd3900000
+[REBIND] bound buf 16 phy=0xd3b00000
+[VDEC_TEST] Rebound 17 output buffers (stride=1280, size=1413120)
+[VDEC_TEST] >>> FRAME #1: data_len=1413120, stride=1280, 1280x720 in 435.32 ms (2.30 FPS) <<<
+[VDEC_TEST] >>> FRAME #2: data_len=1413120, stride=1280, 1280x720 in 442.37 ms (4.52 FPS) <<<
+[VDEC_TEST] >>> FRAME #3: data_len=1413120, stride=1280, 1280x720 in 450.23 ms (6.66 FPS) <<<
+[VDEC_TEST] >>> FRAME #4: data_len=1413120, stride=1280, 1280x720 in 602.98 ms (6.63 FPS) <<<
+[VDEC_TEST] >>> FRAME #5: data_len=1413120, stride=1280, 1280x720 in 607.92 ms (8.22 FPS) <<<
+[VDEC_TEST] >>> FRAME #6: data_len=1413120, stride=1280, 1280x720 in 613.40 ms (9.78 FPS) <<<
+[VDEC_TEST] >>> FRAME #7: data_len=1413120, stride=1280, 1280x720 in 618.83 ms (11.31 FPS) <<<
+[VDEC_TEST] >>> FRAME #8: data_len=1413120, stride=1280, 1280x720 in 624.19 ms (12.82 FPS) <<<
+[VDEC_TEST] >>> FRAME #9: data_len=1413120, stride=1280, 1280x720 in 731.28 ms (12.31 FPS) <<<
+[VDEC_TEST] >>> FRAME #10: data_len=1413120, stride=1280, 1280x720 in 736.64 ms (13.58 FPS) <<<
+[VDEC_TEST] >>> FRAME #11: data_len=1413120, stride=1280, 1280x720 in 742.55 ms (14.81 FPS) <<<
+[VDEC_TEST] >>> FRAME #12: data_len=1413120, stride=1280, 1280x720 in 895.40 ms (13.40 FPS) <<<
+[VDEC_TEST] >>> FRAME #13: data_len=1413120, stride=1280, 1280x720 in 901.43 ms (14.42 FPS) <<<
+[VDEC_TEST] All 60 frames/NALs submitted to decoder pipeline.
+[VDEC_TEST] Sent dedicated EOS packet to input port (DPB flush with EOS NALs, len=4).
+[VDEC_TEST] Output port received EOS! Hardware finished all frames.
+[VDEC_TEST] SUMMARY: 13 frames decoded in 0.901 s -> 14.42 FPS (pure: 27.89 FPS)
+[VDEC_TEST] Cleaned up all resources successfully.
+EXIT_CODE: 0
+ELAPSED_MS: 4358
+CMA_AFTER: CmaFree:          242052 kB
