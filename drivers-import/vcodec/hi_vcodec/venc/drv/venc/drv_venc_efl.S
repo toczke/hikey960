@@ -21359,7 +21359,8 @@ VENC_DRV_EflStopVenc:
 	str	wzr, [x19,1504]
 	.loc 1 8763 0
 	cbz	w0, .L1254
-	.loc 1 8766 0
+	mov	w0, 100
+	str	w0, [sp, 64]
 	add	x20, x22, :lo12:.LANCHOR0
 	adrp	x24, .LC75
 	add	x25, x23, :lo12:.LC0
@@ -21377,9 +21378,16 @@ VENC_DRV_EflStopVenc:
 	mov	w0, 1
 	bl	msleep
 .LVL1223:
+	ldr	w0, [sp, 64]
+	subs	w0, w0, 1
+	str	w0, [sp, 64]
+	ble	.L1254_timeout
 	.loc 1 8763 0
 	ldr	w0, [x19,1516]
 	cbnz	w0, .L1273
+	b	.L1254
+.L1254_timeout:
+	str	wzr, [x19,1516]
 .L1254:
 	.loc 1 8770 0
 	add	x22, x22, :lo12:.LANCHOR0
