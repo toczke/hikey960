@@ -1,0 +1,13 @@
+BootCurrent: 0002
+Timeout: 1 seconds
+BootOrder: 0000,0001,0002,0003,0004,0005,0006,0007,0008,0009
+Boot0000* UiApp	MemoryMapped(11,0xbf924000,0xbfc7ae3f)/FvFile(462caa21-7614-4503-836e-8ab6f4662331)
+Boot0001* Boot from SD	VenHw(0d51905b-b77e-452a-a2c0-eca0cc8d514a,00f037ff0000000000)/SD(0)
+Boot0002* Grub	VenHw(0d51905b-b77e-452a-a2c0-eca0cc8d514a,00003bff0000000000)/UFS(0,0x03)/HD(7,GPT,d3340696-9b95-4c64-8df6-e6d4548fba41,0x12100,0x4000)/File(\EFI\BOOT\GRUBAA64.EFI)
+Boot0003* Android Boot	MemoryMapped(11,0xbf924000,0xbfc7ae3f)/FvFile(3a738b36-b9c5-4763-abbd-6cbd4b25f9ff)
+Boot0004* Android Fastboot	MemoryMapped(11,0xbf924000,0xbfc7ae3f)/FvFile(9588502a-5370-11e3-8631-d7c5951364c8)
+Boot0005* UEFI Misc Device	VenHw(0d51905b-b77e-452a-a2c0-eca0cc8d514a,00003bff0000000000)/UFS(0,0x00)N.....YM....R,Y.
+Boot0006* UEFI Misc Device 2	VenHw(0d51905b-b77e-452a-a2c0-eca0cc8d514a,00003bff0000000000)/UFS(0,0x01)N.....YM....R,Y.
+Boot0007* UEFI Misc Device 3	VenHw(0d51905b-b77e-452a-a2c0-eca0cc8d514a,00003bff0000000000)/UFS(0,0x02)N.....YM....R,Y.
+Boot0008* UEFI Misc Device 4	VenHw(0d51905b-b77e-452a-a2c0-eca0cc8d514a,00003bff0000000000)/UFS(0,0x03)N.....YM....R,Y.
+Boot0009* UEFI Shell	MemoryMapped(11,0xbf924000,0xbfc7ae3f)/FvFile(7c04a583-9e3e-4f1c-ad65-e05268d0b4d1)

@@ -1,0 +1,20 @@
+fsck.fat 4.2 (2021-01-31)
+Checking we can access the last sector of the filesystem
+Boot sector contents:
+System ID "mkfs.fat"
+Media byte 0xf8 (hard disk)
+       512 bytes per logical sector
+      2048 bytes per cluster
+         4 reserved sectors
+First FAT starts at byte 2048 (sector 4)
+         2 FATs, 16 bit entries
+     65536 bytes per FAT (= 128 sectors)
+Root directory starts at byte 133120 (sector 260)
+       512 root directory entries
+Data area starts at byte 149504 (sector 292)
+     32695 data clusters (66959360 bytes)
+32 sectors/track, 8 heads
+         0 hidden sectors
+    131072 sectors total
+Checking for unused clusters.
+/dev/sdd7: 9 files, 3560/32695 clusters
