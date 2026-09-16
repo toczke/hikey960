@@ -1,0 +1,24 @@
+[
+  {
+    "name": "step5_h264_4k_uhd_3840x2160",
+    "codec": "h264",
+    "width": 3840,
+    "height": 2160,
+    "fps": 30,
+    "num_frames": 30,
+    "bitrate": 20000000,
+    "iterations": 1,
+    "concurrency": 1,
+    "wall_time_s": 1.5559370517730713,
+    "exit_code": 0,
+    "success": true,
+    "ffprobe": {
+      "codec_name": "h264",
+      "width": 3840,
+      "height": 2160,
+      "r_frame_rate": "1200000/1",
+      "nb_read_frames": "30"
+    },
+    "status": "[VERIFIED ON HARDWARE]"
+  }
+]

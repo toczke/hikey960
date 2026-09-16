@@ -1,0 +1,21 @@
+--- Iteration 1 ---
+Command: /root/tests/venc_test hevc 1920 1080 60 /tmp/step3_hevc_1080p_30fps.hevc --fps 30 --bitrate 5000000
+Exit Code: 0
+=================================================================
+[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
+[VENC_TEST] Codec: HEVC / H.265 (hevc)
+[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 5000000 bps, GOP: 30
+[VENC_TEST] Frames: 60, Output: /tmp/step3_hevc_1080p_30fps.hevc, Stress Cycles: 1
+=================================================================
+[VENC_TEST] Out buf 0: ptr=0xffff951bb000 bufaddr=0xffff951bb000 phy=0xd2500000 kern=0xffff80008e74b000 fd=9
+[VENC_TEST] Out buf 1: ptr=0xffff94dc6000 bufaddr=0xffff94dc6000 phy=0xd2900000 kern=0xffff80008eb41000 fd=10
+[VENC_TEST] Out buf 2: ptr=0xffff949d1000 bufaddr=0xffff949d1000 phy=0xd2d00000 kern=0xffff80008ef37000 fd=11
+[VENC_TEST] Out buf 3: ptr=0xffff945dc000 bufaddr=0xffff945dc000 phy=0xd3100000 kern=0xffff80008f32d000 fd=12
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff951bb000 phy=0xd2500000 kern=0xffff80008e74b000 len=76 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=76 offset=0 flags=0x00000082 [00 00 00 01 40 01 0c 01 ff ff 01 60 00 00 03 00 ]
+[VENC_TEST] Header / CodecConfig received (76 bytes, flags=0x00000082)
+[VENC_TEST] Cycle 1 Complete: 0 frames in 30.02 s (0.0 FPS), 76 total bytes (0.0 kbps)
+[VENC_TEST] All cycles completed successfully!
+
+[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
+
