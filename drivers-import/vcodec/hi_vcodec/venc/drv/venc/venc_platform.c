@@ -135,9 +135,19 @@ static long venc_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		mutex_lock(&g_venc_ioctl_mutex);
 		ret = VENC_DRV_CreateChn(&stCreate.hVencChn, &stCreate.stAttr, &stCreate.stVeInfo, file);
 		if (ret == HI_SUCCESS) {
-			int ch = stCreate.hVencChn & 0x7;
-			if (ch < VENC_MAX_CHN_NUM)
-				g_stVencChn[ch].pWhichFile = file;
+			/*
+			 * hVencChn is a 4KB-aligned kernel pointer returned by
+			 * VENC_DRV_CreateChn, so "& 0x7" always yields 0 and
+			 * would alias all channels to slot 0.  Instead, search
+			 * linearly for the slot whose hVEncHandle was just set.
+			 */
+			int ch;
+			for (ch = 0; ch < VENC_MAX_CHN_NUM; ch++) {
+				if (g_stVencChn[ch].hVEncHandle == stCreate.hVencChn) {
+					g_stVencChn[ch].pWhichFile = file;
+					break;
+				}
+			}
 		}
 		mutex_unlock(&g_venc_ioctl_mutex);
 
@@ -159,9 +169,18 @@ static long venc_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		mutex_lock(&g_venc_ioctl_mutex);
 		ret = VENC_DRV_DestroyChn(handle);
 		if (ret == HI_SUCCESS) {
-			int ch = handle & 0x7;
-			if (ch < VENC_MAX_CHN_NUM && g_stVencChn[ch].pWhichFile == file)
-				g_stVencChn[ch].pWhichFile = NULL;
+			/*
+			 * Same pointer-alignment issue as CREATE_CHN: search
+			 * linearly for the slot matching this handle to clear it.
+			 */
+			int ch;
+			for (ch = 0; ch < VENC_MAX_CHN_NUM; ch++) {
+				if (g_stVencChn[ch].hVEncHandle == handle &&
+				    g_stVencChn[ch].pWhichFile == file) {
+					g_stVencChn[ch].pWhichFile = NULL;
+					break;
+				}
+			}
 		}
 		mutex_unlock(&g_venc_ioctl_mutex);
 		break;

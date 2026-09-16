@@ -348,6 +348,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    int test_failed = 0;
     for (int cycle = 1; cycle <= stress_cycles; cycle++) {
         if (stress_cycles > 1) {
             printf("\n--- Stress Cycle %d / %d ---\n", cycle, stress_cycles);
@@ -516,16 +517,27 @@ int main(int argc, char *argv[]) {
                cycle, frames_encoded, total_time, avg_fps, (unsigned long long)total_bytes,
                total_time > 0 ? (total_bytes * 8.0 / total_time / 1000.0) : 0);
 
+        if (frames_encoded < num_frames) {
+            fprintf(stderr, "[VENC_TEST] FAILED: Only %d/%d frames encoded!\n", frames_encoded, num_frames);
+            test_failed = 1;
+        }
+
         if (fout) {
             fclose(fout);
             fout = NULL;
         }
 
         venc_session_destroy(&session);
+        if (test_failed) break;
     }
 
     if (fin_yuv) fclose(fin_yuv);
     close(venc_fd);
+    if (test_failed) {
+        fprintf(stderr, "[VENC_TEST] Run ended with errors!\n");
+        return 1;
+    }
     printf("[VENC_TEST] All cycles completed successfully!\n");
     return 0;
 }
+

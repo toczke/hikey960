@@ -85,6 +85,18 @@ LADDER_STEPS = [
         description="4x concurrent 1080p30 H.264 streams, 5x loop"
     ),
     LadderStep(
+        name="step5_h264_4k_uhd_3840x2160",
+        codec="h264",
+        width=3840,
+        height=2160,
+        fps=30,
+        num_frames=30,
+        bitrate=20000000,
+        concurrency=1,
+        iterations=1,
+        description="Target maximum 4K UHD H.264 3840x2160@30fps (hardware limit min_dim<=2160)"
+    ),
+    LadderStep(
         name="step5_h264_3840x2400_30fps",
         codec="h264",
         width=3840,
@@ -94,7 +106,19 @@ LADDER_STEPS = [
         bitrate=20000000,
         concurrency=1,
         iterations=1,
-        description="Target maximum resolution H.264 3840x2400@30fps"
+        description="Target maximum resolution H.264 3840x2400@30fps (exceeds hardware limit min_dim<=2160)"
+    ),
+    LadderStep(
+        name="step5_hevc_4k_uhd_3840x2160",
+        codec="hevc",
+        width=3840,
+        height=2160,
+        fps=30,
+        num_frames=30,
+        bitrate=20000000,
+        concurrency=1,
+        iterations=1,
+        description="Target maximum 4K UHD H.265 3840x2160@30fps"
     ),
     LadderStep(
         name="step5_hevc_3840x2400_30fps",
@@ -106,7 +130,7 @@ LADDER_STEPS = [
         bitrate=20000000,
         concurrency=1,
         iterations=1,
-        description="Target maximum resolution H.265 3840x2400@30fps"
+        description="Target maximum resolution H.265 3840x2400@30fps (exceeds hardware limit min_dim<=2160)"
     ),
 ]
 
@@ -133,7 +157,14 @@ def probe_stream(file_path: str) -> dict:
         data = json.loads(res.stdout)
         streams = data.get("streams", [])
         if streams:
-            return streams[0]
+            info = streams[0]
+            try:
+                nb = int(info.get("nb_read_frames", 0) or 0)
+            except Exception:
+                nb = 0
+            if nb == 0 or info.get("width", 0) == 0:
+                return {"error": f"Invalid stream geometry or frame count: frames={nb}, width={info.get('width')}", "raw": info}
+            return info
         return {"error": "no streams found"}
     except Exception as e:
         return {"error": str(e)}
