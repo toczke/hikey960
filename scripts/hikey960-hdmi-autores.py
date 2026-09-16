@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 """
 HiKey960 HDMI Dynamic Mode Auto-Negotiator.
-Detects connected display modes via DRM/KMS, filters by ADV7533 hardware limits
-(pixel clock <= 80MHz) and consumer TV compatibility (>= 50Hz), and selects
+Detects connected display modes via DRM/KMS, filters by ADV7535 hardware limits
+(pixel clock <= 148.5 MHz) and consumer TV compatibility (>= 48 Hz), and selects
 the highest working resolution.
+
+NOTE: The SoC bridge chip is ADV7535 (compatible = "adi,adv7535","adi,adv7533").
+      Kernel patch 0008 raises adv7533_chip_info.max_mode_clock_khz to 148500 kHz
+      and adv7533_mode_valid() allows 4-lane configs up to 148500 kHz (1080p60).
+      DSI PHY computes lane_clock = mode.clock * 24 / 4 = 148500*6 = 891000 kHz,
+      within the ADV7535 max_lane_freq_khz = 891000.
 """
 
 import sys
@@ -12,7 +18,9 @@ import re
 import subprocess
 
 WESTON_INI_PATH = "/etc/xdg/weston/weston.ini"
-MAX_PIXEL_CLOCK_KHZ = 80000  # ADV7533 hardware silicon limit: 80.0 MHz
+# ADV7535 silicon limit: 148.5 MHz pixel clock (1920x1080@60 = exactly 148500 kHz)
+# Kernel patch 0008 enforces this; DSI mode_valid uses strict >, so 148500 passes.
+MAX_PIXEL_CLOCK_KHZ = 148500
 MIN_REFRESH_RATE_HZ = 48.0   # Standard TV compatibility (50Hz / 59.94Hz / 60Hz)
 
 def get_connected_modes():
@@ -46,7 +54,8 @@ def get_connected_modes():
 
 def find_best_mode(modes):
     if not modes:
-        return {"w": 1280, "h": 720, "fps": 60.0, "pclk": 74250}
+        # Fallback when modetest fails — ADV7535 supports 1080p60
+        return {"w": 1920, "h": 1080, "fps": 60.0, "pclk": 148500}
 
     # Filter by hardware limits and TV compatibility
     valid = [
@@ -55,8 +64,8 @@ def find_best_mode(modes):
     ]
 
     if not valid:
-        # Fallback to standard 720p60 if no modes passed filter
-        return {"w": 1280, "h": 720, "fps": 60.0, "pclk": 74250}
+        # Fallback to 1080p60 if no modes pass filter (e.g. modetest returns garbage)
+        return {"w": 1920, "h": 1080, "fps": 60.0, "pclk": 148500}
 
     # Detect preferred aspect ratio from display EDID
     preferred_aspect = 16.0 / 9.0  # default
@@ -82,6 +91,7 @@ def update_weston_config(best_mode):
 
     content = f"""[core]
 backend=drm-backend.so
+require-input=false
 shell=desktop-shell.so
 idle-time=0
 
