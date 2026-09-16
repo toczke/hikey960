@@ -10,9 +10,7 @@
 | Subsystem | Source Form | Kernel Interface | Layout Risk Verdict | Bring-Up Action / Status |
 |---|---|---|---|---|
 | **Decoder (`vdec`) Modern Glue** | 9 editable `.c` files (`omxvdec/`) | Linux 7.1 native DMA (`dma_alloc_coherent`), dma_buf, modern platform driver | **LOW RISK** (Real modern C) | **VERIFIED ON SILICON**: Operates cleanly on Linux 7.1.13; teardown UAF resolved. |
-| **Decoder (`vdec`) Firmware HAL** | 38 compiled `.S` assembly files (`vfmw/`) | Internal `vfmw_osal` and `MEM_Phy2Vir`/`Vir2Phy` abstraction | **LINKAGE-ONLY RISK** (Safe to shim) | **VERIFIED ON SILICON**: 60/60 frames on VP8, HEVC Main/Main10, MPEG-2 with SSIM > 0.985. |
-| **Encoder (`venc`) Driver & HAL** | 12 compiled `.S` assembly files (0 `.c` files) | Direct calls to 4.9 ION, FLATMEM `mem_map`, 4.9 `struct platform_driver` | **CRITICAL STRUCT-LAYOUT RISK** (3 OSAL/Platform files) | **PHASE 4 ACTIVE**: Modern C glue replaces `hi_drv_mem.S`, `drv_venc_intf.S`, `venc_regulator.S`. Core encoding `.S` files preserved. |
-| **ION Shim (`ion_compat.c`)** | Modern C linkage shim | Stubs returning `NULL` / no-op | **BROKEN FOR RUNTIME** | Must NOT be called by venc runtime memory paths. |
+| **Encoder (`venc`) Driver & HAL** | 3 modern C files + 9 compiled `.S` files | Modern Linux 7.1 platform_driver, cdev, dma_alloc_coherent; core datapath is frozen assembly | **FROZEN ASSEMBLY (HIGH RISK)** | `drv_venc_intf.S`, `hi_drv_mem.S`, `venc_regulator.S` REMOVED and replaced with native C. Core bitstream encoding logic remains frozen 2017 assembly (HIGH RISK). |
 
 ### Safety Directive
 > **CRITICAL SAFETY PROTOCOL:** No `.S` file marked `STRUCT-LAYOUT RISK` may be loaded on real hardware without a modern C replacement wrapper. Loading the un-shimmed `venc` assembly directly against Linux 7.1 will cause severe kernel memory corruption or AXI interconnect lockup due to FLATMEM address corruption and struct layout changes. Phase 4 replaces the 3 high-risk files (`hi_drv_mem.S`, `drv_venc_intf.S`, `venc_regulator.S`) with modern C glue before enabling `venc@e8900000` in the device tree.
@@ -94,18 +92,18 @@
 
 | File | Category | External Kernel Symbols Called | Risk Verdict | Handling Strategy |
 |---|---|---|---|---|
-| `hi_drv_mem.S` | Memory Management | Calls deprecated Android ION (`ion_alloc`, `hisi_ion_client_create`, `ion_map_iommu`) and FLATMEM `mem_map` | **FATAL LANDMINE** | **REPLACE** with modern C `venc_memory.c` (`dma_alloc_coherent`, `dma_buf`). |
-| `drv_venc_intf.S` | Platform & Device Interface | Linux 4.9 `__platform_driver_register`, `platform_device_register`, legacy `__class_create`, `__ioremap` | **FATAL LANDMINE** | **REPLACE** with modern C `venc_platform.c` (standard Linux 7.1 `platform_driver` & `/dev/hi_venc`). |
-| `venc_regulator.S` | Power & Clock Control | Calls `hisi_ion_enable_iommu`, legacy ION APIs, obsolete DTS properties | **FATAL LANDMINE** | **REPLACE** with modern C `venc_regulator.c` (`clk_venc`, `ldo_venc`, `VENC_SetDtsConfig`). |
-| `drv_venc_efl.S` | Rate Control & Reg Config | `__mutex_init`, `mutex_lock`, `mutex_unlock`, `HI_PRINT`, `vfree`, `vmalloc` | **SAFE TO LINK** | **KEEP**: Mutex is 32-bytes matching 7.1 layout; internal state machine is intact. |
-| `drv_omxvenc.S` | OMX Interface Layer | `HI_PRINT`, `__stack_chk_fail`, `memcpy`, `memset` | **LINKAGE-ONLY** | **KEEP**: Clean internal OMX message queue and state dispatch. |
-| `drv_omxvenc_efl.S` | OMX EFL Bridge | `HI_PRINT`, `__stack_chk_fail`, `memcpy`, `memset` | **LINKAGE-ONLY** | **KEEP**: Pure algorithmic mapping. |
-| `drv_venc.S` | Core Encoding Driver | `__raw_spin_lock_init`, `_raw_spin_lock_irqsave`, `_raw_spin_unlock_irqrestore`, `memcpy`, `printk` | **LINKAGE-ONLY** | **KEEP**: Channel state machine and ioctl execution routines. |
-| `drv_venc_buf_mng.S` | Stream Buffer Manager | Internal only | **LINKAGE-ONLY** | **KEEP**: Stream bitstream ring-buffer math. |
-| `drv_venc_osal.S` | OS Abstraction Layer | Spinlocks, waitqueues, kthreads, IRQs | **LINKAGE-ONLY** | **KEEP**: Standard OSAL wrappers; symbols satisfied by kernel export table. |
-| `drv_venc_proc.S` | Procfs Diagnostics | `seq_printf`, `single_open` | **LINKAGE-ONLY** | **KEEP**: Read-only debug information. |
-| `drv_venc_queue_mng.S` | Frame Queue Manager | Waitqueues, spinlocks, `memcpy`, `memset`, `msleep` | **LINKAGE-ONLY** | **KEEP**: Safe internal frame queuing. |
-| `hal_venc.S` | Hardware Register HAL | `filp_close`, `filp_open`, `get_random_bytes`, `memcpy`, `msleep` | **LINKAGE-ONLY** | **KEEP**: Direct hardware programming routines. |
+| `hi_drv_mem.S` | Memory Management | Legacy ION & FLATMEM `mem_map` (41,752 lines) | **REMOVED (Zero Risk)** | Replaced with native C `venc_memory.c` (`dma_alloc_coherent`, `dma_buf`). |
+| `drv_venc_intf.S` | Platform & Device Interface | Linux 4.9 driver structs & registration (42,970 lines) | **REMOVED (Zero Risk)** | Replaced with native C `venc_platform.c` (standard Linux 7.1 `platform_driver` & `/dev/hi_venc`). |
+| `venc_regulator.S` | Power & Clock Control | Calls `hisi_ion_enable_iommu`, legacy ION | **REMOVED (Zero Risk)** | Replaced with native C `venc_regulator.c` (`clk_venc`, `ldo_venc`, `VENC_SetDtsConfig`). |
+| `drv_venc_efl.S` | Rate Control & Reg Config | `__mutex_init`, `mutex_lock`, `mutex_unlock`, `HI_PRINT`, `msleep` | **FROZEN ASSEMBLY (HIGH RISK)** | Preserved Huawei binary; bounded 100ms timeout added to `WaitingIsr` loop to prevent deadlock. |
+| `drv_venc.S` | Core Encoding Driver | Spinlocks, IRQ save/restore, internal channel structs | **FROZEN ASSEMBLY (HIGH RISK)** | Preserved Huawei binary; channel lookup hardened with `0xFFFFFFFF` sentinel. |
+| `hal_venc.S` | Hardware Register HAL | Direct Kirin 960 VEDU register reads/writes | **FROZEN ASSEMBLY (HIGH RISK)** | Preserved Huawei binary; hardware register access at `0xe8900000`. |
+| `drv_venc_buf_mng.S` | Stream Buffer Manager | Buffer queue and slice buffer math | **FROZEN ASSEMBLY (HIGH RISK)** | Preserved Huawei binary; stream queue management. |
+| `drv_venc_queue_mng.S` | Frame Queue Manager | Waitqueues, spinlocks, internal queues | **FROZEN ASSEMBLY (HIGH RISK)** | Preserved Huawei binary; frame queue management. |
+| `drv_omxvenc.S` | OMX Interface Layer | OpenMAX message passing and channel state dispatch | **FROZEN ASSEMBLY (HIGH RISK)** | Preserved Huawei binary; userspace ioctl translation. |
+| `drv_omxvenc_efl.S` | OMX EFL Bridge | Internal algorithmic mapping between OMX and hardware | **FROZEN ASSEMBLY (HIGH RISK)** | Preserved Huawei binary. |
+| `drv_venc_osal.S` | OS Abstraction Layer | Spinlocks, waitqueues, kthreads, IRQ 67 registration | **FROZEN ASSEMBLY (HIGH RISK)** | Preserved Huawei binary; calls standard kernel IRQ and waitqueue APIs. |
+| `drv_venc_proc.S` | Procfs Diagnostics | `seq_printf`, `single_open` | **FROZEN ASSEMBLY (LOW RISK)** | Preserved Huawei binary; read-only debug info. |
 
 ---
 
