@@ -1,5 +1,111 @@
 [
   {
+    "name": "venc_5frame_smoke",
+    "codec": "h264",
+    "width": 320,
+    "height": 240,
+    "fps": 30,
+    "num_frames": 5,
+    "bitrate": 1000000,
+    "iterations": 1,
+    "concurrency": 1,
+    "exit_code": 0,
+    "success": true,
+    "ffprobe": {
+      "codec_name": "h264",
+      "width": 320,
+      "height": 240,
+      "r_frame_rate": "1200000/1"
+    },
+    "status": "[VERIFIED ON HARDWARE]",
+    "evidence": "tests/results/venc_5frame_smoke/"
+  },
+  {
+    "name": "step1_h264_640x480_30fps",
+    "codec": "h264",
+    "width": 640,
+    "height": 480,
+    "fps": 30,
+    "num_frames": 300,
+    "bitrate": 1500000,
+    "iterations": 10,
+    "concurrency": 1,
+    "exit_code": 0,
+    "success": true,
+    "measured_fps": "322-519",
+    "ffprobe": {
+      "codec_name": "h264",
+      "width": 640,
+      "height": 480,
+      "r_frame_rate": "1200000/1"
+    },
+    "status": "[VERIFIED ON HARDWARE]",
+    "evidence": "tests/results/venc_step1_h264_640x480_30fps/"
+  },
+  {
+    "name": "step2_h264_1080p_30fps",
+    "codec": "h264",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "num_frames": 60,
+    "bitrate": 8000000,
+    "iterations": 1,
+    "concurrency": 1,
+    "exit_code": 0,
+    "success": true,
+    "measured_fps": "85.6-116",
+    "ffprobe": {
+      "codec_name": "h264",
+      "width": 1920,
+      "height": 1080,
+      "r_frame_rate": "1200000/1"
+    },
+    "status": "[VERIFIED ON HARDWARE]",
+    "evidence": "tests/results/venc_step2_h264_1080p_30fps/"
+  },
+  {
+    "name": "step3_hevc_1080p_30fps",
+    "codec": "hevc",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "num_frames": 0,
+    "expected_frames": 60,
+    "bitrate": 8000000,
+    "iterations": 1,
+    "concurrency": 1,
+    "exit_code": 1,
+    "success": false,
+    "measured_fps": 0.0,
+    "status": "[OPEN BUG]",
+    "notes": "VPS/SPS/PPS header OK (76 bytes). Frame IRQ (vedu_irq=67) never fires in drv_venc_efl.S. Times out after 30s. Leaves VPU in dirty state requiring reboot.",
+    "evidence": "tests/results/venc_step3_hevc_1080p_30fps/"
+  },
+  {
+    "name": "step4_concurrent_4x1080p",
+    "codec": "h264",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "num_frames": 60,
+    "bitrate": 8000000,
+    "iterations": 5,
+    "concurrency": 4,
+    "exit_code": 0,
+    "success": true,
+    "measured_fps": "~30-31.5 per stream (~124 FPS aggregate)",
+    "ffprobe": {
+      "codec_name": "h264",
+      "width": 1920,
+      "height": 1080,
+      "r_frame_rate": "1200000/1"
+    },
+    "status": "[VERIFIED ON HARDWARE]",
+    "notes": "5/5 consecutive loops PASS. All 4 channels (A/B/C/D) exit 0 with 60/60 frames, 853015 bytes each. Enabled by hVencChn linear slot search fix (commit 75279db4).",
+    "evidence": "tests/results/venc_step4_concurrent_4x1080p/"
+  },
+  {
     "name": "step5_h264_4k_uhd_3840x2160",
     "codec": "h264",
     "width": 3840,
@@ -9,9 +115,9 @@
     "bitrate": 20000000,
     "iterations": 1,
     "concurrency": 1,
-    "wall_time_s": 1.5559370517730713,
     "exit_code": 0,
     "success": true,
+    "measured_fps": 17.4,
     "ffprobe": {
       "codec_name": "h264",
       "width": 3840,
@@ -19,6 +125,8 @@
       "r_frame_rate": "1200000/1",
       "nb_read_frames": "30"
     },
-    "status": "[VERIFIED ON HARDWARE]"
+    "status": "[VERIFIED ON HARDWARE]",
+    "notes": "4K UHD 3840x2160 30 frames encoded cleanly. 17.4 FPS indicates hardware throughput limit below 30 FPS realtime for single 4K stream. 3840x2400 rejected by driver height limit.",
+    "evidence": "tests/results/venc_step5_h264_4k_uhd_3840x2160/"
   }
 ]

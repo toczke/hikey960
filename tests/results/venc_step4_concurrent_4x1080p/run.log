@@ -1,310 +1,94 @@
---- Concurrent Iteration 1 ---
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn0.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffff872fb000 bufaddr=0xffff872fb000 phy=0xd4800000 kern=0xffff800092b94000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffff86f06000 bufaddr=0xffff86f06000 phy=0xd5200000 kern=0xffff80009357c000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffff86b11000 bufaddr=0xffff86b11000 phy=0xd6900000 kern=0xffff8000951dc000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffff8671c000 bufaddr=0xffff8671c000 phy=0xd7a00000 kern=0xffff800095cc1000 fd=12
-[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff872fb000 phy=0xd4800000 kern=0xffff800092b94000 len=23 out_idx=0
-[VENC_TEST] MSG: out_idx=0 len=23 offset=0 flags=0x00000082 [00 00 00 01 67 64 00 28 ac b4 03 c0 11 2f 2a 00 ]
-[VENC_TEST] Header / CodecConfig received (23 bytes, flags=0x00000082)
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn2.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffff9887b000 bufaddr=0xffff9887b000 phy=0xd9e00000 kern=0xffff800098069000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffff98486000 bufaddr=0xffff98486000 phy=0xda600000 kern=0xffff800098855000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffff98091000 bufaddr=0xffff98091000 phy=0xdaa00000 kern=0xffff800098c4b000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffff97c9c000 bufaddr=0xffff97c9c000 phy=0xdae00000 kern=0xffff800099041000 fd=12
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.02 s (0.0 FPS), 0 total bytes (0.0 kbps)
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn3.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffff97aab000 bufaddr=0xffff97aab000 phy=0xd8100000 kern=0xffff8000967a6000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffff976b6000 bufaddr=0xffff976b6000 phy=0xd9000000 kern=0xffff80009728b000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffff972c1000 bufaddr=0xffff972c1000 phy=0xd9a00000 kern=0xffff800097c73000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffff96ecc000 bufaddr=0xffff96ecc000 phy=0xda200000 kern=0xffff80009845f000 fd=12
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.03 s (0.0 FPS), 0 total bytes (0.0 kbps)
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn1.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffff7e92b000 bufaddr=0xffff7e92b000 phy=0xd6500000 kern=0xffff800094aed000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffff7e536000 bufaddr=0xffff7e536000 phy=0xd7300000 kern=0xffff8000958cb000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffff7e141000 bufaddr=0xffff7e141000 phy=0xd8500000 kern=0xffff8000963b0000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffff7dd4c000 bufaddr=0xffff7dd4c000 phy=0xd8c00000 kern=0xffff800096e95000 fd=12
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.00 s (0.0 FPS), 0 total bytes (0.0 kbps)
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.00 s (0.0 FPS), 23 total bytes (0.0 kbps)
+=== Loop 1 START ===
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 31.3 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 1.92 s (31.3 FPS), 853015 total bytes (3559.7 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_B_EXIT:0
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 30.9 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 1.94 s (30.9 FPS), 853015 total bytes (3510.4 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_D_EXIT:0
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 30.7 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 1.96 s (30.7 FPS), 853015 total bytes (3487.3 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_C_EXIT:0
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 30.7 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 1.96 s (30.7 FPS), 853015 total bytes (3488.3 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_A_EXIT:0
+=== Loop 1 DONE ===
+=== Loop 2 START ===
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 31.5 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 1.90 s (31.5 FPS), 853015 total bytes (3583.7 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_B_EXIT:0
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 31.4 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 1.91 s (31.4 FPS), 853015 total bytes (3566.6 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_A_EXIT:0
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 31.3 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 1.91 s (31.3 FPS), 853015 total bytes (3564.8 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_C_EXIT:0
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 31.1 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 1.93 s (31.1 FPS), 853015 total bytes (3538.6 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_D_EXIT:0
+=== Loop 2 DONE ===
+=== Loop 3 START ===
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 31.5 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 1.90 s (31.5 FPS), 853015 total bytes (3587.5 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_A_EXIT:0
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 31.3 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 1.91 s (31.3 FPS), 853015 total bytes (3564.7 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_B_EXIT:0
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 31.1 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 1.93 s (31.1 FPS), 853015 total bytes (3537.9 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_D_EXIT:0
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 31.1 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 1.93 s (31.1 FPS), 853015 total bytes (3539.7 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_C_EXIT:0
+=== Loop 3 DONE ===
+=== Loop 4 START ===
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 30.2 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 1.98 s (30.2 FPS), 853015 total bytes (3439.6 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_A_EXIT:0
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 30.0 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 2.00 s (30.0 FPS), 853015 total bytes (3410.3 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_D_EXIT:0
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 30.0 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 2.00 s (30.0 FPS), 853015 total bytes (3415.8 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_B_EXIT:0
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 29.9 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 2.01 s (29.9 FPS), 853015 total bytes (3400.4 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_C_EXIT:0
+=== Loop 4 DONE ===
+=== Loop 5 START ===
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 29.8 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 2.01 s (29.8 FPS), 853015 total bytes (3393.6 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_D_EXIT:0
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 29.7 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 2.02 s (29.7 FPS), 853015 total bytes (3378.6 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_C_EXIT:0
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 29.8 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 2.01 s (29.8 FPS), 853015 total bytes (3392.7 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_A_EXIT:0
+[VENC_TEST] Encoded frame   60 /   60 ( 11591 bytes, flags=0x00000010, Total:   853015 bytes, 29.8 FPS)
+[VENC_TEST] Cycle 1 Complete: 60 frames in 2.01 s (29.8 FPS), 853015 total bytes (3389.7 kbps)
+[VENC_TEST] All cycles completed successfully!
+CH_B_EXIT:0
+=== Loop 5 DONE ===
 
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] Run ended with errors!
-[VENC_TEST] Run ended with errors!
-[VENC_TEST] Run ended with errors!
-[VENC_TEST] Run ended with errors!
-
---- Concurrent Iteration 2 ---
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn0.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffffafe5b000 bufaddr=0xffffafe5b000 phy=0xd4800000 kern=0xffff8000897e9000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffffafa66000 bufaddr=0xffffafa66000 phy=0xd4f00000 kern=0xffff80008b0e4000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffffaf671000 bufaddr=0xffffaf671000 phy=0xd6900000 kern=0xffff80008cb1e000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffffaf27c000 bufaddr=0xffffaf27c000 phy=0xd7a00000 kern=0xffff80009279c000 fd=12
-[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffffafe5b000 phy=0xd4800000 kern=0xffff8000897e9000 len=23 out_idx=0
-[VENC_TEST] MSG: out_idx=0 len=23 offset=0 flags=0x00000082 [00 00 00 01 67 64 00 28 ac b4 03 c0 11 2f 2a 00 ]
-[VENC_TEST] Header / CodecConfig received (23 bytes, flags=0x00000082)
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn2.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffffac04b000 bufaddr=0xffffac04b000 phy=0xd6500000 kern=0xffff80008bee7000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffffabc56000 bufaddr=0xffffabc56000 phy=0xd7300000 kern=0xffff800091fb0000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffffab861000 bufaddr=0xffffab861000 phy=0xd8500000 kern=0xffff800092b92000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffffab46c000 bufaddr=0xffffab46c000 phy=0xd9000000 kern=0xffff800093677000 fd=12
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.02 s (0.0 FPS), 0 total bytes (0.0 kbps)
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn3.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffff86cfb000 bufaddr=0xffff86cfb000 phy=0xda200000 kern=0xffff80009484b000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffff86906000 bufaddr=0xffff86906000 phy=0xda600000 kern=0xffff800094c41000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffff86511000 bufaddr=0xffff86511000 phy=0xdaa00000 kern=0xffff800095037000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffff8611c000 bufaddr=0xffff8611c000 phy=0xdae00000 kern=0xffff80009542d000 fd=12
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.02 s (0.0 FPS), 0 total bytes (0.0 kbps)
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn1.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffffac22b000 bufaddr=0xffffac22b000 phy=0xd7e00000 kern=0xffff8000923a6000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffffabe36000 bufaddr=0xffffabe36000 phy=0xd8900000 kern=0xffff800093281000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffffaba41000 bufaddr=0xffffaba41000 phy=0xd9700000 kern=0xffff800093d66000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffffab64c000 bufaddr=0xffffab64c000 phy=0xd9e00000 kern=0xffff800094455000 fd=12
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.00 s (0.0 FPS), 0 total bytes (0.0 kbps)
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.01 s (0.0 FPS), 23 total bytes (0.0 kbps)
-
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] Run ended with errors!
-[VENC_TEST] Run ended with errors!
-[VENC_TEST] Run ended with errors!
-[VENC_TEST] Run ended with errors!
-
---- Concurrent Iteration 3 ---
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn1.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffff878eb000 bufaddr=0xffff878eb000 phy=0xd5e00000 kern=0xffff80008bf72000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffff874f6000 bufaddr=0xffff874f6000 phy=0xd7100000 kern=0xffff80008caac000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffff87101000 bufaddr=0xffff87101000 phy=0xd7800000 kern=0xffff800090597000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffff86d0c000 bufaddr=0xffff86d0c000 phy=0xd7f00000 kern=0xffff800090c86000 fd=12
-[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff878eb000 phy=0xd5e00000 kern=0xffff80008bf72000 len=23 out_idx=0
-[VENC_TEST] MSG: out_idx=0 len=23 offset=0 flags=0x00000082 [00 00 00 01 67 64 00 28 ac b4 03 c0 11 2f 2a 00 ]
-[VENC_TEST] Header / CodecConfig received (23 bytes, flags=0x00000082)
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.01 s (0.0 FPS), 23 total bytes (0.0 kbps)
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn2.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffff903bb000 bufaddr=0xffff903bb000 phy=0xd9e00000 kern=0xffff8000942ff000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffff8ffc6000 bufaddr=0xffff8ffc6000 phy=0xda600000 kern=0xffff800094aeb000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffff8fbd1000 bufaddr=0xffff8fbd1000 phy=0xdaa00000 kern=0xffff800094ee1000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffff8f7dc000 bufaddr=0xffff8f7dc000 phy=0xdae00000 kern=0xffff8000952d7000 fd=12
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.04 s (0.0 FPS), 0 total bytes (0.0 kbps)
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn3.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffffbab0b000 bufaddr=0xffffbab0b000 phy=0xd8900000 kern=0xffff800092e32000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffffba716000 bufaddr=0xffffba716000 phy=0xd9000000 kern=0xffff800093521000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffffba321000 bufaddr=0xffffba321000 phy=0xd9700000 kern=0xffff800093f09000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffffb9f2c000 bufaddr=0xffffb9f2c000 phy=0xda200000 kern=0xffff8000946f5000 fd=12
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.02 s (0.0 FPS), 0 total bytes (0.0 kbps)
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn0.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffff9112b000 bufaddr=0xffff9112b000 phy=0xd3600000 kern=0xffff800088ba9000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffff90d36000 bufaddr=0xffff90d36000 phy=0xd4900000 kern=0xffff8000897e9000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffff90941000 bufaddr=0xffff90941000 phy=0xd5000000 kern=0xffff80008b072000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffff9054c000 bufaddr=0xffff9054c000 phy=0xd5700000 kern=0xffff80008bb7c000 fd=12
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.01 s (0.0 FPS), 0 total bytes (0.0 kbps)
-
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] Run ended with errors!
-[VENC_TEST] Run ended with errors!
-[VENC_TEST] Run ended with errors!
-[VENC_TEST] Run ended with errors!
-
---- Concurrent Iteration 4 ---
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn1.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffffafb8b000 bufaddr=0xffffafb8b000 phy=0xd4500000 kern=0xffff800088ea2000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffffaf796000 bufaddr=0xffffaf796000 phy=0xd4c00000 kern=0xffff80008a432000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffffaf3a1000 bufaddr=0xffffaf3a1000 phy=0xd5300000 kern=0xffff80008a828000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffffaefac000 bufaddr=0xffffaefac000 phy=0xd5a00000 kern=0xffff80008bb7c000 fd=12
-[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffffafb8b000 phy=0xd4500000 kern=0xffff800088ea2000 len=23 out_idx=0
-[VENC_TEST] MSG: out_idx=0 len=23 offset=0 flags=0x00000082 [00 00 00 01 67 64 00 28 ac b4 03 c0 11 2f 2a 00 ]
-[VENC_TEST] Header / CodecConfig received (23 bytes, flags=0x00000082)
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn2.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffffb8f2b000 bufaddr=0xffffb8f2b000 phy=0xd9a00000 kern=0xffff800094aeb000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffffb8b36000 bufaddr=0xffffb8b36000 phy=0xda200000 kern=0xffff800095ac3000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffffb8741000 bufaddr=0xffffb8741000 phy=0xdaa00000 kern=0xffff8000962af000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffffb834c000 bufaddr=0xffffb834c000 phy=0xdae00000 kern=0xffff8000966a5000 fd=12
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.02 s (0.0 FPS), 0 total bytes (0.0 kbps)
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn3.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffffb0f3b000 bufaddr=0xffffb0f3b000 phy=0xd8800000 kern=0xffff800093521000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffffb0b46000 bufaddr=0xffffb0b46000 phy=0xd9300000 kern=0xffff8000942ff000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffffb0751000 bufaddr=0xffffb0751000 phy=0xd9e00000 kern=0xffff8000956cd000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffffb035c000 bufaddr=0xffffb035c000 phy=0xda600000 kern=0xffff800095eb9000 fd=12
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.04 s (0.0 FPS), 0 total bytes (0.0 kbps)
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn0.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffffa1b2b000 bufaddr=0xffffa1b2b000 phy=0xd6d00000 kern=0xffff80008bf72000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffffa1736000 bufaddr=0xffffa1736000 phy=0xd7400000 kern=0xffff80008caac000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffffa1341000 bufaddr=0xffffa1341000 phy=0xd7e00000 kern=0xffff800092b39000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffffa0f4c000 bufaddr=0xffffa0f4c000 phy=0xd8c00000 kern=0xffff800093c10000 fd=12
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.02 s (0.0 FPS), 0 total bytes (0.0 kbps)
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.01 s (0.0 FPS), 23 total bytes (0.0 kbps)
-
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] Run ended with errors!
-[VENC_TEST] Run ended with errors!
-[VENC_TEST] Run ended with errors!
-[VENC_TEST] Run ended with errors!
-
---- Concurrent Iteration 5 ---
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn0.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffffb10ab000 bufaddr=0xffffb10ab000 phy=0xd3600000 kern=0xffff80008826b000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffffb0cb6000 bufaddr=0xffffb0cb6000 phy=0xd4900000 kern=0xffff8000897e9000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffffb08c1000 bufaddr=0xffffb08c1000 phy=0xd5300000 kern=0xffff80008a72b000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffffb04cc000 bufaddr=0xffffb04cc000 phy=0xd5a00000 kern=0xffff80008b36b000 fd=12
-[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffffb10ab000 phy=0xd3600000 kern=0xffff80008826b000 len=23 out_idx=0
-[VENC_TEST] MSG: out_idx=0 len=23 offset=0 flags=0x00000082 [00 00 00 01 67 64 00 28 ac b4 03 c0 11 2f 2a 00 ]
-[VENC_TEST] Header / CodecConfig received (23 bytes, flags=0x00000082)
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn3.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffff9a25b000 bufaddr=0xffff9a25b000 phy=0xd8200000 kern=0xffff8000943fc000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffff99e66000 bufaddr=0xffff99e66000 phy=0xd8d00000 kern=0xffff800096a9b000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffff99a71000 bufaddr=0xffff99a71000 phy=0xd9700000 kern=0xffff80009718a000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffff9967c000 bufaddr=0xffff9967c000 phy=0xd9e00000 kern=0xffff800097879000 fd=12
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.01 s (0.0 FPS), 0 total bytes (0.0 kbps)
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.03 s (0.0 FPS), 23 total bytes (0.0 kbps)
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn2.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffffaf27b000 bufaddr=0xffffaf27b000 phy=0xda200000 kern=0xffff800097c6f000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffffaee86000 bufaddr=0xffffaee86000 phy=0xda600000 kern=0xffff800098065000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffffaea91000 bufaddr=0xffffaea91000 phy=0xdaa00000 kern=0xffff80009845b000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffffae69c000 bufaddr=0xffffae69c000 phy=0xdae00000 kern=0xffff800098851000 fd=12
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.01 s (0.0 FPS), 0 total bytes (0.0 kbps)
-=================================================================
-[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
-[VENC_TEST] Codec: AVC / H.264 (h264)
-[VENC_TEST] Resolution: 1920x1080 @ 30 fps, Bitrate: 4000000 bps, GOP: 30
-[VENC_TEST] Frames: 60, Output: /tmp/step4_concurrent_4x1080p_chn1.h264, Stress Cycles: 1
-=================================================================
-[VENC_TEST] Out buf 0: ptr=0xffffafa4b000 bufaddr=0xffffafa4b000 phy=0xd6100000 kern=0xffff80008c7b3000 fd=9
-[VENC_TEST] Out buf 1: ptr=0xffffaf656000 bufaddr=0xffffaf656000 phy=0xd7400000 kern=0xffff8000933bb000 fd=10
-[VENC_TEST] Out buf 2: ptr=0xffffaf261000 bufaddr=0xffffaf261000 phy=0xd7e00000 kern=0xffff800094006000 fd=11
-[VENC_TEST] Out buf 3: ptr=0xffffaee6c000 bufaddr=0xffffaee6c000 phy=0xd8900000 kern=0xffff800094ee1000 fd=12
-[VENC_TEST] Cycle 1 Complete: 0 frames in 30.04 s (0.0 FPS), 0 total bytes (0.0 kbps)
-
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] TIMEOUT: No frames encoded after 30s! Aborting.
-[VENC_TEST] FAILED: Only 0/60 frames encoded!
-[VENC_TEST] Run ended with errors!
-[VENC_TEST] Run ended with errors!
-[VENC_TEST] Run ended with errors!
-[VENC_TEST] Run ended with errors!
-
+RESULT: 5/5 loops PASS — all 4 concurrent channels (A/B/C/D) exit:0, 60/60 frames encoded, 853015 bytes each
+Kernel: 7.1.13 (commit 75279db4 — hVencChn linear slot search fix)
+Date: 2026-09-16

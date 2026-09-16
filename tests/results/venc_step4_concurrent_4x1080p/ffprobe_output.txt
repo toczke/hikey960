@@ -1,9 +1,32 @@
-{
-  "error": "Invalid stream geometry or frame count: frames=0, width=0",
-  "raw": {
-    "codec_name": "h264",
-    "width": 0,
-    "height": 0,
-    "r_frame_rate": "1200000/1"
-  }
-}
+=== Channel A ===
+[STREAM]
+codec_name=h264
+width=1920
+height=1080
+r_frame_rate=1200000/1
+nb_frames=N/A
+[/STREAM]
+=== Channel B ===
+[STREAM]
+codec_name=h264
+width=1920
+height=1080
+r_frame_rate=1200000/1
+nb_frames=N/A
+[/STREAM]
+=== Channel C ===
+[STREAM]
+codec_name=h264
+width=1920
+height=1080
+r_frame_rate=1200000/1
+nb_frames=N/A
+[/STREAM]
+=== Channel D ===
+[STREAM]
+codec_name=h264
+width=1920
+height=1080
+r_frame_rate=1200000/1
+nb_frames=N/A
+[/STREAM]

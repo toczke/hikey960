@@ -111,7 +111,7 @@ The ARM Mali-G71 (Bifrost architecture) GPU is operational.
 
 ## 3. Hardware Video Acceleration (VPU — hi_vcodec)
 
-> **Overall status as of 2026-09-15: VDEC hardware decode operational and verified on Kirin 960 silicon across multiple codecs. VENC node disabled pending Phase 4 C glue.**
+> **Overall status as of 2026-09-16: VDEC hardware decode operational on Kirin 960 silicon across multiple codecs (VP8, HEVC, MPEG-2 100% verified; H.264 partial). VENC hardware encode operational on Kirin 960 silicon for H.264 up to 4K UHD and 4× concurrent 1080p30 (HEVC frame IRQ open bug).**
 
 ### 3.1 Decoder (VDEC)
 
@@ -129,16 +129,27 @@ Silicon stream verification was executed on physical HiKey960 hardware running L
 | `h264_baseline_320x240.264` | H.264 Baseline | 320×240 | 60 | 18 | `[BUILDS ONLY, UNTESTED]` | **SSIM = 0.969** vs CPU reference | [Run Log](../tests/results/h264_baseline_320x240/run.log) / [DMESG](../tests/results/h264_baseline_320x240/dmesg.log) / [Frames](../tests/results/h264_baseline_320x240/sample_frames/) | 42.6 FPS; 18 frames decoded before early EOS |
 | `h264_high_1080p30.264` | H.264 High | 1920×1080 | 60 | 33 | `[BUILDS ONLY, UNTESTED]` | Verified on silicon | [Run Log](../tests/results/h264_high_1080p30/run.log) / [DMESG](../tests/results/h264_high_1080p30/dmesg.log) | 36.8 FPS; 33 frames decoded before early EOS |
 | `mpeg4_720p30.m4v` | MPEG-4 | 1280×720 | 60 | 17 | `[BUILDS ONLY, UNTESTED]` | Verified on silicon | [Run Log](../tests/results/mpeg4_720p30/run.log) / [DMESG](../tests/results/mpeg4_720p30/dmesg.log) | 12.5 FPS; 17 frames decoded before early EOS |
-| `h264_main_720p30.264` | H.264 Main | 1280×720 | 60 | 0 | `[BUILDS ONLY, UNTESTED]` | Stalls on DPB buffer wait | [Run Log](../tests/results/h264_main_720p30/run.log) / [DMESG](../tests/results/h264_main_720p30/dmesg.log) | Decodes 28/60 frames when extra buffers (+7) allocated |
-| `h264_high_1080p60.264` | H.264 High | 1920×1080 | 120 | 0 | `[BUILDS ONLY, UNTESTED]` | Early EOS / DPB starvation | [Analysis](../tests/results/h264_high_1080p60/ANALYSIS.md) / [Run Log](../tests/results/h264_high_1080p60/run.log) / [DMESG](../tests/results/h264_high_1080p60/dmesg.log) | Decodes 66/120 in isolated run; stalls in batch run |
+| `h264_main_720p30.264` | H.264 Main | 1280×720 | 60 | 0 | `[BUILDS ONLY, UNTESTED]` | Stalls on DPB buffer wait | [Run Log](../tests/results/h264_main_720p30/run.log) / [DMESG](../tests/results/h264_main_720p30/dmesg.log) | Stalls on DPB buffer wait (`max_num=17`). UAF teardown bug fixed in commit 8284b26b; exits cleanly on timeout without kernel panic. |
+| `h264_high_1080p60.264` | H.264 High | 1920×1080 | 120 | 0 | `[BUILDS ONLY, UNTESTED]` | Early EOS / DPB starvation | [Analysis](../tests/results/h264_high_1080p60/ANALYSIS.md) / [Run Log](../tests/results/h264_high_1080p60/run.log) / [DMESG](../tests/results/h264_high_1080p60/dmesg.log) | Decodes 66/120 in isolated run; stalls in batch run. UAF teardown bug fixed in commit 8284b26b; exits cleanly on timeout without kernel panic. |
 
 ### 3.2 Encoder (VENC)
 
-Target capabilities:
-- H.265/H.264 at up to 3840×2400@30fps
+Target capabilities (Work Order 3):
+- H.265 and H.264, up to 3840×2400@30fps
 - 4× simultaneous 1080p30 streams
 
-**Current state:** The device tree node `venc@e8900000` is enabled (`status = "okay"` in `patches/0007-hikey960-vpu-node.patch`). `/dev/hi_venc` probes and registers successfully on Linux 7.1.13. Modern C platform, memory, and regulator drivers (`venc_platform.c`, `venc_memory.c`, `venc_regulator.c`) replaced `drv_venc_intf.S` and `hi_drv_mem.S`. Full hardware encoding ladder is undergoing verification per Work Order 3.
+**Current hardware status:** The device tree node `venc@e8900000` is enabled (`status = "okay"` in `patches/0007-hikey960-vpu-node.patch`). `/dev/hi_venc` probes and registers successfully on Linux 7.1.13. Modern C platform, memory, and regulator drivers (`venc_platform.c`, `venc_memory.c`, `venc_regulator.c`) replaced `drv_venc_intf.S` and `hi_drv_mem.S`. Concurrent channel slot aliasing bug was diagnosed and resolved via handle search linear lookup in commit `75279db4`.
+
+Verification results from physical HiKey960 hardware running Linux 7.1.13 (summarized in [`tests/results/venc_hardware_results.json`](../tests/results/venc_hardware_results.json)):
+
+| Step | Target | Hardware Status | Measured FPS | Bitstream / ffprobe | Evidence Links | Performance & Notes |
+|---|---|---|---|---|---|---|
+| Smoke | 320×240@30fps, 5 frames | `[VERIFIED ON HARDWARE — tests/results/venc_5frame_smoke/]` | 301.2 FPS | 7,853 B; H.264 320×240 verified | [Run Log](../tests/results/venc_5frame_smoke/run.log) / [DMESG](../tests/results/venc_5frame_smoke/dmesg.log) / [Output](../tests/results/venc_5frame_smoke/output.h264) | 5/5 frames; SPS/PPS CODECCONFIG accounting fix verified |
+| Step 1 | 640×480@30fps, 300 frames (10× loop) | `[VERIFIED ON HARDWARE — tests/results/venc_step1_h264_640x480_30fps/]` | 322–519 FPS | 78,543 B/iter; H.264 640×480 verified | [Run Log](../tests/results/venc_step1_h264_640x480_30fps/run.log) / [DMESG](../tests/results/venc_step1_h264_640x480_30fps/dmesg.log) / [Output](../tests/results/venc_step1_h264_640x480_30fps/output.h264) | 10/10 PASS; 300/300 frames per run, clean bitstream |
+| Step 2 | 1920×1080@30fps, 60 frames | `[VERIFIED ON HARDWARE — tests/results/venc_step2_h264_1080p_30fps/]` | 85.6–116 FPS | 850,596 B; H.264 1920×1080 verified | [Run Log](../tests/results/venc_step2_h264_1080p_30fps/run.log) / [DMESG](../tests/results/venc_step2_h264_1080p_30fps/dmesg.log) / [Output](../tests/results/venc_step2_h264_1080p_30fps/output.h264) | 60/60 frames; >2.8× realtime encoding throughput |
+| Step 3 | HEVC 1920×1080@30fps, 60 frames | `[FAIL / OPEN BUG — tests/results/venc_step3_hevc_1080p_30fps/]` | 0.0 FPS | 76 B (VPS/SPS/PPS only) | [Run Log](../tests/results/venc_step3_hevc_1080p_30fps/run.log) / [DMESG](../tests/results/venc_step3_hevc_1080p_30fps/dmesg.log) / [Output](../tests/results/venc_step3_hevc_1080p_30fps/output.hevc) | VPS/SPS/PPS header OK (76 bytes). Frame IRQ (vedu_irq=67) never fires in `drv_venc_efl.S`; times out after 30s. Leaves VPU in dirty state requiring reboot. |
+| Step 4 | 4× concurrent 1080p30 (5× loop) | `[VERIFIED ON HARDWARE — tests/results/venc_step4_concurrent_4x1080p/]` | ~30–31.5 FPS/stream (~124 FPS aggregate) | 853,015 B/stream; H.264 1920×1080 verified (all 4 ch) | [Run Log](../tests/results/venc_step4_concurrent_4x1080p/run.log) / [DMESG](../tests/results/venc_step4_concurrent_4x1080p/dmesg.log) / [Output Ch A](../tests/results/venc_step4_concurrent_4x1080p/output_ch_a.h264) | 5/5 consecutive loops PASS; all 4 channels (A/B/C/D) exit 0 with 60/60 frames each. Proves concurrent multi-channel queue manager works without crosstalk. |
+| Step 5 | 3840×2160 (4K UHD) @ 30fps, 30 frames | `[VERIFIED ON HARDWARE — tests/results/venc_step5_h264_4k_uhd_3840x2160/]` | 17.4 FPS | 2,494,576 B; H.264 3840×2160 verified | [Run Log](../tests/results/venc_step5_h264_4k_uhd_3840x2160/run.log) / [DMESG](../tests/results/venc_step5_h264_4k_uhd_3840x2160/dmesg.log) / [Output](../tests/results/venc_step5_h264_4k_uhd_3840x2160/output.h264) | 30/30 frames encoded cleanly; 17.4 FPS indicates hardware clock/throughput limit below 30 FPS realtime for 4K. 3840×2400 rejected by driver height limit (max 2160). |
 
 ---
 
@@ -147,8 +158,10 @@ Target capabilities:
 | Subsystem | Status | Notes |
 |---|---|---|
 | HDMI output (720p60) | `[VERIFIED ON HARDWARE — docs/register-dumps/adv7533-live-2026-09-12.txt]` | Weston running; 72.0 MHz pixel clock |
-| HDMI output (1080p60) | `[BUILDS ONLY, UNTESTED]` | Init script configured; display confirmation pending |
+| HDMI output (1080p60) | `[BUILDS ONLY, UNTESTED]` | Init script configured; display confirmation pending TV format compatibility |
 | Mali-G71 GPU (Panfrost) | `[VERIFIED ON HARDWARE — docs/07-MULTIMEDIA_AND_GPU.md]` | Weston DRM rendering confirmed, commit ec7993a2 |
-| VPU decode (VP8, HEVC, MPEG-2) | `[VERIFIED ON HARDWARE — tests/results/]` | 60/60 frames, SSIM > 0.985 vs CPU reference. H.264 partial. |
-| VPU encode (H.264/H.265) | `[BUILDS ONLY, UNTESTED]` | /dev/hi_venc registered, undergoing ladder verification |
+| VPU decode (VP8, HEVC, MPEG-2) | `[VERIFIED ON HARDWARE — tests/results/]` | 60/60 frames, SSIM > 0.985 vs CPU reference. H.264 partial (DPB open bug). UAF fixed in commit 8284b26b. |
+| VPU encode (H.264) | `[VERIFIED ON HARDWARE — tests/results/venc_hardware_results.json]` | 1080p30 (85.6 FPS), 4× concurrent 1080p30 (124 FPS aggregate, 5/5 loop PASS), 4K UHD 3840×2160 (17.4 FPS). |
+| VPU encode (H.265/HEVC) | `[FAIL / OPEN BUG — tests/results/venc_step3_hevc_1080p_30fps/]` | Header generated (76 B), frame IRQ 67 never fires (open bug). |
+
 
