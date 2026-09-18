@@ -1,12 +1,10 @@
-[  185.216352] enter omxvdec_open , open_count : 0
-[  185.216415] enter channel_init 
-[  185.216494] VDEC_Regulator_Enable_Kirin960, call regulator_enable 
-[  185.239194] vfmw channel create success ChanID 2
-[  185.281184] syntax value : range 0 primaries 0 matrix 2 transfer 0
-[  185.281257] EVNT Color Aspects report
-[  187.828152] WARN: buffer 0xd2700000 still in use?!
-[  187.913170] VCTRL_DestroyChanWithOption VCTRL_StopChan ChanID 2!
-[  187.913704] decoder_release_stream can't find Chan(0).
-[  187.913847] VCTRL_DestroyChanWithOption vfmw destroy chan and free chan resource success, ChanID 2!
-[  188.093100] VDEC_Regulator_Disable_Kirin960, call regulator_disable
-[  188.093782] exit omxvdec_release , open_count : 0
+[  147.117029] enter omxvdec_open , open_count : 0
+[  147.117072] enter channel_init 
+[  147.117128] VDEC_Regulator_Enable_Kirin960, call regulator_enable 
+[  147.135967] vfmw channel create success ChanID 2
+[  147.195553] syntax value : range 0 primaries 0 matrix 2 transfer 0
+[  147.195626] EVNT Color Aspects report
+[  149.762992] VCTRL_DestroyChanWithOption VCTRL_StopChan ChanID 2!
+[  149.763881] VCTRL_DestroyChanWithOption vfmw destroy chan and free chan resource success, ChanID 2!
+[  149.956308] VDEC_Regulator_Disable_Kirin960, call regulator_disable
+[  149.957500] exit omxvdec_release , open_count : 0

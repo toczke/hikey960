@@ -1,7 +1,7 @@
 [VDEC_TEST] Opened /dev/hi_vdec (fd=4), path_mode=NATIVE
 [VDEC_TEST] Channel created! chan_id=0
-[VDEC_TEST] Input buffer 0 bound: len=2097152, phy=0xd2500000, mmap=0xffffa0ee0000
-[VDEC_TEST] Input buffer 1 bound: len=2097152, phy=0xd2700000, mmap=0xffffa0ce0000
+[VDEC_TEST] Input buffer 0 bound: len=2097152, phy=0xd2500000, mmap=0xffffb8520000
+[VDEC_TEST] Input buffer 1 bound: len=2097152, phy=0xd2700000, mmap=0xffffb8320000
 [VDEC_TEST] 4 output buffers initially bound (len=147456, stride=1920)
 [VDEC_TEST] Channel started successfully!
 [VDEC_TEST] 4 output frames queued to hardware.
@@ -48,126 +48,134 @@
 [REBIND] bound buf 23 phy=0xd6e00000
 [REBIND] bound buf 24 phy=0xd7100000
 [VDEC_TEST] Rebound 25 output buffers (stride=1920, size=3133440)
+[VDEC_TEST] Rewinding feeder to NAL 0 so SPS/PPS/IDR are re-sent after rebind.
+[FEED] nal=0/64 frames=0 in_flight=0
+[FEED] nal=1/64 frames=0 in_flight=1
+[FEED] nal=2/64 frames=0 in_flight=2
+[FEED] nal=3/64 frames=0 in_flight=3
+[FEED] nal=4/64 frames=0 in_flight=4
+[FEED] nal=5/64 frames=0 in_flight=5
+[FEED] nal=6/64 frames=0 in_flight=6
 [FEED] nal=7/64 frames=0 in_flight=7
-[VDEC_TEST] >>> FRAME #1: data_len=3133440, stride=1920, 1920x1080 in 322.17 ms (3.10 FPS) <<<
+[VDEC_TEST] >>> FRAME #1: data_len=3133440, stride=1920, 1920x1080 in 473.86 ms (2.11 FPS) <<<
 [FEED] nal=8/64 frames=1 in_flight=7
 [FEED] nal=9/64 frames=1 in_flight=8
 [FEED] nal=10/64 frames=1 in_flight=9
-[VDEC_TEST] >>> FRAME #2: data_len=3133440, stride=1920, 1920x1080 in 400.53 ms (4.99 FPS) <<<
+[VDEC_TEST] >>> FRAME #2: data_len=3133440, stride=1920, 1920x1080 in 544.57 ms (3.67 FPS) <<<
 [FEED] nal=11/64 frames=2 in_flight=9
-[VDEC_TEST] >>> FRAME #3: data_len=3133440, stride=1920, 1920x1080 in 428.92 ms (6.99 FPS) <<<
+[VDEC_TEST] >>> FRAME #3: data_len=3133440, stride=1920, 1920x1080 in 590.48 ms (5.08 FPS) <<<
 [FEED] nal=12/64 frames=3 in_flight=9
-[VDEC_TEST] >>> FRAME #4: data_len=3133440, stride=1920, 1920x1080 in 469.60 ms (8.52 FPS) <<<
+[VDEC_TEST] >>> FRAME #4: data_len=3133440, stride=1920, 1920x1080 in 630.90 ms (6.34 FPS) <<<
 [FEED] nal=13/64 frames=4 in_flight=9
-[VDEC_TEST] >>> FRAME #5: data_len=3133440, stride=1920, 1920x1080 in 506.48 ms (9.87 FPS) <<<
+[VDEC_TEST] >>> FRAME #5: data_len=3133440, stride=1920, 1920x1080 in 666.12 ms (7.51 FPS) <<<
 [FEED] nal=14/64 frames=5 in_flight=9
-[VDEC_TEST] >>> FRAME #6: data_len=3133440, stride=1920, 1920x1080 in 554.63 ms (10.82 FPS) <<<
+[VDEC_TEST] >>> FRAME #6: data_len=3133440, stride=1920, 1920x1080 in 693.85 ms (8.65 FPS) <<<
 [FEED] nal=15/64 frames=6 in_flight=9
-[VDEC_TEST] >>> FRAME #7: data_len=3133440, stride=1920, 1920x1080 in 589.39 ms (11.88 FPS) <<<
+[VDEC_TEST] >>> FRAME #7: data_len=3133440, stride=1920, 1920x1080 in 719.17 ms (9.73 FPS) <<<
 [FEED] nal=16/64 frames=7 in_flight=9
-[VDEC_TEST] >>> FRAME #8: data_len=3133440, stride=1920, 1920x1080 in 618.09 ms (12.94 FPS) <<<
+[VDEC_TEST] >>> FRAME #8: data_len=3133440, stride=1920, 1920x1080 in 741.61 ms (10.79 FPS) <<<
 [FEED] nal=17/64 frames=8 in_flight=9
-[VDEC_TEST] >>> FRAME #9: data_len=3133440, stride=1920, 1920x1080 in 640.97 ms (14.04 FPS) <<<
+[VDEC_TEST] >>> FRAME #9: data_len=3133440, stride=1920, 1920x1080 in 763.05 ms (11.79 FPS) <<<
 [FEED] nal=18/64 frames=9 in_flight=9
-[VDEC_TEST] >>> FRAME #10: data_len=3133440, stride=1920, 1920x1080 in 668.91 ms (14.95 FPS) <<<
+[VDEC_TEST] >>> FRAME #10: data_len=3133440, stride=1920, 1920x1080 in 783.12 ms (12.77 FPS) <<<
 [FEED] nal=19/64 frames=10 in_flight=9
-[VDEC_TEST] >>> FRAME #11: data_len=3133440, stride=1920, 1920x1080 in 691.84 ms (15.90 FPS) <<<
+[VDEC_TEST] >>> FRAME #11: data_len=3133440, stride=1920, 1920x1080 in 805.57 ms (13.66 FPS) <<<
 [FEED] nal=20/64 frames=11 in_flight=9
-[VDEC_TEST] >>> FRAME #12: data_len=3133440, stride=1920, 1920x1080 in 715.23 ms (16.78 FPS) <<<
+[VDEC_TEST] >>> FRAME #12: data_len=3133440, stride=1920, 1920x1080 in 826.36 ms (14.52 FPS) <<<
 [FEED] nal=21/64 frames=12 in_flight=9
-[VDEC_TEST] >>> FRAME #13: data_len=3133440, stride=1920, 1920x1080 in 741.73 ms (17.53 FPS) <<<
+[VDEC_TEST] >>> FRAME #13: data_len=3133440, stride=1920, 1920x1080 in 846.62 ms (15.36 FPS) <<<
 [FEED] nal=22/64 frames=13 in_flight=9
-[VDEC_TEST] >>> FRAME #14: data_len=3133440, stride=1920, 1920x1080 in 769.34 ms (18.20 FPS) <<<
+[VDEC_TEST] >>> FRAME #14: data_len=3133440, stride=1920, 1920x1080 in 868.96 ms (16.11 FPS) <<<
 [FEED] nal=23/64 frames=14 in_flight=9
-[VDEC_TEST] >>> FRAME #15: data_len=3133440, stride=1920, 1920x1080 in 799.58 ms (18.76 FPS) <<<
+[VDEC_TEST] >>> FRAME #15: data_len=3133440, stride=1920, 1920x1080 in 889.65 ms (16.86 FPS) <<<
 [FEED] nal=24/64 frames=15 in_flight=9
-[VDEC_TEST] >>> FRAME #16: data_len=3133440, stride=1920, 1920x1080 in 825.35 ms (19.39 FPS) <<<
+[VDEC_TEST] >>> FRAME #16: data_len=3133440, stride=1920, 1920x1080 in 910.73 ms (17.57 FPS) <<<
 [FEED] nal=25/64 frames=16 in_flight=9
-[VDEC_TEST] >>> FRAME #17: data_len=3133440, stride=1920, 1920x1080 in 853.81 ms (19.91 FPS) <<<
+[VDEC_TEST] >>> FRAME #17: data_len=3133440, stride=1920, 1920x1080 in 937.60 ms (18.13 FPS) <<<
 [FEED] nal=26/64 frames=17 in_flight=9
-[VDEC_TEST] >>> FRAME #18: data_len=3133440, stride=1920, 1920x1080 in 878.17 ms (20.50 FPS) <<<
+[VDEC_TEST] >>> FRAME #18: data_len=3133440, stride=1920, 1920x1080 in 959.18 ms (18.77 FPS) <<<
 [FEED] nal=27/64 frames=18 in_flight=9
-[VDEC_TEST] >>> FRAME #19: data_len=3133440, stride=1920, 1920x1080 in 906.89 ms (20.95 FPS) <<<
+[VDEC_TEST] >>> FRAME #19: data_len=3133440, stride=1920, 1920x1080 in 979.33 ms (19.40 FPS) <<<
 [FEED] nal=28/64 frames=19 in_flight=9
-[VDEC_TEST] >>> FRAME #20: data_len=3133440, stride=1920, 1920x1080 in 935.27 ms (21.38 FPS) <<<
+[VDEC_TEST] >>> FRAME #20: data_len=3133440, stride=1920, 1920x1080 in 1000.94 ms (19.98 FPS) <<<
 [FEED] nal=29/64 frames=20 in_flight=9
-[VDEC_TEST] >>> FRAME #21: data_len=3133440, stride=1920, 1920x1080 in 957.89 ms (21.92 FPS) <<<
+[VDEC_TEST] >>> FRAME #21: data_len=3133440, stride=1920, 1920x1080 in 1022.44 ms (20.54 FPS) <<<
 [FEED] nal=30/64 frames=21 in_flight=9
-[VDEC_TEST] >>> FRAME #22: data_len=3133440, stride=1920, 1920x1080 in 983.78 ms (22.36 FPS) <<<
+[VDEC_TEST] >>> FRAME #22: data_len=3133440, stride=1920, 1920x1080 in 1044.31 ms (21.07 FPS) <<<
 [FEED] nal=31/64 frames=22 in_flight=9
-[VDEC_TEST] >>> FRAME #23: data_len=3133440, stride=1920, 1920x1080 in 1009.39 ms (22.79 FPS) <<<
+[VDEC_TEST] >>> FRAME #23: data_len=3133440, stride=1920, 1920x1080 in 1064.42 ms (21.61 FPS) <<<
 [FEED] nal=32/64 frames=23 in_flight=9
-[VDEC_TEST] >>> FRAME #24: data_len=3133440, stride=1920, 1920x1080 in 1038.30 ms (23.11 FPS) <<<
+[VDEC_TEST] >>> FRAME #24: data_len=3133440, stride=1920, 1920x1080 in 1084.09 ms (22.14 FPS) <<<
 [FEED] nal=33/64 frames=24 in_flight=9
-[VDEC_TEST] >>> FRAME #25: data_len=3133440, stride=1920, 1920x1080 in 1067.15 ms (23.43 FPS) <<<
+[VDEC_TEST] >>> FRAME #25: data_len=3133440, stride=1920, 1920x1080 in 1104.91 ms (22.63 FPS) <<<
 [FEED] nal=34/64 frames=25 in_flight=9
-[VDEC_TEST] >>> FRAME #26: data_len=3133440, stride=1920, 1920x1080 in 1095.28 ms (23.74 FPS) <<<
+[VDEC_TEST] >>> FRAME #26: data_len=3133440, stride=1920, 1920x1080 in 1125.12 ms (23.11 FPS) <<<
 [FEED] nal=35/64 frames=26 in_flight=9
-[VDEC_TEST] >>> FRAME #27: data_len=3133440, stride=1920, 1920x1080 in 1122.46 ms (24.05 FPS) <<<
+[VDEC_TEST] >>> FRAME #27: data_len=3133440, stride=1920, 1920x1080 in 1145.73 ms (23.57 FPS) <<<
 [FEED] nal=36/64 frames=27 in_flight=9
-[VDEC_TEST] >>> FRAME #28: data_len=3133440, stride=1920, 1920x1080 in 1144.96 ms (24.46 FPS) <<<
+[VDEC_TEST] >>> FRAME #28: data_len=3133440, stride=1920, 1920x1080 in 1165.98 ms (24.01 FPS) <<<
 [FEED] nal=37/64 frames=28 in_flight=9
-[VDEC_TEST] >>> FRAME #29: data_len=3133440, stride=1920, 1920x1080 in 1169.76 ms (24.79 FPS) <<<
+[VDEC_TEST] >>> FRAME #29: data_len=3133440, stride=1920, 1920x1080 in 1189.39 ms (24.38 FPS) <<<
 [FEED] nal=38/64 frames=29 in_flight=9
-[VDEC_TEST] >>> FRAME #30: data_len=3133440, stride=1920, 1920x1080 in 1197.88 ms (25.04 FPS) <<<
+[VDEC_TEST] >>> FRAME #30: data_len=3133440, stride=1920, 1920x1080 in 1209.25 ms (24.81 FPS) <<<
 [FEED] nal=39/64 frames=30 in_flight=9
-[VDEC_TEST] >>> FRAME #31: data_len=3133440, stride=1920, 1920x1080 in 1224.38 ms (25.32 FPS) <<<
+[VDEC_TEST] >>> FRAME #31: data_len=3133440, stride=1920, 1920x1080 in 1229.59 ms (25.21 FPS) <<<
 [FEED] nal=40/64 frames=31 in_flight=9
-[VDEC_TEST] >>> FRAME #32: data_len=3133440, stride=1920, 1920x1080 in 1249.99 ms (25.60 FPS) <<<
+[VDEC_TEST] >>> FRAME #32: data_len=3133440, stride=1920, 1920x1080 in 1251.85 ms (25.56 FPS) <<<
 [FEED] nal=41/64 frames=32 in_flight=9
-[VDEC_TEST] >>> FRAME #33: data_len=3133440, stride=1920, 1920x1080 in 1273.40 ms (25.91 FPS) <<<
+[VDEC_TEST] >>> FRAME #33: data_len=3133440, stride=1920, 1920x1080 in 1271.61 ms (25.95 FPS) <<<
 [FEED] nal=42/64 frames=33 in_flight=9
-[VDEC_TEST] >>> FRAME #34: data_len=3133440, stride=1920, 1920x1080 in 1301.95 ms (26.11 FPS) <<<
+[VDEC_TEST] >>> FRAME #34: data_len=3133440, stride=1920, 1920x1080 in 1293.17 ms (26.29 FPS) <<<
 [FEED] nal=43/64 frames=34 in_flight=9
-[VDEC_TEST] >>> FRAME #35: data_len=3133440, stride=1920, 1920x1080 in 1331.49 ms (26.29 FPS) <<<
+[VDEC_TEST] >>> FRAME #35: data_len=3133440, stride=1920, 1920x1080 in 1314.50 ms (26.63 FPS) <<<
 [FEED] nal=44/64 frames=35 in_flight=9
-[VDEC_TEST] >>> FRAME #36: data_len=3133440, stride=1920, 1920x1080 in 1360.26 ms (26.47 FPS) <<<
+[VDEC_TEST] >>> FRAME #36: data_len=3133440, stride=1920, 1920x1080 in 1334.26 ms (26.98 FPS) <<<
 [FEED] nal=45/64 frames=36 in_flight=9
-[VDEC_TEST] >>> FRAME #37: data_len=3133440, stride=1920, 1920x1080 in 1383.60 ms (26.74 FPS) <<<
+[VDEC_TEST] >>> FRAME #37: data_len=3133440, stride=1920, 1920x1080 in 1355.85 ms (27.29 FPS) <<<
 [FEED] nal=46/64 frames=37 in_flight=9
-[VDEC_TEST] >>> FRAME #38: data_len=3133440, stride=1920, 1920x1080 in 1409.43 ms (26.96 FPS) <<<
+[VDEC_TEST] >>> FRAME #38: data_len=3133440, stride=1920, 1920x1080 in 1375.32 ms (27.63 FPS) <<<
 [FEED] nal=47/64 frames=38 in_flight=9
-[VDEC_TEST] >>> FRAME #39: data_len=3133440, stride=1920, 1920x1080 in 1437.53 ms (27.13 FPS) <<<
+[VDEC_TEST] >>> FRAME #39: data_len=3133440, stride=1920, 1920x1080 in 1396.08 ms (27.94 FPS) <<<
 [FEED] nal=48/64 frames=39 in_flight=9
-[VDEC_TEST] >>> FRAME #40: data_len=3133440, stride=1920, 1920x1080 in 1460.16 ms (27.39 FPS) <<<
+[VDEC_TEST] >>> FRAME #40: data_len=3133440, stride=1920, 1920x1080 in 1418.48 ms (28.20 FPS) <<<
 [FEED] nal=49/64 frames=40 in_flight=9
-[VDEC_TEST] >>> FRAME #41: data_len=3133440, stride=1920, 1920x1080 in 1488.09 ms (27.55 FPS) <<<
+[VDEC_TEST] >>> FRAME #41: data_len=3133440, stride=1920, 1920x1080 in 1439.74 ms (28.48 FPS) <<<
 [FEED] nal=50/64 frames=41 in_flight=9
-[VDEC_TEST] >>> FRAME #42: data_len=3133440, stride=1920, 1920x1080 in 1516.79 ms (27.69 FPS) <<<
+[VDEC_TEST] >>> FRAME #42: data_len=3133440, stride=1920, 1920x1080 in 1461.46 ms (28.74 FPS) <<<
 [FEED] nal=51/64 frames=42 in_flight=9
-[VDEC_TEST] >>> FRAME #43: data_len=3133440, stride=1920, 1920x1080 in 1540.04 ms (27.92 FPS) <<<
+[VDEC_TEST] >>> FRAME #43: data_len=3133440, stride=1920, 1920x1080 in 1481.78 ms (29.02 FPS) <<<
 [FEED] nal=52/64 frames=43 in_flight=9
-[VDEC_TEST] >>> FRAME #44: data_len=3133440, stride=1920, 1920x1080 in 1563.63 ms (28.14 FPS) <<<
+[VDEC_TEST] >>> FRAME #44: data_len=3133440, stride=1920, 1920x1080 in 1503.36 ms (29.27 FPS) <<<
 [FEED] nal=53/64 frames=44 in_flight=9
-[VDEC_TEST] >>> FRAME #45: data_len=3133440, stride=1920, 1920x1080 in 1589.59 ms (28.31 FPS) <<<
+[VDEC_TEST] >>> FRAME #45: data_len=3133440, stride=1920, 1920x1080 in 1525.77 ms (29.49 FPS) <<<
 [FEED] nal=54/64 frames=45 in_flight=9
-[VDEC_TEST] >>> FRAME #46: data_len=3133440, stride=1920, 1920x1080 in 1614.50 ms (28.49 FPS) <<<
+[VDEC_TEST] >>> FRAME #46: data_len=3133440, stride=1920, 1920x1080 in 1545.49 ms (29.76 FPS) <<<
 [FEED] nal=55/64 frames=46 in_flight=9
-[VDEC_TEST] >>> FRAME #47: data_len=3133440, stride=1920, 1920x1080 in 1641.46 ms (28.63 FPS) <<<
+[VDEC_TEST] >>> FRAME #47: data_len=3133440, stride=1920, 1920x1080 in 1565.74 ms (30.02 FPS) <<<
 [FEED] nal=56/64 frames=47 in_flight=9
-[VDEC_TEST] >>> FRAME #48: data_len=3133440, stride=1920, 1920x1080 in 1667.22 ms (28.79 FPS) <<<
+[VDEC_TEST] >>> FRAME #48: data_len=3133440, stride=1920, 1920x1080 in 1587.49 ms (30.24 FPS) <<<
 [FEED] nal=57/64 frames=48 in_flight=9
-[VDEC_TEST] >>> FRAME #49: data_len=3133440, stride=1920, 1920x1080 in 1689.71 ms (29.00 FPS) <<<
+[VDEC_TEST] >>> FRAME #49: data_len=3133440, stride=1920, 1920x1080 in 1610.66 ms (30.42 FPS) <<<
 [FEED] nal=58/64 frames=49 in_flight=9
-[VDEC_TEST] >>> FRAME #50: data_len=3133440, stride=1920, 1920x1080 in 1713.27 ms (29.18 FPS) <<<
+[VDEC_TEST] >>> FRAME #50: data_len=3133440, stride=1920, 1920x1080 in 1632.42 ms (30.63 FPS) <<<
 [FEED] nal=59/64 frames=50 in_flight=9
-[VDEC_TEST] >>> FRAME #51: data_len=3133440, stride=1920, 1920x1080 in 1738.46 ms (29.34 FPS) <<<
+[VDEC_TEST] >>> FRAME #51: data_len=3133440, stride=1920, 1920x1080 in 1652.32 ms (30.87 FPS) <<<
 [FEED] nal=60/64 frames=51 in_flight=9
-[VDEC_TEST] >>> FRAME #52: data_len=3133440, stride=1920, 1920x1080 in 1763.51 ms (29.49 FPS) <<<
+[VDEC_TEST] >>> FRAME #52: data_len=3133440, stride=1920, 1920x1080 in 1673.10 ms (31.08 FPS) <<<
 [FEED] nal=61/64 frames=52 in_flight=9
-[VDEC_TEST] >>> FRAME #53: data_len=3133440, stride=1920, 1920x1080 in 1790.62 ms (29.60 FPS) <<<
+[VDEC_TEST] >>> FRAME #53: data_len=3133440, stride=1920, 1920x1080 in 1693.77 ms (31.29 FPS) <<<
 [FEED] nal=62/64 frames=53 in_flight=9
-[VDEC_TEST] >>> FRAME #54: data_len=3133440, stride=1920, 1920x1080 in 1812.43 ms (29.79 FPS) <<<
+[VDEC_TEST] >>> FRAME #54: data_len=3133440, stride=1920, 1920x1080 in 1715.50 ms (31.48 FPS) <<<
 [FEED] nal=63/64 frames=54 in_flight=9
-[VDEC_TEST] >>> FRAME #55: data_len=3133440, stride=1920, 1920x1080 in 1841.05 ms (29.87 FPS) <<<
+[VDEC_TEST] >>> FRAME #55: data_len=3133440, stride=1920, 1920x1080 in 1737.70 ms (31.65 FPS) <<<
 [VDEC_TEST] All 64 frames/NALs submitted to decoder pipeline.
-[VDEC_TEST] >>> FRAME #56: data_len=3133440, stride=1920, 1920x1080 in 1854.15 ms (30.20 FPS) <<<
-[VDEC_TEST] >>> FRAME #57: data_len=3133440, stride=1920, 1920x1080 in 1862.68 ms (30.60 FPS) <<<
-[EOS_REASON] frames=57 expected=60 t_last_diff=2.093 all_diff=2.103
-[EMPTY_EOS] buf=0 phy=0xd2500000 flags=0x11
-[VDEC_TEST] >>> FRAME #58: data_len=3133440, stride=1920, 1920x1080 in 3969.46 ms (14.61 FPS) <<<
-[VDEC_TEST] >>> FRAME #59: data_len=3133440, stride=1920, 1920x1080 in 3974.54 ms (14.84 FPS) <<<
-[VDEC_TEST] >>> FRAME #60: data_len=3133440, stride=1920, 1920x1080 in 3979.08 ms (15.08 FPS) <<<
+[VDEC_TEST] >>> FRAME #56: data_len=3133440, stride=1920, 1920x1080 in 1742.92 ms (32.13 FPS) <<<
+[VDEC_TEST] >>> FRAME #57: data_len=3133440, stride=1920, 1920x1080 in 2247.91 ms (25.36 FPS) <<<
+[EOS_REASON] frames=57 expected=60 t_last_diff=2.106 all_diff=2.612
+[EMPTY_EOS] buf=1 phy=0xd2700000 flags=0x11
+[VDEC_TEST] >>> FRAME #58: data_len=3133440, stride=1920, 1920x1080 in 4372.91 ms (13.26 FPS) <<<
+[VDEC_TEST] >>> FRAME #59: data_len=3133440, stride=1920, 1920x1080 in 4378.00 ms (13.48 FPS) <<<
+[VDEC_TEST] >>> FRAME #60: data_len=3133440, stride=1920, 1920x1080 in 4382.94 ms (13.69 FPS) <<<
 [VDEC_TEST] All 60 expected frames decoded! Success.
-[VDEC_TEST] SUMMARY: 60 frames decoded in 3.979 s -> 15.08 FPS (pure: 16.41 FPS)
+[VDEC_TEST] SUMMARY: 60 frames decoded in 4.383 s -> 13.69 FPS (pure: 15.35 FPS)
 [VDEC_TEST] Cleaned up all resources successfully.

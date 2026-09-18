@@ -396,7 +396,7 @@ static int send_input_packet(struct stream_feeder *f, int buf_idx) {
 
         int in_flight = f->nal_idx - *f->frames_decoded_ptr;
         int max_in_flight = 200;
-        if (f->seq_info_chg_received && in_flight >= max_in_flight) {
+        if (*f->frames_decoded_ptr > 0 && in_flight >= max_in_flight) {
             return 0;
         }
         printf("[FEED] nal=%d/%d frames=%d in_flight=%d\n", f->nal_idx, f->nal_count, *f->frames_decoded_ptr, in_flight);
@@ -631,6 +631,11 @@ static int rebind_output_buffers(int fd, int chan_id, uint32_t count, uint32_t s
         out_busy[i] = 1;
     }
     printf("[VDEC_TEST] Rebound %u output buffers (stride=%u, size=%u)\n", count, stride, size);
+    if (feeder && *feeder->frames_decoded_ptr == 0) {
+        printf("[VDEC_TEST] Rewinding feeder to NAL 0 so SPS/PPS/IDR are re-sent after rebind.\n");
+        feeder->nal_idx = 0;
+        feeder->all_nals_sent = 0;
+    }
     fflush(stdout);
     return 0;
 }
@@ -1087,6 +1092,13 @@ int main(int argc, char *argv[]) {
             break;
         }
 
+        // Retry submitting input buffers if they were throttled
+        for (int i = 0; i < num_in_bufs; i++) {
+            if (!feeder.in_busy[i] && !feeder.all_nals_sent && !feeder.eos_sent) {
+                send_input_packet(&feeder, i);
+            }
+        }
+
         usleep(1000);
     }
 
@@ -1099,6 +1111,22 @@ int main(int argc, char *argv[]) {
     fflush(stdout);
 
 cleanup:
+    // Flush both ports to return any buffers held by hardware
+    ePORT_DIR flush_both = PORT_DIR_BOTH;
+    memset(&msg, 0, sizeof(msg));
+    msg.chan_num = chan_id;
+    msg.in = &flush_both;
+    ioctl(fd, VDEC_IOCTL_FLUSH_PORT, &msg);
+
+    OMXVDEC_MSG_INFO drain_msg;
+    for (int k = 0; k < 100; k++) {
+        memset(&drain_msg, 0, sizeof(drain_msg));
+        memset(&msg, 0, sizeof(msg));
+        msg.chan_num = chan_id;
+        msg.out = &drain_msg;
+        if (ioctl(fd, VDEC_IOCTL_CHAN_GET_MSG, &msg) < 0) break;
+    }
+
     // Halting channel cleanly releases hardware threads without race conditions
     memset(&msg, 0, sizeof(msg));
     msg.chan_num = chan_id;

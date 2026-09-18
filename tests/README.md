@@ -32,16 +32,21 @@
 ```
 tests/
 ├── README.md                   # This policy document
-├── run_vpu_benchmark.py        # Automated test harness driving hardware verification
-├── vpu_hardware_results.json   # Machine-readable test execution & correctness results
+├── run_vpu_benchmark.py        # Automated test harness driving VDEC hardware verification
+├── run_venc_ladder.py          # Automated test harness driving VENC ladder verification
+├── vpu_hardware_results.json   # Machine-readable VDEC execution & SSIM results
+├── venc_hardware_results.json  # Machine-readable VENC ladder results (Steps 1-5, 4K, concurrent)
 ├── cpu_baseline_results.json   # Software (CPU FFmpeg) reference decode benchmark
 ├── vdec_test.c                 # Direct userspace test harness for /dev/hi_vdec ioctl
+├── venc_test.c                 # Direct userspace test harness for /dev/hi_venc ioctl
 ├── drv_omxvdec.h               # OMX VDEC kernel driver header
 ├── hi_type.h                   # Common HiSilicon types
 ├── streams/                    # Test bitstream vectors (.264, .hevc, .ivf, .m2v, .m4v)
 └── results/                    # Ground-truth hardware execution evidence
+    ├── venc_hardware_results.json
     ├── venc_probe.log          # VENC probe and device-tree status verification
-    └── <stream_name>/          # Per-stream verification directory
+    ├── venc_<step_name>/       # Per-step VENC ladder evidence (dmesg, run log, bitstream, ffprobe)
+    └── <stream_name>/          # Per-stream VDEC verification directory
         ├── dmesg.log           # Kernel dmesg during hardware decode
         ├── run.log             # Execution command line, exit code, timing, thermals
         └── sample_frames/      # Visual verification frame PNGs

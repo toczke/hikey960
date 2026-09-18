@@ -19,8 +19,9 @@ The resulting `rootfs.img` is immediately ready to be flashed via fastboot.
 We use the mainline Linux kernel (e.g., v7.1-edge) to ensure all modern drivers are available. You have two options for compilation:
 
 ### Method A: GitHub Actions (Recommended)
-Our repository contains a fully automated CI/CD pipeline (`.github/workflows/kernel-build.yml`). 
-Pushing code to the `main` branch or clicking **Run workflow** in the GitHub Actions tab will automatically cross-compile the kernel on cloud servers and upload `hikey960-dtbs` and `hikey960-kernel-image` as downloadable artifacts.
+Our repository contains a fully automated CI/CD pipeline:
+- [`.github/workflows/kernel-build.yml`](../.github/workflows/kernel-build.yml): Tests compilation on every PR and branch push, uploading test artifacts.
+- [`.github/workflows/release.yml`](../.github/workflows/release.yml): Compiles and publishes formal GitHub Public Releases automatically whenever changes are merged into `main` or `master`.
 
 ### Method B: Local Cross-Compilation
 To compile the kernel locally on an Ubuntu/Debian x86_64 host, install the required cross-compilation toolchain:
@@ -32,20 +33,37 @@ sudo apt install -y gcc-aarch64-linux-gnu build-essential bc bison flex libssl-d
 
 Clone the upstream Linux kernel tree:
 ```bash
-git clone --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git linux-src
+sudo apt install -y curl tar xz-utils
+curl -fSL https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-7.1.13.tar.xz -o linux-7.1.13.tar.xz
+mkdir -p linux-src && tar -xf linux-7.1.13.tar.xz -C linux-src --strip-components=1
 cd linux-src
 ```
 
-#### Step 2.1: Configuration
-Generate the default configuration for the ARM64 architecture:
+Apply the repository patches:
 ```bash
-make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- defconfig
+for p in ../patches/*.patch; do patch -p1 < "$p"; done
+```
+
+Inject Kirin DRM and VPU drivers:
+```bash
+cp -r ../drivers-import/kirin960 drivers/gpu/drm/hisilicon/
+echo "source \"drivers/gpu/drm/hisilicon/kirin960/Kconfig\"" >> drivers/gpu/drm/hisilicon/Kconfig
+echo "obj-y += kirin960/" >> drivers/gpu/drm/hisilicon/Makefile
+
+cp -r ../drivers-import/vcodec drivers/
+sed -i '/endmenu/i source "drivers/vcodec/Kconfig"' drivers/Kconfig
+echo "obj-y += vcodec/" >> drivers/Makefile
+```
+
+#### Step 2.1: Configuration
+Copy the ground-truth defconfig:
+```bash
+cp ../configs/hikey960-defconfig .config
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
 ```
 
 **⚠️ CRITICAL KERNEL FLAGS:**
-Before proceeding, you *must* edit the generated `.config` file to ensure the system can boot from the internal 32GB UFS storage and operate stably. Standard generic configs often build critical storage drivers as external modules (`=m`), which causes a boot loop because the kernel cannot read the UFS to load the module.
-
-Ensure the following flags are strictly set to built-in (`=y`) or disabled (`# is not set`):
+Ensure the following flags are strictly set in your `.config`:
 
 *   **Internal Storage (UFS) and Filesystem:**
     ```ini
@@ -55,14 +73,20 @@ Ensure the following flags are strictly set to built-in (`=y`) or disabled (`# i
     ```
     *(If these are `=m`, the HiKey960 will kernel panic at boot with `VFS: Cannot open root device`)*
 
-*   **Graphics / GPU (Stability Fix):**
+*   **Graphics / GPU & CMA Memory:**
     ```ini
     CONFIG_DRM_PANFROST=y
     CONFIG_CMA_SIZE_MBYTES=64
     ```
-    *(Keep Panfrost ENABLED. The stability fix is reducing CMA from 256MB to 64MB — `CONFIG_CMA_SIZE_MBYTES=64`. This prevents the `SError` hardware interrupts at boot caused by a CMA collision, NOT by Panfrost itself. Disabling `CONFIG_DRM_PANFROST` is incorrect and will break GPU support.)*
+    *(Panfrost is kept ENABLED. `CONFIG_CMA_SIZE_MBYTES=64` serves as the baseline compile-time fallback. For full multimedia operation with 4K UHD and 4× concurrent 1080p VPU pipelines, pass `cma=256M` in bootargs via GRUB.)*
 
-    > **Changelog [2026-09-08]:** Previous versions of this doc incorrectly instructed `# CONFIG_DRM_PANFROST is not set`. This was wrong — `configs/hikey960-defconfig` (the CI ground truth) ships `CONFIG_DRM_PANFROST=y`. The SError panic was caused by a CMA collision (too much contiguous memory requested), not the GPU driver itself. The fix is `CONFIG_CMA_SIZE_MBYTES=64`, not disabling GPU. Do not re-add the disable instruction from old drafts.
+*   **Hardware Video Acceleration (VPU — Kirin 960 VDH/VEDU):**
+    ```ini
+    CONFIG_HI_VCODEC=y
+    CONFIG_HI_VCODEC_VDEC_HI3660=y
+    CONFIG_HI_VCODEC_VENC_HI3660=y
+    ```
+    *(Enables `/dev/hi_vdec` and `/dev/hi_venc` for 10/10 VDEC codec decode and 4K/HEVC/concurrent VENC hardware encoding)*
 
 *   **Networking & Expansion (Optional but recommended):**
     ```ini

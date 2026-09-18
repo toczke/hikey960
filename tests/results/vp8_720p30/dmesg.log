@@ -1,8 +1,8 @@
-[   91.850589] enter omxvdec_open , open_count : 0
-[   91.850671] enter channel_init 
-[   91.850783] VDEC_Regulator_Enable_Kirin960, call regulator_enable 
-[   91.871978] vfmw channel create success ChanID 2
-[   93.517793] VCTRL_DestroyChanWithOption VCTRL_StopChan ChanID 2!
-[   93.518201] VCTRL_DestroyChanWithOption vfmw destroy chan and free chan resource success, ChanID 2!
-[   93.712188] VDEC_Regulator_Disable_Kirin960, call regulator_disable
-[   93.713206] exit omxvdec_release , open_count : 0
+[   82.225414] enter omxvdec_open , open_count : 0
+[   82.225483] enter channel_init 
+[   82.225532] VDEC_Regulator_Enable_Kirin960, call regulator_enable 
+[   82.242778] vfmw channel create success ChanID 2
+[   83.865001] VCTRL_DestroyChanWithOption VCTRL_StopChan ChanID 2!
+[   83.865232] VCTRL_DestroyChanWithOption vfmw destroy chan and free chan resource success, ChanID 2!
+[   84.049119] VDEC_Regulator_Disable_Kirin960, call regulator_disable
+[   84.049645] exit omxvdec_release , open_count : 0

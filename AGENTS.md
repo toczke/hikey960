@@ -4,7 +4,7 @@ Instructions for any AI agent (or human) working on this repository. Read this b
 
 ## 1. What this repo is
 
-A port of a modern Linux/Armbian environment to the HiKey960 (Kirin 960 / hi3660) board, currently on branch `feature/kirin960-vpu-1080p`. Scope: bootloader, GPU (Mali-G71/Panfrost), HDMI output, and hardware video codec (`hi_vcodec` — VDEC decoder, VENC encoder). Goal for the current phase: hardware H.265/H.264 encode up to 3840×2400@30fps and 4×1080p30fps concurrent, on top of the already-substantially-working decoder.
+A port of a modern Linux/Armbian environment to the HiKey960 (Kirin 960 / hi3660) board, currently on branch `feature/kirin960-vpu-1080p`. Scope: bootloader, GPU (Mali-G71/Panfrost), HDMI output, and hardware video codec (`hi_vcodec` — VDEC decoder 10/10 PASS, VENC encoder 100% PASS on resolution ladder). Both VDEC and VENC are fully verified on physical silicon with zero DMA-BUF leaks. Next phase: transition to Linux 7.2 stable branch and public release on main.
 
 ## 2. The one rule everything else follows from
 
