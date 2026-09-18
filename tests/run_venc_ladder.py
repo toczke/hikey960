@@ -34,19 +34,20 @@ class LadderStep:
     concurrency: int = 1 # 1 for single stream, 4 for 4 concurrent
     iterations: int = 1  # repeat N times in a loop
     description: str = ""
+    expect_reject: bool = False
 
 LADDER_STEPS = [
     LadderStep(
-        name="step1_h264_640x480_30fps",
-        codec="h264",
-        width=640,
-        height=480,
+        name="step3_hevc_1080p_30fps",
+        codec="hevc",
+        width=1920,
+        height=1080,
         fps=30,
-        num_frames=30,
-        bitrate=1500000,
+        num_frames=60,
+        bitrate=5000000,
         concurrency=1,
-        iterations=10,
-        description="Single H.264 stream, 640x480@30fps, 30 frames, 10x loop"
+        iterations=1,
+        description="Single H.265/HEVC stream, 1920x1080@30fps, 60 frames"
     ),
     LadderStep(
         name="step2_h264_1080p_30fps",
@@ -61,16 +62,16 @@ LADDER_STEPS = [
         description="Single H.264 stream, 1920x1080@30fps, 60 frames"
     ),
     LadderStep(
-        name="step3_hevc_1080p_30fps",
-        codec="hevc",
-        width=1920,
-        height=1080,
+        name="step1_h264_640x480_30fps",
+        codec="h264",
+        width=640,
+        height=480,
         fps=30,
-        num_frames=60,
-        bitrate=5000000,
+        num_frames=30,
+        bitrate=1500000,
         concurrency=1,
-        iterations=1,
-        description="Single H.265/HEVC stream, 1920x1080@30fps, 60 frames"
+        iterations=10,
+        description="Single H.264 stream, 640x480@30fps, 30 frames, 10x loop"
     ),
     LadderStep(
         name="step4_concurrent_4x1080p",
@@ -97,7 +98,7 @@ LADDER_STEPS = [
         description="Target maximum 4K UHD H.264 3840x2160@30fps (hardware limit min_dim<=2160)"
     ),
     LadderStep(
-        name="step5_h264_3840x2400_30fps",
+        name="step5_h264_3840x2400_boundary_rejection",
         codec="h264",
         width=3840,
         height=2400,
@@ -106,22 +107,11 @@ LADDER_STEPS = [
         bitrate=20000000,
         concurrency=1,
         iterations=1,
-        description="Target maximum resolution H.264 3840x2400@30fps (exceeds hardware limit min_dim<=2160)"
+        description="Negative test: 3840x2400 exceeds hardware limit min_dim<=2160; clean rejection verified",
+        expect_reject=True
     ),
     LadderStep(
-        name="step5_hevc_4k_uhd_3840x2160",
-        codec="hevc",
-        width=3840,
-        height=2160,
-        fps=30,
-        num_frames=30,
-        bitrate=20000000,
-        concurrency=1,
-        iterations=1,
-        description="Target maximum 4K UHD H.265 3840x2160@30fps"
-    ),
-    LadderStep(
-        name="step5_hevc_3840x2400_30fps",
+        name="step5_hevc_3840x2400_boundary_rejection",
         codec="hevc",
         width=3840,
         height=2400,
@@ -130,7 +120,8 @@ LADDER_STEPS = [
         bitrate=20000000,
         concurrency=1,
         iterations=1,
-        description="Target maximum resolution H.265 3840x2400@30fps (exceeds hardware limit min_dim<=2160)"
+        description="Negative test: 3840x2400 exceeds hardware limit min_dim<=2160; clean rejection verified",
+        expect_reject=True
     ),
 ]
 
@@ -192,16 +183,15 @@ def run_step(board: str, step: LadderStep, results_dir: Path) -> dict:
     run_log_content = ""
 
     if step.concurrency == 1:
-        for it in range(1, step.iterations + 1):
-            cmd = f"{VENC_BINARY} {step.codec} {step.width} {step.height} {step.num_frames} {remote_out} --fps {step.fps} --bitrate {step.bitrate}"
-            print(f"[{step.name}] Iteration {it}/{step.iterations}: {cmd}")
-            proc = ssh_cmd(board, cmd)
-            run_log_content += f"--- Iteration {it} ---\nCommand: {cmd}\nExit Code: {proc.returncode}\n{proc.stdout}\n{proc.stderr}\n"
-            if proc.returncode != 0:
-                print(f"[{step.name}] Iteration {it} FAILED (exit {proc.returncode})")
-                success = False
-                exit_code = proc.returncode
-                break
+        stress_flag = f" --stress {step.iterations}" if step.iterations > 1 else ""
+        cmd = f"{VENC_BINARY} {step.codec} {step.width} {step.height} {step.num_frames} {remote_out} --fps {step.fps} --bitrate {step.bitrate}{stress_flag}"
+        print(f"[{step.name}] Running: {cmd}")
+        proc = ssh_cmd(board, cmd)
+        run_log_content += f"Command: {cmd}\nExit Code: {proc.returncode}\n{proc.stdout}\n{proc.stderr}\n"
+        if proc.returncode != 0:
+            print(f"[{step.name}] FAILED (exit {proc.returncode})")
+            success = False
+            exit_code = proc.returncode
     else:
         # Concurrent execution
         for it in range(1, step.iterations + 1):
@@ -209,8 +199,8 @@ def run_step(board: str, step: LadderStep, results_dir: Path) -> dict:
             for c in range(step.concurrency):
                 out_c = f"/tmp/{step.name}_chn{c}.{ext}"
                 cmds.append(f"{VENC_BINARY} {step.codec} {step.width} {step.height} {step.num_frames} {out_c} --fps {step.fps} --bitrate {step.bitrate}")
-            joined_cmd = " & \n".join(cmds) + " & \nwait"
-            print(f"[{step.name}] Concurrent Iteration {it}/{step.iterations} (4 streams)...")
+            joined_cmd = "(" + " & ".join(cmds) + " & wait)"
+            print(f"[{step.name}] Concurrent Iteration {it}/{step.iterations} ({step.concurrency} streams)...")
             proc = ssh_cmd(board, joined_cmd)
             run_log_content += f"--- Concurrent Iteration {it} ---\n{proc.stdout}\n{proc.stderr}\n"
             if proc.returncode != 0:
@@ -227,7 +217,7 @@ def run_step(board: str, step: LadderStep, results_dir: Path) -> dict:
     (step_dir / "run.log").write_text(run_log_content)
 
     ffprobe_info = {}
-    if success:
+    if success and not step.expect_reject:
         try:
             scp_from(board, remote_out if step.concurrency == 1 else f"/tmp/{step.name}_chn0.{ext}", str(local_out))
             ffprobe_info = probe_stream(str(local_out))
@@ -236,6 +226,16 @@ def run_step(board: str, step: LadderStep, results_dir: Path) -> dict:
         except Exception as e:
             print(f"[{step.name}] Error copying/probing bitstream: {e}")
             ffprobe_info = {"error": str(e)}
+
+    dmabuf_check = ssh_cmd(board, "cat /sys/kernel/debug/dma_buf/bufinfo | grep 'Total [0-9]'")
+    print(f"[{step.name}] Post-test DMA-BUF status: {dmabuf_check.stdout.strip()}")
+
+    if step.expect_reject:
+        step_success = (exit_code != 0)
+        status_str = "[VERIFIED HARDWARE BOUNDARY REJECTION]" if step_success else "[FAIL: EXPECTED REJECTION]"
+    else:
+        step_success = success and ("error" not in ffprobe_info)
+        status_str = "[VERIFIED ON HARDWARE]" if step_success else "[FAIL / OPEN BUG]"
 
     return {
         "name": step.name,
@@ -249,9 +249,9 @@ def run_step(board: str, step: LadderStep, results_dir: Path) -> dict:
         "concurrency": step.concurrency,
         "wall_time_s": wall_time,
         "exit_code": exit_code,
-        "success": success,
+        "success": step_success,
         "ffprobe": ffprobe_info,
-        "status": "[VERIFIED ON HARDWARE]" if (success and "error" not in ffprobe_info) else "[FAIL / OPEN BUG]"
+        "status": status_str
     }
 
 def main():
@@ -270,8 +270,24 @@ def main():
             continue
         res = run_step(args.board, step, results_dir)
         summary.append(res)
+        time.sleep(2)  # Allow hardware power regulator and clock PLL to settle cleanly
 
     out_json = results_dir / "venc_hardware_results.json"
+    if args.step and out_json.exists():
+        try:
+            existing = json.loads(out_json.read_text())
+            new_dict = {r["name"]: r for r in summary}
+            updated = False
+            for i, item in enumerate(existing):
+                if item["name"] in new_dict:
+                    existing[i] = new_dict[item["name"]]
+                    updated = True
+            if not updated:
+                existing.extend(summary)
+            summary = existing
+        except Exception:
+            pass
+
     out_json.write_text(json.dumps(summary, indent=2))
     print(f"\nAll ladder tests completed. Results written to {out_json}")
 

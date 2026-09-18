@@ -9,7 +9,7 @@
     "bitrate": 5000000,
     "iterations": 1,
     "concurrency": 1,
-    "wall_time_s": 0.8236422538757324,
+    "wall_time_s": 0.8438706398010254,
     "exit_code": 0,
     "success": true,
     "ffprobe": {
@@ -21,5 +21,129 @@
       "nb_read_frames": "60"
     },
     "status": "[VERIFIED ON HARDWARE]"
+  },
+  {
+    "name": "step2_h264_1080p_30fps",
+    "codec": "h264",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "num_frames": 60,
+    "bitrate": 5000000,
+    "iterations": 1,
+    "concurrency": 1,
+    "wall_time_s": 0.8321397304534912,
+    "exit_code": 0,
+    "success": true,
+    "ffprobe": {
+      "codec_name": "h264",
+      "width": 1920,
+      "height": 1080,
+      "r_frame_rate": "1200000/1",
+      "nb_read_frames": "60",
+      "nb_read_packets": "60"
+    },
+    "status": "[VERIFIED ON HARDWARE]"
+  },
+  {
+    "name": "step1_h264_640x480_30fps",
+    "codec": "h264",
+    "width": 640,
+    "height": 480,
+    "fps": 30,
+    "num_frames": 30,
+    "bitrate": 1500000,
+    "iterations": 10,
+    "concurrency": 1,
+    "wall_time_s": 1.0124843120574951,
+    "exit_code": 0,
+    "success": true,
+    "ffprobe": {
+      "codec_name": "h264",
+      "width": 640,
+      "height": 480,
+      "r_frame_rate": "1200000/1",
+      "nb_read_frames": "30",
+      "nb_read_packets": "30"
+    },
+    "status": "[VERIFIED ON HARDWARE]"
+  },
+  {
+    "name": "step4_concurrent_4x1080p",
+    "codec": "h264",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "num_frames": 60,
+    "bitrate": 4000000,
+    "iterations": 5,
+    "concurrency": 4,
+    "wall_time_s": 12.241755962371826,
+    "exit_code": 0,
+    "success": true,
+    "ffprobe": {
+      "codec_name": "h264",
+      "width": 1920,
+      "height": 1080,
+      "r_frame_rate": "1200000/1",
+      "nb_read_frames": "60",
+      "nb_read_packets": "60"
+    },
+    "status": "[VERIFIED ON HARDWARE]"
+  },
+  {
+    "name": "step5_h264_4k_uhd_3840x2160",
+    "codec": "h264",
+    "width": 3840,
+    "height": 2160,
+    "fps": 30,
+    "num_frames": 30,
+    "bitrate": 20000000,
+    "iterations": 1,
+    "concurrency": 1,
+    "wall_time_s": 2.4346282482147217,
+    "exit_code": 0,
+    "success": true,
+    "ffprobe": {
+      "codec_name": "h264",
+      "width": 3840,
+      "height": 2160,
+      "r_frame_rate": "1200000/1",
+      "nb_read_frames": "30",
+      "nb_read_packets": "30"
+    },
+    "status": "[VERIFIED ON HARDWARE]"
+  },
+  {
+    "name": "step5_h264_3840x2400_boundary_rejection",
+    "codec": "h264",
+    "width": 3840,
+    "height": 2400,
+    "fps": 30,
+    "num_frames": 30,
+    "bitrate": 20000000,
+    "iterations": 1,
+    "concurrency": 1,
+    "wall_time_s": 0.29337644577026367,
+    "exit_code": 1,
+    "success": true,
+    "ffprobe": {},
+    "status": "[VERIFIED HARDWARE BOUNDARY REJECTION]"
+  },
+  {
+    "name": "step5_hevc_3840x2400_boundary_rejection",
+    "codec": "hevc",
+    "width": 3840,
+    "height": 2400,
+    "fps": 30,
+    "num_frames": 30,
+    "bitrate": 20000000,
+    "iterations": 1,
+    "concurrency": 1,
+    "wall_time_s": 0.29775333404541016,
+    "exit_code": 1,
+    "success": true,
+    "ffprobe": {},
+    "status": "[VERIFIED HARDWARE BOUNDARY REJECTION]"
   }
 ]

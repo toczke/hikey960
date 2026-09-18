@@ -3,5 +3,6 @@
   "width": 3840,
   "height": 2160,
   "r_frame_rate": "1200000/1",
-  "nb_read_frames": "30"
+  "nb_read_frames": "30",
+  "nb_read_packets": "30"
 }

@@ -143,7 +143,7 @@ static int venc_session_init(venc_session_t *s, int venc_fd, int is_hevc, int wi
     create_info.stAttr.enVencType = is_hevc ? HI_UNF_VCODEC_TYPE_HEVC : HI_UNF_VCODEC_TYPE_H264;
     create_info.stAttr.enVencProfile = is_hevc ? 1 : HI_UNF_H264_PROFILE_HIGH;
     create_info.stAttr.enVencHevcProfile = is_hevc ? 1 : 0;
-    create_info.stAttr.h265Level = is_hevc ? 41 : 0;
+    create_info.stAttr.h265Level = is_hevc ? (width >= 3840 ? 50 : 41) : 0;
     create_info.stAttr.u32Width = width;
     create_info.stAttr.u32Height = height;
     create_info.stAttr.u32StrmBufSize = s->out_len;

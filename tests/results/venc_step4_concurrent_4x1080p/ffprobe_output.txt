@@ -1,32 +1,8 @@
-=== Channel A ===
-[STREAM]
-codec_name=h264
-width=1920
-height=1080
-r_frame_rate=1200000/1
-nb_frames=N/A
-[/STREAM]
-=== Channel B ===
-[STREAM]
-codec_name=h264
-width=1920
-height=1080
-r_frame_rate=1200000/1
-nb_frames=N/A
-[/STREAM]
-=== Channel C ===
-[STREAM]
-codec_name=h264
-width=1920
-height=1080
-r_frame_rate=1200000/1
-nb_frames=N/A
-[/STREAM]
-=== Channel D ===
-[STREAM]
-codec_name=h264
-width=1920
-height=1080
-r_frame_rate=1200000/1
-nb_frames=N/A
-[/STREAM]
+{
+  "codec_name": "h264",
+  "width": 1920,
+  "height": 1080,
+  "r_frame_rate": "1200000/1",
+  "nb_read_frames": "60",
+  "nb_read_packets": "60"
+}
