@@ -1,0 +1,12 @@
+menu "VCODEC DRIVER Configuration"
+
+config VCODEC_PLATFORM_HI3660
+	bool "Hi3660 Vcodec (HiKey960) support"
+	default y
+
+if VCODEC_PLATFORM_HI3660
+source "drivers/vcodec/hi_vcodec/vdec/Kconfig"
+source "drivers/vcodec/hi_vcodec/venc/drv/venc/Kconfig"
+endif
+
+endmenu

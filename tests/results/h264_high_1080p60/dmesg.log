@@ -1,0 +1,9 @@
+[  208.635360] enter omxvdec_open , open_count : 0
+[  208.635402] enter channel_init 
+[  208.635450] VDEC_Regulator_Enable_Kirin960, call regulator_enable 
+[  208.654560] vfmw channel create success ChanID 2
+[  225.905843] Last frame report failed!
+[  226.054157] VCTRL_DestroyChanWithOption VCTRL_StopChan ChanID 2!
+[  226.054645] VCTRL_DestroyChanWithOption vfmw destroy chan and free chan resource success, ChanID 2!
+[  226.230989] VDEC_Regulator_Disable_Kirin960, call regulator_disable
+[  226.231494] exit omxvdec_release , open_count : 0

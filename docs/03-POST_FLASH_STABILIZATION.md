@@ -23,10 +23,24 @@ PARTUUID=d3340696-9b95-4c64-8df6-e6d4548fba41  /boot/efi  vfat  defaults  0  2
 
 > **⚠️ NOTE on `/boot/efi` mounting:** The stock FAT32 EFI partition uses a 512-byte sector size, but the native UFS memory uses 4K sectors. Modern Linux kernels may refuse to mount it, throwing `FAT-fs: logical sector size too small for device`. This is usually harmless for a headless server (as the EDK2 bootloader still reads it just fine at boot), but it means `apt upgrade` cannot update GRUB. Freezing kernel updates (Step 04) prevents this from causing apt failures.
 
-## 2. Booting
+## 2. Configuring CMA Memory for VPU & GPU Acceleration
+The default compile-time defconfig uses `CONFIG_CMA_SIZE_MBYTES=64` as a conservative base fallback. However, for full multimedia acceleration (VPU 1080p multi-stream / 4K UHD video decoding and encoding alongside the Mali-G71 Panfrost GPU), the Contiguous Memory Allocator (CMA) pool must be expanded to 256MB.
+
+Add `cma=256M` to your kernel command line in `/etc/default/grub`:
+```text
+GRUB_CMDLINE_LINUX_DEFAULT="console=ttyAMA6,115200 console=tty0 cma=256M"
+```
+Or directly verify in `/boot/grub/grub.cfg` that `cma=256M` is passed to the kernel boot parameters.
+After booting, confirm the allocation via:
+```bash
+grep -i cma /proc/meminfo
+# Should report: CmaTotal: 262144 kB
+```
+
+## 3. Booting
 1. Power off the board.
 2. Turn **Switch 3 OFF**. (Leave Switch 1 ON).
 3. Power on. The board should automatically boot directly into Armbian without dropping into the UEFI shell.
 
-## 3. Next Steps
+## 4. Next Steps
 Move on to the final and most important step: **[04-FREEZING_KERNEL_UPDATES.md](04-FREEZING_KERNEL_UPDATES.md)** to lock your system state and prevent catastrophic regressions during `apt upgrade`.

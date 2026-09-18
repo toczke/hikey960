@@ -1,0 +1,26 @@
+=================================================================
+[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
+[VENC_TEST] Codec: AVC / H.264 (h264)
+[VENC_TEST] Resolution: 320x240 @ 30 fps, Bitrate: 1500000 bps, GOP: 30
+[VENC_TEST] Frames: 5, Output: /tmp/venc_5frame.h264, Stress Cycles: 1
+=================================================================
+[VENC_TEST] Out buf 0: ptr=0xffff8178c000 bufaddr=0xffff8178c000 phy=0xd1300000 kern=0xffff8000872db000 fd=9
+[VENC_TEST] Out buf 1: ptr=0xffff8158c000 bufaddr=0xffff8158c000 phy=0xd1500000 kern=0xffff8000874dc000 fd=10
+[VENC_TEST] Out buf 2: ptr=0xffff8138c000 bufaddr=0xffff8138c000 phy=0xd1700000 kern=0xffff8000876dd000 fd=11
+[VENC_TEST] Out buf 3: ptr=0xffff8118c000 bufaddr=0xffff8118c000 phy=0xd1900000 kern=0xffff8000878de000 fd=12
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff8178c000 phy=0xd1300000 kern=0xffff8000872db000 len=21 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=21 offset=0 flags=0x00000082 [00 00 00 01 67 64 00 0d ac b4 0a 0f 88 00 00 00 ]
+[VENC_TEST] Header / CodecConfig received (21 bytes, flags=0x00000082)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff8158c000 phy=0xd1500000 kern=0xffff8000874dc000 len=4850 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=4850 offset=0 flags=0x00000030 [00 00 00 01 65 b8 40 af b5 40 55 61 18 8b 9e 84 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff8138c000 phy=0xd1700000 kern=0xffff8000876dd000 len=627 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=627 offset=0 flags=0x00000010 [00 00 00 01 61 e3 90 9f 63 87 1a d5 d7 cc 2e e3 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff8118c000 phy=0xd1900000 kern=0xffff8000878de000 len=775 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=775 offset=0 flags=0x00000010 [00 00 00 01 61 e5 90 af 6b 47 04 0b 98 16 84 f4 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff8178c000 phy=0xd1300000 kern=0xffff8000872db000 len=815 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=815 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 af 7a 69 2e 8c db 4c 1b c4 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff8158c000 phy=0xd1500000 kern=0xffff8000874dc000 len=765 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=765 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 af 6b 47 04 0b 90 44 20 94 ]
+[VENC_TEST] Encoded frame    5 /    5 (   765 bytes, flags=0x00000010, Total:     7853 bytes, 260.6 FPS)
+[VENC_TEST] Cycle 1 Complete: 5 frames in 0.02 s (259.1 FPS), 7853 total bytes (3255.7 kbps)
+[VENC_TEST] All cycles completed successfully!

@@ -1,0 +1,146 @@
+{
+  "decode": {
+    "h264_baseline_320x240.264": {
+      "duration_s": 0.405,
+      "frames": 60,
+      "fps": 148.1,
+      "start_temp_a73": 75.6,
+      "peak_temp_a73": 76.6,
+      "end_temp_a73": 76.0,
+      "peak_temp_a53": 76.2,
+      "returncode": 0
+    },
+    "h264_high_1080p30.264": {
+      "duration_s": 0.611,
+      "frames": 60,
+      "fps": 98.2,
+      "start_temp_a73": 73.6,
+      "peak_temp_a73": 85.9,
+      "end_temp_a73": 79.9,
+      "peak_temp_a53": 85.0,
+      "returncode": 0
+    },
+    "h264_high_1080p60.264": {
+      "duration_s": 0.819,
+      "frames": 120,
+      "fps": 146.6,
+      "start_temp_a73": 73.8,
+      "peak_temp_a73": 87.1,
+      "end_temp_a73": 80.3,
+      "peak_temp_a53": 86.1,
+      "returncode": 0
+    },
+    "h264_main_720p30.264": {
+      "duration_s": 0.466,
+      "frames": 60,
+      "fps": 128.7,
+      "start_temp_a73": 74.6,
+      "peak_temp_a73": 84.6,
+      "end_temp_a73": 81.4,
+      "peak_temp_a53": 83.0,
+      "returncode": 0
+    },
+    "hevc_main10_1080p30.hevc": {
+      "duration_s": 1.128,
+      "frames": 60,
+      "fps": 53.2,
+      "start_temp_a73": 74.6,
+      "peak_temp_a73": 87.7,
+      "end_temp_a73": 80.1,
+      "peak_temp_a53": 86.7,
+      "returncode": 0
+    },
+    "hevc_main_1080p30.hevc": {
+      "duration_s": 1.03,
+      "frames": 60,
+      "fps": 58.2,
+      "start_temp_a73": 75.2,
+      "peak_temp_a73": 86.7,
+      "end_temp_a73": 80.3,
+      "peak_temp_a53": 85.9,
+      "returncode": 0
+    },
+    "hevc_main_720p30.hevc": {
+      "duration_s": 0.667,
+      "frames": 60,
+      "fps": 89.9,
+      "start_temp_a73": 76.0,
+      "peak_temp_a73": 86.9,
+      "end_temp_a73": 80.7,
+      "peak_temp_a53": 86.3,
+      "returncode": 0
+    },
+    "mpeg2_720p30.m2v": {
+      "duration_s": 0.46,
+      "frames": 60,
+      "fps": 130.5,
+      "start_temp_a73": 75.8,
+      "peak_temp_a73": 80.3,
+      "end_temp_a73": 79.3,
+      "peak_temp_a53": 81.0,
+      "returncode": 0
+    },
+    "mpeg4_720p30.m4v": {
+      "duration_s": 0.408,
+      "frames": 60,
+      "fps": 146.9,
+      "start_temp_a73": 75.2,
+      "peak_temp_a73": 84.2,
+      "end_temp_a73": 80.7,
+      "peak_temp_a53": 83.2,
+      "returncode": 0
+    },
+    "vp8_720p30.ivf": {
+      "duration_s": 0.355,
+      "frames": 60,
+      "fps": 168.8,
+      "start_temp_a73": 75.2,
+      "peak_temp_a73": 87.3,
+      "end_temp_a73": 82.2,
+      "peak_temp_a53": 86.1,
+      "returncode": 0
+    }
+  },
+  "encode": {
+    "h264_720p30_x264": {
+      "duration_s": 3.958,
+      "frames": 90,
+      "fps": 26.0,
+      "start_temp_a73": 75.8,
+      "peak_temp_a73": 90.2,
+      "end_temp_a73": 82.6,
+      "peak_temp_a53": 89.6,
+      "returncode": 0
+    },
+    "h264_1080p30_x264": {
+      "duration_s": 8.691,
+      "frames": 90,
+      "fps": 11.0,
+      "start_temp_a73": 77.3,
+      "peak_temp_a73": 88.5,
+      "end_temp_a73": 84.4,
+      "peak_temp_a53": 88.1,
+      "returncode": 0
+    },
+    "hevc_720p30_x265": {
+      "duration_s": 10.431,
+      "frames": 90,
+      "fps": 8.9,
+      "start_temp_a73": 77.5,
+      "peak_temp_a73": 89.4,
+      "end_temp_a73": 83.8,
+      "peak_temp_a53": 88.9,
+      "returncode": 0
+    },
+    "hevc_1080p30_x265": {
+      "duration_s": 24.555,
+      "frames": 90,
+      "fps": 3.7,
+      "start_temp_a73": 78.9,
+      "peak_temp_a73": 89.8,
+      "end_temp_a73": 84.6,
+      "peak_temp_a53": 89.2,
+      "returncode": 0
+    }
+  }
+}

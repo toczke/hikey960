@@ -1,0 +1,741 @@
+Command: /root/tests/venc_test h264 640 480 30 /tmp/step1_h264_640x480_30fps.h264 --fps 30 --bitrate 1500000 --stress 10
+Exit Code: 0
+=================================================================
+[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
+[VENC_TEST] Codec: AVC / H.264 (h264)
+[VENC_TEST] Resolution: 640x480 @ 30 fps, Bitrate: 1500000 bps, GOP: 30
+[VENC_TEST] Frames: 30, Output: /tmp/step1_h264_640x480_30fps.h264, Stress Cycles: 10
+=================================================================
+
+--- Stress Cycle 1 / 10 ---
+[VENC_TEST] Out buf 0: ptr=0xffff9da0c000 bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008bdcd000 fd=9
+[VENC_TEST] Out buf 1: ptr=0xffff9d80c000 bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008bfce000 fd=10
+[VENC_TEST] Out buf 2: ptr=0xffff9d60c000 bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008c1cf000 fd=11
+[VENC_TEST] Out buf 3: ptr=0xffff9d40c000 bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008c3d0000 fd=12
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008bdcd000 len=22 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=22 offset=0 flags=0x00000082 [00 00 00 01 67 64 00 1e ac b4 05 01 e8 80 00 00 ]
+[VENC_TEST] Header / CodecConfig received (22 bytes, flags=0x00000082)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008bfce000 len=16039 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=16039 offset=0 flags=0x00000030 [00 00 00 01 65 b8 41 7f f6 65 c1 f1 63 7a 2b 6d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008c1cf000 len=2075 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=2075 offset=0 flags=0x00000010 [00 00 00 01 61 e3 9f a9 30 7e 2b c6 c4 69 92 88 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008c3d0000 len=3066 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3066 offset=0 flags=0x00000010 [00 00 00 01 61 e5 91 7f 44 30 af 9b 73 e3 ee e2 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008bdcd000 len=4038 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=4038 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 8f 63 81 64 2b 70 1f 12 cb ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008bfce000 len=3371 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3371 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 9f 63 87 17 bd 22 4f 83 f8 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008c1cf000 len=3898 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3898 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008c3d0000 len=3404 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3404 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 04 16 ed cf 46 13 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008bdcd000 len=3518 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3518 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 6b 47 01 d9 db 14 29 89 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008bfce000 len=3407 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3407 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008c1cf000 len=3428 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3428 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 01 da 0d 44 90 01 ]
+[VENC_TEST] Encoded frame   10 /   30 (  3428 bytes, flags=0x00000010, Total:    46266 bytes, 308.5 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008c3d0000 len=3188 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3188 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008bdcd000 len=3645 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3645 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 16 ea 97 21 50 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008bfce000 len=3175 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3175 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6b 47 04 16 ed 70 42 a0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008c1cf000 len=3324 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3324 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 04 17 08 00 88 bc ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008c3d0000 len=3730 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3730 offset=0 flags=0x00000010 [00 00 00 01 61 fd 90 af 7a 69 2e 90 8b 44 73 aa ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008bdcd000 len=3479 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3479 offset=0 flags=0x00000010 [00 00 00 01 61 ff 90 af 7a 69 2e 90 95 0a 51 ce ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008bfce000 len=3766 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3766 offset=0 flags=0x00000010 [00 00 00 01 61 e1 90 af 7a 69 2e 90 95 29 ba 30 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008c1cf000 len=3349 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3349 offset=0 flags=0x00000010 [00 00 00 01 61 e3 90 af 7a 69 2e 90 8b 44 74 61 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008c3d0000 len=3369 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3369 offset=0 flags=0x00000010 [00 00 00 01 61 e5 90 af 7a 69 2d c9 66 d3 52 82 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008bdcd000 len=3761 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3761 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] Encoded frame   20 /   30 (  3761 bytes, flags=0x00000010, Total:    81052 bytes, 406.0 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008bfce000 len=3503 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3503 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008c1cf000 len=3798 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3798 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ea ce 04 3d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008c3d0000 len=3299 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3299 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 01 d9 d5 31 c0 58 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008bdcd000 len=3483 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3483 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 7a 69 2d c9 66 d4 ab f3 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008bfce000 len=3531 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3531 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 16 ed cf 3a a6 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008c1cf000 len=3372 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3372 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 04 16 ed 70 e1 f7 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008c3d0000 len=3237 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3237 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008bdcd000 len=3627 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3627 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 17 06 b1 ce a9 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008bfce000 len=3325 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3325 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6a da 23 71 1e 1e 3e 46 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008c1cf000 len=3221 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3221 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 01 da 0d 24 41 25 ]
+[VENC_TEST] Encoded frame   30 /   30 (  3221 bytes, flags=0x00000010, Total:   115448 bytes, 464.0 FPS)
+[VENC_TEST] Cycle 1 Complete: 30 frames in 0.06 s (463.6 FPS), 115448 total bytes (14271.8 kbps)
+
+--- Stress Cycle 2 / 10 ---
+[VENC_TEST] Out buf 0: ptr=0xffff9da0c000 bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008c9dd000 fd=9
+[VENC_TEST] Out buf 1: ptr=0xffff9d80c000 bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008cbde000 fd=10
+[VENC_TEST] Out buf 2: ptr=0xffff9d60c000 bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008cddf000 fd=11
+[VENC_TEST] Out buf 3: ptr=0xffff9d40c000 bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008cfe0000 fd=12
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008c9dd000 len=22 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=22 offset=0 flags=0x00000082 [00 00 00 01 67 64 00 1e ac b4 05 01 e8 80 00 00 ]
+[VENC_TEST] Header / CodecConfig received (22 bytes, flags=0x00000082)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008cbde000 len=16039 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=16039 offset=0 flags=0x00000030 [00 00 00 01 65 b8 41 7f f6 65 c1 f1 63 7a 2b 6d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008cddf000 len=2075 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=2075 offset=0 flags=0x00000010 [00 00 00 01 61 e3 9f a9 30 7e 2b c6 c4 69 92 88 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008cfe0000 len=3066 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3066 offset=0 flags=0x00000010 [00 00 00 01 61 e5 91 7f 44 30 af 9b 73 e3 ee e2 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008c9dd000 len=4038 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=4038 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 8f 63 81 64 2b 70 1f 12 cb ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008cbde000 len=3371 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3371 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 9f 63 87 17 bd 22 4f 83 f8 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008cddf000 len=3898 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3898 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008cfe0000 len=3404 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3404 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 04 16 ed cf 46 13 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008c9dd000 len=3518 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3518 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 6b 47 01 d9 db 14 29 89 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008cbde000 len=3407 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3407 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008cddf000 len=3428 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3428 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 01 da 0d 44 90 01 ]
+[VENC_TEST] Encoded frame   10 /   30 (  3428 bytes, flags=0x00000010, Total:    46266 bytes, 438.9 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008cfe0000 len=3188 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3188 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008c9dd000 len=3645 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3645 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 16 ea 97 21 50 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008cbde000 len=3175 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3175 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6b 47 04 16 ed 70 42 a0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008cddf000 len=3324 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3324 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 04 17 08 00 88 bc ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008cfe0000 len=3730 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3730 offset=0 flags=0x00000010 [00 00 00 01 61 fd 90 af 7a 69 2e 90 8b 44 73 aa ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008c9dd000 len=3479 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3479 offset=0 flags=0x00000010 [00 00 00 01 61 ff 90 af 7a 69 2e 90 95 0a 51 ce ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008cbde000 len=3766 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3766 offset=0 flags=0x00000010 [00 00 00 01 61 e1 90 af 7a 69 2e 90 95 29 ba 30 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008cddf000 len=3349 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3349 offset=0 flags=0x00000010 [00 00 00 01 61 e3 90 af 7a 69 2e 90 8b 44 74 61 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008cfe0000 len=3369 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3369 offset=0 flags=0x00000010 [00 00 00 01 61 e5 90 af 7a 69 2d c9 66 d3 52 82 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008c9dd000 len=3761 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3761 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] Encoded frame   20 /   30 (  3761 bytes, flags=0x00000010, Total:    81052 bytes, 511.7 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008cbde000 len=3503 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3503 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008cddf000 len=3798 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3798 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ea ce 04 3d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008cfe0000 len=3299 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3299 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 01 d9 d5 31 c0 58 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008c9dd000 len=3483 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3483 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 7a 69 2d c9 66 d4 ab f3 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008cbde000 len=3531 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3531 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 16 ed cf 3a a6 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008cddf000 len=3372 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3372 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 04 16 ed 70 e1 f7 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008cfe0000 len=3237 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3237 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008c9dd000 len=3627 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3627 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 17 06 b1 ce a9 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008cbde000 len=3325 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3325 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6a da 23 71 1e 1e 3e 46 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008cddf000 len=3221 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3221 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 01 da 0d 24 41 25 ]
+[VENC_TEST] Encoded frame   30 /   30 (  3221 bytes, flags=0x00000010, Total:   115448 bytes, 551.8 FPS)
+[VENC_TEST] Cycle 2 Complete: 30 frames in 0.05 s (551.3 FPS), 115448 total bytes (16971.8 kbps)
+
+--- Stress Cycle 3 / 10 ---
+[VENC_TEST] Out buf 0: ptr=0xffff9da0c000 bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008d5ed000 fd=9
+[VENC_TEST] Out buf 1: ptr=0xffff9d80c000 bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008d7ee000 fd=10
+[VENC_TEST] Out buf 2: ptr=0xffff9d60c000 bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008d9ef000 fd=11
+[VENC_TEST] Out buf 3: ptr=0xffff9d40c000 bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008dbf0000 fd=12
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008d5ed000 len=22 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=22 offset=0 flags=0x00000082 [00 00 00 01 67 64 00 1e ac b4 05 01 e8 80 00 00 ]
+[VENC_TEST] Header / CodecConfig received (22 bytes, flags=0x00000082)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008d7ee000 len=16039 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=16039 offset=0 flags=0x00000030 [00 00 00 01 65 b8 41 7f f6 65 c1 f1 63 7a 2b 6d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008d9ef000 len=2075 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=2075 offset=0 flags=0x00000010 [00 00 00 01 61 e3 9f a9 30 7e 2b c6 c4 69 92 88 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008dbf0000 len=3066 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3066 offset=0 flags=0x00000010 [00 00 00 01 61 e5 91 7f 44 30 af 9b 73 e3 ee e2 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008d5ed000 len=4038 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=4038 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 8f 63 81 64 2b 70 1f 12 cb ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008d7ee000 len=3371 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3371 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 9f 63 87 17 bd 22 4f 83 f8 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008d9ef000 len=3898 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3898 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008dbf0000 len=3404 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3404 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 04 16 ed cf 46 13 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008d5ed000 len=3518 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3518 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 6b 47 01 d9 db 14 29 89 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008d7ee000 len=3407 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3407 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008d9ef000 len=3428 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3428 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 01 da 0d 44 90 01 ]
+[VENC_TEST] Encoded frame   10 /   30 (  3428 bytes, flags=0x00000010, Total:    46266 bytes, 388.4 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008dbf0000 len=3188 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3188 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008d5ed000 len=3645 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3645 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 16 ea 97 21 50 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008d7ee000 len=3175 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3175 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6b 47 04 16 ed 70 42 a0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008d9ef000 len=3324 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3324 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 04 17 08 00 88 bc ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008dbf0000 len=3730 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3730 offset=0 flags=0x00000010 [00 00 00 01 61 fd 90 af 7a 69 2e 90 8b 44 73 aa ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008d5ed000 len=3479 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3479 offset=0 flags=0x00000010 [00 00 00 01 61 ff 90 af 7a 69 2e 90 95 0a 51 ce ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008d7ee000 len=3766 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3766 offset=0 flags=0x00000010 [00 00 00 01 61 e1 90 af 7a 69 2e 90 95 29 ba 30 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008d9ef000 len=3349 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3349 offset=0 flags=0x00000010 [00 00 00 01 61 e3 90 af 7a 69 2e 90 8b 44 74 61 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008dbf0000 len=3369 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3369 offset=0 flags=0x00000010 [00 00 00 01 61 e5 90 af 7a 69 2d c9 66 d3 52 82 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008d5ed000 len=3761 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3761 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] Encoded frame   20 /   30 (  3761 bytes, flags=0x00000010, Total:    81052 bytes, 439.9 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008d7ee000 len=3503 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3503 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008d9ef000 len=3798 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3798 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ea ce 04 3d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008dbf0000 len=3299 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3299 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 01 d9 d5 31 c0 58 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008d5ed000 len=3483 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3483 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 7a 69 2d c9 66 d4 ab f3 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008d7ee000 len=3531 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3531 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 16 ed cf 3a a6 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008d9ef000 len=3372 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3372 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 04 16 ed 70 e1 f7 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008dbf0000 len=3237 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3237 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008d5ed000 len=3627 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3627 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 17 06 b1 ce a9 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008d7ee000 len=3325 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3325 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6a da 23 71 1e 1e 3e 46 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008d9ef000 len=3221 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3221 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 01 da 0d 24 41 25 ]
+[VENC_TEST] Encoded frame   30 /   30 (  3221 bytes, flags=0x00000010, Total:   115448 bytes, 459.5 FPS)
+[VENC_TEST] Cycle 3 Complete: 30 frames in 0.07 s (459.2 FPS), 115448 total bytes (14135.5 kbps)
+
+--- Stress Cycle 4 / 10 ---
+[VENC_TEST] Out buf 0: ptr=0xffff9da0c000 bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008e1fd000 fd=9
+[VENC_TEST] Out buf 1: ptr=0xffff9d80c000 bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008e3fe000 fd=10
+[VENC_TEST] Out buf 2: ptr=0xffff9d60c000 bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008e5ff000 fd=11
+[VENC_TEST] Out buf 3: ptr=0xffff9d40c000 bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008e800000 fd=12
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008e1fd000 len=22 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=22 offset=0 flags=0x00000082 [00 00 00 01 67 64 00 1e ac b4 05 01 e8 80 00 00 ]
+[VENC_TEST] Header / CodecConfig received (22 bytes, flags=0x00000082)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008e3fe000 len=16039 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=16039 offset=0 flags=0x00000030 [00 00 00 01 65 b8 41 7f f6 65 c1 f1 63 7a 2b 6d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008e5ff000 len=2075 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=2075 offset=0 flags=0x00000010 [00 00 00 01 61 e3 9f a9 30 7e 2b c6 c4 69 92 88 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008e800000 len=3066 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3066 offset=0 flags=0x00000010 [00 00 00 01 61 e5 91 7f 44 30 af 9b 73 e3 ee e2 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008e1fd000 len=4038 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=4038 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 8f 63 81 64 2b 70 1f 12 cb ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008e3fe000 len=3371 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3371 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 9f 63 87 17 bd 22 4f 83 f8 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008e5ff000 len=3898 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3898 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008e800000 len=3404 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3404 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 04 16 ed cf 46 13 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008e1fd000 len=3518 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3518 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 6b 47 01 d9 db 14 29 89 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008e3fe000 len=3407 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3407 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008e5ff000 len=3428 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3428 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 01 da 0d 44 90 01 ]
+[VENC_TEST] Encoded frame   10 /   30 (  3428 bytes, flags=0x00000010, Total:    46266 bytes, 409.4 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008e800000 len=3188 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3188 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008e1fd000 len=3645 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3645 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 16 ea 97 21 50 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008e3fe000 len=3175 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3175 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6b 47 04 16 ed 70 42 a0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008e5ff000 len=3324 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3324 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 04 17 08 00 88 bc ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008e800000 len=3730 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3730 offset=0 flags=0x00000010 [00 00 00 01 61 fd 90 af 7a 69 2e 90 8b 44 73 aa ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008e1fd000 len=3479 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3479 offset=0 flags=0x00000010 [00 00 00 01 61 ff 90 af 7a 69 2e 90 95 0a 51 ce ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008e3fe000 len=3766 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3766 offset=0 flags=0x00000010 [00 00 00 01 61 e1 90 af 7a 69 2e 90 95 29 ba 30 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008e5ff000 len=3349 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3349 offset=0 flags=0x00000010 [00 00 00 01 61 e3 90 af 7a 69 2e 90 8b 44 74 61 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008e800000 len=3369 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3369 offset=0 flags=0x00000010 [00 00 00 01 61 e5 90 af 7a 69 2d c9 66 d3 52 82 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008e1fd000 len=3761 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3761 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] Encoded frame   20 /   30 (  3761 bytes, flags=0x00000010, Total:    81052 bytes, 479.1 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008e3fe000 len=3503 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3503 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008e5ff000 len=3798 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3798 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ea ce 04 3d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008e800000 len=3299 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3299 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 01 d9 d5 31 c0 58 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008e1fd000 len=3483 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3483 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 7a 69 2d c9 66 d4 ab f3 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008e3fe000 len=3531 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3531 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 16 ed cf 3a a6 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008e5ff000 len=3372 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3372 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 04 16 ed 70 e1 f7 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008e800000 len=3237 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3237 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008e1fd000 len=3627 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3627 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 17 06 b1 ce a9 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008e3fe000 len=3325 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3325 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6a da 23 71 1e 1e 3e 46 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008e5ff000 len=3221 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3221 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 01 da 0d 24 41 25 ]
+[VENC_TEST] Encoded frame   30 /   30 (  3221 bytes, flags=0x00000010, Total:   115448 bytes, 513.2 FPS)
+[VENC_TEST] Cycle 4 Complete: 30 frames in 0.06 s (512.7 FPS), 115448 total bytes (15785.4 kbps)
+
+--- Stress Cycle 5 / 10 ---
+[VENC_TEST] Out buf 0: ptr=0xffff9da0c000 bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087082000 fd=9
+[VENC_TEST] Out buf 1: ptr=0xffff9d80c000 bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008739c000 fd=10
+[VENC_TEST] Out buf 2: ptr=0xffff9d60c000 bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008759d000 fd=11
+[VENC_TEST] Out buf 3: ptr=0xffff9d40c000 bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008779e000 fd=12
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087082000 len=22 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=22 offset=0 flags=0x00000082 [00 00 00 01 67 64 00 1e ac b4 05 01 e8 80 00 00 ]
+[VENC_TEST] Header / CodecConfig received (22 bytes, flags=0x00000082)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008739c000 len=16039 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=16039 offset=0 flags=0x00000030 [00 00 00 01 65 b8 41 7f f6 65 c1 f1 63 7a 2b 6d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008759d000 len=2075 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=2075 offset=0 flags=0x00000010 [00 00 00 01 61 e3 9f a9 30 7e 2b c6 c4 69 92 88 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008779e000 len=3066 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3066 offset=0 flags=0x00000010 [00 00 00 01 61 e5 91 7f 44 30 af 9b 73 e3 ee e2 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087082000 len=4038 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=4038 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 8f 63 81 64 2b 70 1f 12 cb ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008739c000 len=3371 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3371 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 9f 63 87 17 bd 22 4f 83 f8 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008759d000 len=3898 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3898 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008779e000 len=3404 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3404 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 04 16 ed cf 46 13 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087082000 len=3518 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3518 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 6b 47 01 d9 db 14 29 89 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008739c000 len=3407 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3407 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008759d000 len=3428 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3428 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 01 da 0d 44 90 01 ]
+[VENC_TEST] Encoded frame   10 /   30 (  3428 bytes, flags=0x00000010, Total:    46266 bytes, 423.9 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008779e000 len=3188 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3188 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087082000 len=3645 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3645 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 16 ea 97 21 50 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008739c000 len=3175 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3175 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6b 47 04 16 ed 70 42 a0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008759d000 len=3324 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3324 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 04 17 08 00 88 bc ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008779e000 len=3730 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3730 offset=0 flags=0x00000010 [00 00 00 01 61 fd 90 af 7a 69 2e 90 8b 44 73 aa ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087082000 len=3479 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3479 offset=0 flags=0x00000010 [00 00 00 01 61 ff 90 af 7a 69 2e 90 95 0a 51 ce ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008739c000 len=3766 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3766 offset=0 flags=0x00000010 [00 00 00 01 61 e1 90 af 7a 69 2e 90 95 29 ba 30 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008759d000 len=3349 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3349 offset=0 flags=0x00000010 [00 00 00 01 61 e3 90 af 7a 69 2e 90 8b 44 74 61 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008779e000 len=3369 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3369 offset=0 flags=0x00000010 [00 00 00 01 61 e5 90 af 7a 69 2d c9 66 d3 52 82 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087082000 len=3761 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3761 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] Encoded frame   20 /   30 (  3761 bytes, flags=0x00000010, Total:    81052 bytes, 502.1 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008739c000 len=3503 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3503 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008759d000 len=3798 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3798 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ea ce 04 3d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008779e000 len=3299 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3299 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 01 d9 d5 31 c0 58 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087082000 len=3483 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3483 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 7a 69 2d c9 66 d4 ab f3 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008739c000 len=3531 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3531 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 16 ed cf 3a a6 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008759d000 len=3372 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3372 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 04 16 ed 70 e1 f7 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008779e000 len=3237 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3237 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087082000 len=3627 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3627 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 17 06 b1 ce a9 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008739c000 len=3325 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3325 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6a da 23 71 1e 1e 3e 46 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008759d000 len=3221 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3221 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 01 da 0d 24 41 25 ]
+[VENC_TEST] Encoded frame   30 /   30 (  3221 bytes, flags=0x00000010, Total:   115448 bytes, 558.0 FPS)
+[VENC_TEST] Cycle 5 Complete: 30 frames in 0.05 s (557.5 FPS), 115448 total bytes (17162.2 kbps)
+
+--- Stress Cycle 6 / 10 ---
+[VENC_TEST] Out buf 0: ptr=0xffff9da0c000 bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087c9c000 fd=9
+[VENC_TEST] Out buf 1: ptr=0xffff9d80c000 bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800087e9d000 fd=10
+[VENC_TEST] Out buf 2: ptr=0xffff9d60c000 bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008809e000 fd=11
+[VENC_TEST] Out buf 3: ptr=0xffff9d40c000 bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008829f000 fd=12
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087c9c000 len=22 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=22 offset=0 flags=0x00000082 [00 00 00 01 67 64 00 1e ac b4 05 01 e8 80 00 00 ]
+[VENC_TEST] Header / CodecConfig received (22 bytes, flags=0x00000082)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800087e9d000 len=16039 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=16039 offset=0 flags=0x00000030 [00 00 00 01 65 b8 41 7f f6 65 c1 f1 63 7a 2b 6d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008809e000 len=2075 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=2075 offset=0 flags=0x00000010 [00 00 00 01 61 e3 9f a9 30 7e 2b c6 c4 69 92 88 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008829f000 len=3066 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3066 offset=0 flags=0x00000010 [00 00 00 01 61 e5 91 7f 44 30 af 9b 73 e3 ee e2 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087c9c000 len=4038 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=4038 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 8f 63 81 64 2b 70 1f 12 cb ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800087e9d000 len=3371 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3371 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 9f 63 87 17 bd 22 4f 83 f8 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008809e000 len=3898 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3898 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008829f000 len=3404 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3404 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 04 16 ed cf 46 13 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087c9c000 len=3518 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3518 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 6b 47 01 d9 db 14 29 89 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800087e9d000 len=3407 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3407 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008809e000 len=3428 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3428 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 01 da 0d 44 90 01 ]
+[VENC_TEST] Encoded frame   10 /   30 (  3428 bytes, flags=0x00000010, Total:    46266 bytes, 440.8 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008829f000 len=3188 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3188 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087c9c000 len=3645 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3645 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 16 ea 97 21 50 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800087e9d000 len=3175 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3175 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6b 47 04 16 ed 70 42 a0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008809e000 len=3324 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3324 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 04 17 08 00 88 bc ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008829f000 len=3730 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3730 offset=0 flags=0x00000010 [00 00 00 01 61 fd 90 af 7a 69 2e 90 8b 44 73 aa ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087c9c000 len=3479 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3479 offset=0 flags=0x00000010 [00 00 00 01 61 ff 90 af 7a 69 2e 90 95 0a 51 ce ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800087e9d000 len=3766 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3766 offset=0 flags=0x00000010 [00 00 00 01 61 e1 90 af 7a 69 2e 90 95 29 ba 30 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008809e000 len=3349 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3349 offset=0 flags=0x00000010 [00 00 00 01 61 e3 90 af 7a 69 2e 90 8b 44 74 61 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008829f000 len=3369 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3369 offset=0 flags=0x00000010 [00 00 00 01 61 e5 90 af 7a 69 2d c9 66 d3 52 82 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087c9c000 len=3761 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3761 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] Encoded frame   20 /   30 (  3761 bytes, flags=0x00000010, Total:    81052 bytes, 513.1 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800087e9d000 len=3503 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3503 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008809e000 len=3798 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3798 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ea ce 04 3d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008829f000 len=3299 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3299 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 01 d9 d5 31 c0 58 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087c9c000 len=3483 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3483 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 7a 69 2d c9 66 d4 ab f3 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800087e9d000 len=3531 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3531 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 16 ed cf 3a a6 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008809e000 len=3372 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3372 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 04 16 ed 70 e1 f7 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008829f000 len=3237 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3237 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff800087c9c000 len=3627 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3627 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 17 06 b1 ce a9 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800087e9d000 len=3325 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3325 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6a da 23 71 1e 1e 3e 46 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008809e000 len=3221 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3221 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 01 da 0d 24 41 25 ]
+[VENC_TEST] Encoded frame   30 /   30 (  3221 bytes, flags=0x00000010, Total:   115448 bytes, 576.8 FPS)
+[VENC_TEST] Cycle 6 Complete: 30 frames in 0.05 s (576.2 FPS), 115448 total bytes (17739.4 kbps)
+
+--- Stress Cycle 7 / 10 ---
+[VENC_TEST] Out buf 0: ptr=0xffff9da0c000 bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008889a000 fd=9
+[VENC_TEST] Out buf 1: ptr=0xffff9d80c000 bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800088a9b000 fd=10
+[VENC_TEST] Out buf 2: ptr=0xffff9d60c000 bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800088c9c000 fd=11
+[VENC_TEST] Out buf 3: ptr=0xffff9d40c000 bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff800089181000 fd=12
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008889a000 len=22 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=22 offset=0 flags=0x00000082 [00 00 00 01 67 64 00 1e ac b4 05 01 e8 80 00 00 ]
+[VENC_TEST] Header / CodecConfig received (22 bytes, flags=0x00000082)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800088a9b000 len=16039 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=16039 offset=0 flags=0x00000030 [00 00 00 01 65 b8 41 7f f6 65 c1 f1 63 7a 2b 6d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800088c9c000 len=2075 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=2075 offset=0 flags=0x00000010 [00 00 00 01 61 e3 9f a9 30 7e 2b c6 c4 69 92 88 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff800089181000 len=3066 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3066 offset=0 flags=0x00000010 [00 00 00 01 61 e5 91 7f 44 30 af 9b 73 e3 ee e2 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008889a000 len=4038 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=4038 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 8f 63 81 64 2b 70 1f 12 cb ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800088a9b000 len=3371 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3371 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 9f 63 87 17 bd 22 4f 83 f8 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800088c9c000 len=3898 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3898 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff800089181000 len=3404 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3404 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 04 16 ed cf 46 13 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008889a000 len=3518 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3518 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 6b 47 01 d9 db 14 29 89 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800088a9b000 len=3407 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3407 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800088c9c000 len=3428 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3428 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 01 da 0d 44 90 01 ]
+[VENC_TEST] Encoded frame   10 /   30 (  3428 bytes, flags=0x00000010, Total:    46266 bytes, 418.0 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff800089181000 len=3188 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3188 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008889a000 len=3645 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3645 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 16 ea 97 21 50 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800088a9b000 len=3175 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3175 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6b 47 04 16 ed 70 42 a0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800088c9c000 len=3324 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3324 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 04 17 08 00 88 bc ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff800089181000 len=3730 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3730 offset=0 flags=0x00000010 [00 00 00 01 61 fd 90 af 7a 69 2e 90 8b 44 73 aa ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008889a000 len=3479 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3479 offset=0 flags=0x00000010 [00 00 00 01 61 ff 90 af 7a 69 2e 90 95 0a 51 ce ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800088a9b000 len=3766 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3766 offset=0 flags=0x00000010 [00 00 00 01 61 e1 90 af 7a 69 2e 90 95 29 ba 30 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800088c9c000 len=3349 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3349 offset=0 flags=0x00000010 [00 00 00 01 61 e3 90 af 7a 69 2e 90 8b 44 74 61 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff800089181000 len=3369 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3369 offset=0 flags=0x00000010 [00 00 00 01 61 e5 90 af 7a 69 2d c9 66 d3 52 82 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008889a000 len=3761 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3761 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] Encoded frame   20 /   30 (  3761 bytes, flags=0x00000010, Total:    81052 bytes, 497.1 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800088a9b000 len=3503 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3503 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800088c9c000 len=3798 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3798 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ea ce 04 3d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff800089181000 len=3299 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3299 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 01 d9 d5 31 c0 58 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008889a000 len=3483 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3483 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 7a 69 2d c9 66 d4 ab f3 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800088a9b000 len=3531 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3531 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 16 ed cf 3a a6 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800088c9c000 len=3372 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3372 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 04 16 ed 70 e1 f7 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff800089181000 len=3237 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3237 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008889a000 len=3627 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3627 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 17 06 b1 ce a9 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff800088a9b000 len=3325 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3325 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6a da 23 71 1e 1e 3e 46 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800088c9c000 len=3221 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3221 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 01 da 0d 24 41 25 ]
+[VENC_TEST] Encoded frame   30 /   30 (  3221 bytes, flags=0x00000010, Total:   115448 bytes, 549.0 FPS)
+[VENC_TEST] Cycle 7 Complete: 30 frames in 0.05 s (548.5 FPS), 115448 total bytes (16886.1 kbps)
+
+--- Stress Cycle 8 / 10 ---
+[VENC_TEST] Out buf 0: ptr=0xffff9da0c000 bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff8000896f1000 fd=9
+[VENC_TEST] Out buf 1: ptr=0xffff9d80c000 bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff8000898f2000 fd=10
+[VENC_TEST] Out buf 2: ptr=0xffff9d60c000 bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800089af3000 fd=11
+[VENC_TEST] Out buf 3: ptr=0xffff9d40c000 bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff800089d23000 fd=12
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff8000896f1000 len=22 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=22 offset=0 flags=0x00000082 [00 00 00 01 67 64 00 1e ac b4 05 01 e8 80 00 00 ]
+[VENC_TEST] Header / CodecConfig received (22 bytes, flags=0x00000082)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff8000898f2000 len=16039 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=16039 offset=0 flags=0x00000030 [00 00 00 01 65 b8 41 7f f6 65 c1 f1 63 7a 2b 6d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800089af3000 len=2075 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=2075 offset=0 flags=0x00000010 [00 00 00 01 61 e3 9f a9 30 7e 2b c6 c4 69 92 88 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff800089d23000 len=3066 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3066 offset=0 flags=0x00000010 [00 00 00 01 61 e5 91 7f 44 30 af 9b 73 e3 ee e2 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff8000896f1000 len=4038 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=4038 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 8f 63 81 64 2b 70 1f 12 cb ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff8000898f2000 len=3371 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3371 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 9f 63 87 17 bd 22 4f 83 f8 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800089af3000 len=3898 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3898 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff800089d23000 len=3404 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3404 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 04 16 ed cf 46 13 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff8000896f1000 len=3518 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3518 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 6b 47 01 d9 db 14 29 89 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff8000898f2000 len=3407 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3407 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800089af3000 len=3428 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3428 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 01 da 0d 44 90 01 ]
+[VENC_TEST] Encoded frame   10 /   30 (  3428 bytes, flags=0x00000010, Total:    46266 bytes, 385.9 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff800089d23000 len=3188 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3188 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff8000896f1000 len=3645 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3645 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 16 ea 97 21 50 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff8000898f2000 len=3175 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3175 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6b 47 04 16 ed 70 42 a0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800089af3000 len=3324 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3324 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 04 17 08 00 88 bc ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff800089d23000 len=3730 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3730 offset=0 flags=0x00000010 [00 00 00 01 61 fd 90 af 7a 69 2e 90 8b 44 73 aa ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff8000896f1000 len=3479 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3479 offset=0 flags=0x00000010 [00 00 00 01 61 ff 90 af 7a 69 2e 90 95 0a 51 ce ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff8000898f2000 len=3766 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3766 offset=0 flags=0x00000010 [00 00 00 01 61 e1 90 af 7a 69 2e 90 95 29 ba 30 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800089af3000 len=3349 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3349 offset=0 flags=0x00000010 [00 00 00 01 61 e3 90 af 7a 69 2e 90 8b 44 74 61 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff800089d23000 len=3369 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3369 offset=0 flags=0x00000010 [00 00 00 01 61 e5 90 af 7a 69 2d c9 66 d3 52 82 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff8000896f1000 len=3761 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3761 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] Encoded frame   20 /   30 (  3761 bytes, flags=0x00000010, Total:    81052 bytes, 440.0 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff8000898f2000 len=3503 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3503 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800089af3000 len=3798 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3798 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ea ce 04 3d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff800089d23000 len=3299 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3299 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 01 d9 d5 31 c0 58 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff8000896f1000 len=3483 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3483 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 7a 69 2d c9 66 d4 ab f3 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff8000898f2000 len=3531 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3531 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 16 ed cf 3a a6 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800089af3000 len=3372 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3372 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 04 16 ed 70 e1 f7 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff800089d23000 len=3237 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3237 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff8000896f1000 len=3627 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3627 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 17 06 b1 ce a9 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff8000898f2000 len=3325 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3325 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6a da 23 71 1e 1e 3e 46 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff800089af3000 len=3221 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3221 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 01 da 0d 24 41 25 ]
+[VENC_TEST] Encoded frame   30 /   30 (  3221 bytes, flags=0x00000010, Total:   115448 bytes, 469.4 FPS)
+[VENC_TEST] Cycle 8 Complete: 30 frames in 0.06 s (469.0 FPS), 115448 total bytes (14438.9 kbps)
+
+--- Stress Cycle 9 / 10 ---
+[VENC_TEST] Out buf 0: ptr=0xffff9da0c000 bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008a31e000 fd=9
+[VENC_TEST] Out buf 1: ptr=0xffff9d80c000 bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008a51f000 fd=10
+[VENC_TEST] Out buf 2: ptr=0xffff9d60c000 bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008a720000 fd=11
+[VENC_TEST] Out buf 3: ptr=0xffff9d40c000 bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008a921000 fd=12
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008a31e000 len=22 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=22 offset=0 flags=0x00000082 [00 00 00 01 67 64 00 1e ac b4 05 01 e8 80 00 00 ]
+[VENC_TEST] Header / CodecConfig received (22 bytes, flags=0x00000082)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008a51f000 len=16039 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=16039 offset=0 flags=0x00000030 [00 00 00 01 65 b8 41 7f f6 65 c1 f1 63 7a 2b 6d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008a720000 len=2075 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=2075 offset=0 flags=0x00000010 [00 00 00 01 61 e3 9f a9 30 7e 2b c6 c4 69 92 88 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008a921000 len=3066 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3066 offset=0 flags=0x00000010 [00 00 00 01 61 e5 91 7f 44 30 af 9b 73 e3 ee e2 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008a31e000 len=4038 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=4038 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 8f 63 81 64 2b 70 1f 12 cb ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008a51f000 len=3371 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3371 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 9f 63 87 17 bd 22 4f 83 f8 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008a720000 len=3898 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3898 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008a921000 len=3404 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3404 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 04 16 ed cf 46 13 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008a31e000 len=3518 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3518 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 6b 47 01 d9 db 14 29 89 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008a51f000 len=3407 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3407 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008a720000 len=3428 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3428 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 01 da 0d 44 90 01 ]
+[VENC_TEST] Encoded frame   10 /   30 (  3428 bytes, flags=0x00000010, Total:    46266 bytes, 453.6 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008a921000 len=3188 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3188 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008a31e000 len=3645 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3645 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 16 ea 97 21 50 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008a51f000 len=3175 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3175 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6b 47 04 16 ed 70 42 a0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008a720000 len=3324 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3324 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 04 17 08 00 88 bc ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008a921000 len=3730 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3730 offset=0 flags=0x00000010 [00 00 00 01 61 fd 90 af 7a 69 2e 90 8b 44 73 aa ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008a31e000 len=3479 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3479 offset=0 flags=0x00000010 [00 00 00 01 61 ff 90 af 7a 69 2e 90 95 0a 51 ce ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008a51f000 len=3766 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3766 offset=0 flags=0x00000010 [00 00 00 01 61 e1 90 af 7a 69 2e 90 95 29 ba 30 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008a720000 len=3349 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3349 offset=0 flags=0x00000010 [00 00 00 01 61 e3 90 af 7a 69 2e 90 8b 44 74 61 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008a921000 len=3369 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3369 offset=0 flags=0x00000010 [00 00 00 01 61 e5 90 af 7a 69 2d c9 66 d3 52 82 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008a31e000 len=3761 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3761 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] Encoded frame   20 /   30 (  3761 bytes, flags=0x00000010, Total:    81052 bytes, 523.0 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008a51f000 len=3503 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3503 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008a720000 len=3798 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3798 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ea ce 04 3d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008a921000 len=3299 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3299 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 01 d9 d5 31 c0 58 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008a31e000 len=3483 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3483 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 7a 69 2d c9 66 d4 ab f3 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008a51f000 len=3531 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3531 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 16 ed cf 3a a6 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008a720000 len=3372 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3372 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 04 16 ed 70 e1 f7 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008a921000 len=3237 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3237 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008a31e000 len=3627 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3627 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 17 06 b1 ce a9 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008a51f000 len=3325 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3325 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6a da 23 71 1e 1e 3e 46 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008a720000 len=3221 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3221 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 01 da 0d 24 41 25 ]
+[VENC_TEST] Encoded frame   30 /   30 (  3221 bytes, flags=0x00000010, Total:   115448 bytes, 585.6 FPS)
+[VENC_TEST] Cycle 9 Complete: 30 frames in 0.05 s (585.0 FPS), 115448 total bytes (18009.9 kbps)
+
+--- Stress Cycle 10 / 10 ---
+[VENC_TEST] Out buf 0: ptr=0xffff9da0c000 bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008af1c000 fd=9
+[VENC_TEST] Out buf 1: ptr=0xffff9d80c000 bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008b11d000 fd=10
+[VENC_TEST] Out buf 2: ptr=0xffff9d60c000 bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008b31e000 fd=11
+[VENC_TEST] Out buf 3: ptr=0xffff9d40c000 bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008b51f000 fd=12
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008af1c000 len=22 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=22 offset=0 flags=0x00000082 [00 00 00 01 67 64 00 1e ac b4 05 01 e8 80 00 00 ]
+[VENC_TEST] Header / CodecConfig received (22 bytes, flags=0x00000082)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008b11d000 len=16039 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=16039 offset=0 flags=0x00000030 [00 00 00 01 65 b8 41 7f f6 65 c1 f1 63 7a 2b 6d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008b31e000 len=2075 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=2075 offset=0 flags=0x00000010 [00 00 00 01 61 e3 9f a9 30 7e 2b c6 c4 69 92 88 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008b51f000 len=3066 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3066 offset=0 flags=0x00000010 [00 00 00 01 61 e5 91 7f 44 30 af 9b 73 e3 ee e2 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008af1c000 len=4038 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=4038 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 8f 63 81 64 2b 70 1f 12 cb ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008b11d000 len=3371 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3371 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 9f 63 87 17 bd 22 4f 83 f8 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008b31e000 len=3898 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3898 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008b51f000 len=3404 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3404 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 04 16 ed cf 46 13 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008af1c000 len=3518 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3518 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 6b 47 01 d9 db 14 29 89 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008b11d000 len=3407 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3407 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008b31e000 len=3428 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3428 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 01 da 0d 44 90 01 ]
+[VENC_TEST] Encoded frame   10 /   30 (  3428 bytes, flags=0x00000010, Total:    46266 bytes, 465.7 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008b51f000 len=3188 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3188 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 d1 aa 1e ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008af1c000 len=3645 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3645 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 16 ea 97 21 50 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008b11d000 len=3175 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3175 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6b 47 04 16 ed 70 42 a0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008b31e000 len=3324 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3324 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 04 17 08 00 88 bc ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008b51f000 len=3730 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3730 offset=0 flags=0x00000010 [00 00 00 01 61 fd 90 af 7a 69 2e 90 8b 44 73 aa ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008af1c000 len=3479 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3479 offset=0 flags=0x00000010 [00 00 00 01 61 ff 90 af 7a 69 2e 90 95 0a 51 ce ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008b11d000 len=3766 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3766 offset=0 flags=0x00000010 [00 00 00 01 61 e1 90 af 7a 69 2e 90 95 29 ba 30 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008b31e000 len=3349 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3349 offset=0 flags=0x00000010 [00 00 00 01 61 e3 90 af 7a 69 2e 90 8b 44 74 61 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008b51f000 len=3369 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3369 offset=0 flags=0x00000010 [00 00 00 01 61 e5 90 af 7a 69 2d c9 66 d3 52 82 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008af1c000 len=3761 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3761 offset=0 flags=0x00000010 [00 00 00 01 61 e7 90 af 6b 47 04 16 ed 70 42 98 ]
+[VENC_TEST] Encoded frame   20 /   30 (  3761 bytes, flags=0x00000010, Total:    81052 bytes, 528.1 FPS)
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008b11d000 len=3503 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3503 offset=0 flags=0x00000010 [00 00 00 01 61 e9 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008b31e000 len=3798 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3798 offset=0 flags=0x00000010 [00 00 00 01 61 eb 90 af 6b 47 04 16 ea ce 04 3d ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008b51f000 len=3299 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3299 offset=0 flags=0x00000010 [00 00 00 01 61 ed 90 af 6b 47 01 d9 d5 31 c0 58 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008af1c000 len=3483 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3483 offset=0 flags=0x00000010 [00 00 00 01 61 ef 90 af 7a 69 2d c9 66 d4 ab f3 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008b11d000 len=3531 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3531 offset=0 flags=0x00000010 [00 00 00 01 61 f1 90 af 6b 47 04 16 ed cf 3a a6 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008b31e000 len=3372 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3372 offset=0 flags=0x00000010 [00 00 00 01 61 f3 90 af 6b 47 04 16 ed 70 e1 f7 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d40c000 phy=0xd2400000 kern=0xffff80008b51f000 len=3237 out_idx=3
+[VENC_TEST] MSG: out_idx=3 len=3237 offset=0 flags=0x00000010 [00 00 00 01 61 f5 90 af 6b 47 04 17 07 b0 21 b0 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9da0c000 phy=0xd1e00000 kern=0xffff80008af1c000 len=3627 out_idx=0
+[VENC_TEST] MSG: out_idx=0 len=3627 offset=0 flags=0x00000010 [00 00 00 01 61 f7 90 af 6b 47 04 17 06 b1 ce a9 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d80c000 phy=0xd2000000 kern=0xffff80008b11d000 len=3325 out_idx=1
+[VENC_TEST] MSG: out_idx=1 len=3325 offset=0 flags=0x00000010 [00 00 00 01 61 f9 90 af 6a da 23 71 1e 1e 3e 46 ]
+[VENC_TEST] MSG FILL_BUF_DONE: msg.bufaddr=0xffff9d60c000 phy=0xd2200000 kern=0xffff80008b31e000 len=3221 out_idx=2
+[VENC_TEST] MSG: out_idx=2 len=3221 offset=0 flags=0x00000010 [00 00 00 01 61 fb 90 af 6b 47 01 da 0d 24 41 25 ]
+[VENC_TEST] Encoded frame   30 /   30 (  3221 bytes, flags=0x00000010, Total:   115448 bytes, 588.7 FPS)
+[VENC_TEST] Cycle 10 Complete: 30 frames in 0.05 s (588.2 FPS), 115448 total bytes (18108.1 kbps)
+[VENC_TEST] All cycles completed successfully!
+
+

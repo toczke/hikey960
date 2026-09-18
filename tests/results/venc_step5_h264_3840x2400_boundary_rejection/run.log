@@ -1,0 +1,12 @@
+Command: /root/tests/venc_test h264 3840 2400 30 /tmp/step5_h264_3840x2400_boundary_rejection.h264 --fps 30 --bitrate 20000000
+Exit Code: 1
+=================================================================
+[VENC_TEST] HiKey960 Kirin 960 Hardware Video Encoder Test
+[VENC_TEST] Codec: AVC / H.264 (h264)
+[VENC_TEST] Resolution: 3840x2400 @ 30 fps, Bitrate: 20000000 bps, GOP: 30
+[VENC_TEST] Frames: 30, Output: /tmp/step5_h264_3840x2400_boundary_rejection.h264, Stress Cycles: 1
+=================================================================
+
+ioctl CMD_VENC_CREATE_CHN: Operation not permitted
+Session init failed in cycle 1
+

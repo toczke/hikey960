@@ -1,0 +1,207 @@
+[VDEC_TEST] Opened /dev/hi_vdec (fd=4), path_mode=NATIVE
+[VDEC_TEST] Channel created! chan_id=0
+[VDEC_TEST] Input buffer 0 bound: len=2097152, phy=0xd2500000, mmap=0xffffb2350000
+[VDEC_TEST] Input buffer 1 bound: len=2097152, phy=0xd2700000, mmap=0xffffb2150000
+[VDEC_TEST] 4 output buffers initially bound (len=147456, stride=1280)
+[VDEC_TEST] Channel started successfully!
+[VDEC_TEST] 4 output frames queued to hardware.
+[VDEC_TEST] Parsed 63 NAL units from stream.
+[FEED] nal=0/63 frames=0 in_flight=0
+[FEED] nal=1/63 frames=0 in_flight=1
+[VDEC_TEST] Hardware confirm: START_DONE.
+[FEED] nal=2/63 frames=0 in_flight=2
+[FEED] nal=3/63 frames=0 in_flight=3
+[FEED] nal=4/63 frames=0 in_flight=4
+[FEED] nal=5/63 frames=0 in_flight=5
+[VDEC_TEST] Event: SEQ_INFO_CHG reported! 1280x720 stride=1280 frame_size=1413120 min_num=13 max_num=17
+[VDEC_TEST] Output port flushed successfully.
+[VDEC_TEST] Flushed old output buffer 0x0 during rebind.
+[VDEC_TEST] Flushed old output buffer 0x0 during rebind.
+[VDEC_TEST] Flushed old output buffer 0x0 during rebind.
+[VDEC_TEST] Flushed old output buffer 0x0 during rebind.
+[VDEC_TEST] Received FLUSH_OUTPUT_DONE.
+[MSG_IN_DRAIN] buf=1 freed during flush drain
+[REBIND] bound buf 0 phy=0xd2900000
+[REBIND] bound buf 1 phy=0xd2b00000
+[REBIND] bound buf 2 phy=0xd2d00000
+[REBIND] bound buf 3 phy=0xd2f00000
+[REBIND] bound buf 4 phy=0xd3100000
+[REBIND] bound buf 5 phy=0xd3300000
+[REBIND] bound buf 6 phy=0xd3500000
+[REBIND] bound buf 7 phy=0xd3700000
+[REBIND] bound buf 8 phy=0xd3900000
+[REBIND] bound buf 9 phy=0xd3b00000
+[REBIND] bound buf 10 phy=0xd3d00000
+[REBIND] bound buf 11 phy=0xd3f00000
+[REBIND] bound buf 12 phy=0xd4100000
+[REBIND] bound buf 13 phy=0xd4300000
+[REBIND] bound buf 14 phy=0xd4500000
+[REBIND] bound buf 15 phy=0xd4700000
+[REBIND] bound buf 16 phy=0xd4900000
+[REBIND] bound buf 17 phy=0xd4b00000
+[REBIND] bound buf 18 phy=0xd4d00000
+[REBIND] bound buf 19 phy=0xd4f00000
+[REBIND] bound buf 20 phy=0xd5100000
+[REBIND] bound buf 21 phy=0xd5300000
+[REBIND] bound buf 22 phy=0xd5500000
+[REBIND] bound buf 23 phy=0xd5700000
+[VDEC_TEST] Rebound 24 output buffers (stride=1280, size=1413120)
+[VDEC_TEST] Rewinding feeder to NAL 0 so SPS/PPS/IDR are re-sent after rebind.
+[FEED] nal=0/63 frames=0 in_flight=0
+[VDEC_TEST] >>> FRAME #1: data_len=1413120, stride=1280, 1280x720 in 275.87 ms (3.62 FPS) <<<
+[FEED] nal=1/63 frames=1 in_flight=0
+[FEED] nal=2/63 frames=1 in_flight=1
+[FEED] nal=3/63 frames=1 in_flight=2
+[FEED] nal=4/63 frames=1 in_flight=3
+[FEED] nal=5/63 frames=1 in_flight=4
+[FEED] nal=6/63 frames=1 in_flight=5
+[VDEC_TEST] >>> FRAME #2: data_len=1413120, stride=1280, 1280x720 in 383.31 ms (5.22 FPS) <<<
+[VDEC_TEST] >>> FRAME #3: data_len=1413120, stride=1280, 1280x720 in 389.52 ms (7.70 FPS) <<<
+[FEED] nal=7/63 frames=3 in_flight=4
+[FEED] nal=8/63 frames=3 in_flight=5
+[FEED] nal=9/63 frames=3 in_flight=6
+[FEED] nal=10/63 frames=3 in_flight=7
+[VDEC_TEST] >>> FRAME #4: data_len=1413120, stride=1280, 1280x720 in 465.26 ms (8.60 FPS) <<<
+[VDEC_TEST] >>> FRAME #5: data_len=1413120, stride=1280, 1280x720 in 471.04 ms (10.61 FPS) <<<
+[FEED] nal=11/63 frames=5 in_flight=6
+[VDEC_TEST] >>> FRAME #6: data_len=1413120, stride=1280, 1280x720 in 489.99 ms (12.25 FPS) <<<
+[VDEC_TEST] >>> FRAME #7: data_len=1413120, stride=1280, 1280x720 in 492.21 ms (14.22 FPS) <<<
+[FEED] nal=12/63 frames=7 in_flight=5
+[FEED] nal=13/63 frames=7 in_flight=6
+[FEED] nal=14/63 frames=7 in_flight=7
+[VDEC_TEST] >>> FRAME #8: data_len=1413120, stride=1280, 1280x720 in 545.40 ms (14.67 FPS) <<<
+[VDEC_TEST] >>> FRAME #9: data_len=1413120, stride=1280, 1280x720 in 548.88 ms (16.40 FPS) <<<
+[FEED] nal=15/63 frames=9 in_flight=6
+[VDEC_TEST] >>> FRAME #10: data_len=1413120, stride=1280, 1280x720 in 568.05 ms (17.60 FPS) <<<
+[VDEC_TEST] >>> FRAME #11: data_len=1413120, stride=1280, 1280x720 in 574.46 ms (19.15 FPS) <<<
+[FEED] nal=16/63 frames=11 in_flight=5
+[FEED] nal=17/63 frames=11 in_flight=6
+[FEED] nal=18/63 frames=11 in_flight=7
+[VDEC_TEST] >>> FRAME #12: data_len=1413120, stride=1280, 1280x720 in 627.26 ms (19.13 FPS) <<<
+[VDEC_TEST] >>> FRAME #13: data_len=1413120, stride=1280, 1280x720 in 633.16 ms (20.53 FPS) <<<
+[FEED] nal=19/63 frames=13 in_flight=6
+[VDEC_TEST] >>> FRAME #14: data_len=1413120, stride=1280, 1280x720 in 654.02 ms (21.41 FPS) <<<
+[VDEC_TEST] >>> FRAME #15: data_len=1413120, stride=1280, 1280x720 in 657.17 ms (22.83 FPS) <<<
+[FEED] nal=20/63 frames=15 in_flight=5
+[FEED] nal=21/63 frames=15 in_flight=6
+[FEED] nal=22/63 frames=15 in_flight=7
+[VDEC_TEST] >>> FRAME #16: data_len=1413120, stride=1280, 1280x720 in 712.99 ms (22.44 FPS) <<<
+[VDEC_TEST] >>> FRAME #17: data_len=1413120, stride=1280, 1280x720 in 715.25 ms (23.77 FPS) <<<
+[FEED] nal=23/63 frames=17 in_flight=6
+[VDEC_TEST] >>> FRAME #18: data_len=1413120, stride=1280, 1280x720 in 735.56 ms (24.47 FPS) <<<
+[VDEC_TEST] >>> FRAME #19: data_len=1413120, stride=1280, 1280x720 in 738.11 ms (25.74 FPS) <<<
+[FEED] nal=24/63 frames=19 in_flight=5
+[FEED] nal=25/63 frames=19 in_flight=6
+[FEED] nal=26/63 frames=19 in_flight=7
+[VDEC_TEST] >>> FRAME #20: data_len=1413120, stride=1280, 1280x720 in 790.21 ms (25.31 FPS) <<<
+[VDEC_TEST] >>> FRAME #21: data_len=1413120, stride=1280, 1280x720 in 793.57 ms (26.46 FPS) <<<
+[FEED] nal=27/63 frames=21 in_flight=6
+[VDEC_TEST] >>> FRAME #22: data_len=1413120, stride=1280, 1280x720 in 812.75 ms (27.07 FPS) <<<
+[VDEC_TEST] >>> FRAME #23: data_len=1413120, stride=1280, 1280x720 in 814.99 ms (28.22 FPS) <<<
+[FEED] nal=28/63 frames=23 in_flight=5
+[FEED] nal=29/63 frames=23 in_flight=6
+[FEED] nal=30/63 frames=23 in_flight=7
+[VDEC_TEST] >>> FRAME #24: data_len=1413120, stride=1280, 1280x720 in 870.05 ms (27.58 FPS) <<<
+[VDEC_TEST] >>> FRAME #25: data_len=1413120, stride=1280, 1280x720 in 873.32 ms (28.63 FPS) <<<
+[FEED] nal=31/63 frames=25 in_flight=6
+[VDEC_TEST] >>> FRAME #26: data_len=1413120, stride=1280, 1280x720 in 892.48 ms (29.13 FPS) <<<
+[VDEC_TEST] >>> FRAME #27: data_len=1413120, stride=1280, 1280x720 in 894.82 ms (30.17 FPS) <<<
+[FEED] nal=32/63 frames=27 in_flight=5
+[FEED] nal=33/63 frames=27 in_flight=6
+[FEED] nal=34/63 frames=27 in_flight=7
+[VDEC_TEST] >>> FRAME #28: data_len=1413120, stride=1280, 1280x720 in 946.43 ms (29.58 FPS) <<<
+[VDEC_TEST] >>> FRAME #29: data_len=1413120, stride=1280, 1280x720 in 948.60 ms (30.57 FPS) <<<
+[FEED] nal=35/63 frames=29 in_flight=6
+[VDEC_TEST] >>> FRAME #30: data_len=1413120, stride=1280, 1280x720 in 967.12 ms (31.02 FPS) <<<
+[VDEC_TEST] >>> FRAME #31: data_len=1413120, stride=1280, 1280x720 in 969.61 ms (31.97 FPS) <<<
+[FEED] nal=36/63 frames=31 in_flight=5
+[VDEC_TEST] >>> FRAME #32: data_len=1413120, stride=1280, 1280x720 in 988.79 ms (32.36 FPS) <<<
+[VDEC_TEST] >>> FRAME #33: data_len=1413120, stride=1280, 1280x720 in 991.65 ms (33.28 FPS) <<<
+[FEED] nal=37/63 frames=33 in_flight=4
+[FEED] nal=38/63 frames=33 in_flight=5
+[FEED] nal=39/63 frames=33 in_flight=6
+[FEED] nal=40/63 frames=33 in_flight=7
+[FEED] nal=41/63 frames=33 in_flight=8
+[FEED] nal=42/63 frames=33 in_flight=9
+[FEED] nal=43/63 frames=33 in_flight=10
+[FEED] nal=44/63 frames=33 in_flight=11
+[FEED] nal=45/63 frames=33 in_flight=12
+[FEED] nal=46/63 frames=33 in_flight=13
+[FEED] nal=47/63 frames=33 in_flight=14
+[FEED] nal=48/63 frames=33 in_flight=15
+[FEED] nal=49/63 frames=33 in_flight=16
+[FEED] nal=50/63 frames=33 in_flight=17
+[FEED] nal=51/63 frames=33 in_flight=18
+[FEED] nal=52/63 frames=33 in_flight=19
+[FEED] nal=53/63 frames=33 in_flight=20
+[FEED] nal=54/63 frames=33 in_flight=21
+[FEED] nal=55/63 frames=33 in_flight=22
+[FEED] nal=56/63 frames=33 in_flight=23
+[FEED] nal=57/63 frames=33 in_flight=24
+[FEED] nal=58/63 frames=33 in_flight=25
+[FEED] nal=59/63 frames=33 in_flight=26
+[FEED] nal=60/63 frames=33 in_flight=27
+[FEED] nal=61/63 frames=33 in_flight=28
+[FEED] nal=62/63 frames=33 in_flight=29
+[VDEC_TEST] All 63 frames/NALs submitted to decoder pipeline.
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (64/203 decoded=33)
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (65/203 decoded=33)
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (66/203 decoded=33)
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (67/203 decoded=33)
+[VDEC_TEST] >>> FRAME #34: data_len=1413120, stride=1280, 1280x720 in 1567.79 ms (21.69 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (68/203 decoded=34)
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (69/203 decoded=34)
+[VDEC_TEST] >>> FRAME #35: data_len=1413120, stride=1280, 1280x720 in 1625.54 ms (21.53 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (70/203 decoded=35)
+[VDEC_TEST] >>> FRAME #36: data_len=1413120, stride=1280, 1280x720 in 1657.82 ms (21.72 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (71/203 decoded=36)
+[VDEC_TEST] >>> FRAME #37: data_len=1413120, stride=1280, 1280x720 in 1690.04 ms (21.89 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (72/203 decoded=37)
+[VDEC_TEST] >>> FRAME #38: data_len=1413120, stride=1280, 1280x720 in 1721.28 ms (22.08 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (73/203 decoded=38)
+[VDEC_TEST] >>> FRAME #39: data_len=1413120, stride=1280, 1280x720 in 1751.66 ms (22.26 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (74/203 decoded=39)
+[VDEC_TEST] >>> FRAME #40: data_len=1413120, stride=1280, 1280x720 in 1783.92 ms (22.42 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (75/203 decoded=40)
+[VDEC_TEST] >>> FRAME #41: data_len=1413120, stride=1280, 1280x720 in 1815.63 ms (22.58 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (76/203 decoded=41)
+[VDEC_TEST] >>> FRAME #42: data_len=1413120, stride=1280, 1280x720 in 1844.29 ms (22.77 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (77/203 decoded=42)
+[VDEC_TEST] >>> FRAME #43: data_len=1413120, stride=1280, 1280x720 in 1876.77 ms (22.91 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (78/203 decoded=43)
+[VDEC_TEST] >>> FRAME #44: data_len=1413120, stride=1280, 1280x720 in 1906.40 ms (23.08 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (79/203 decoded=44)
+[VDEC_TEST] >>> FRAME #45: data_len=1413120, stride=1280, 1280x720 in 1937.28 ms (23.23 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (80/203 decoded=45)
+[VDEC_TEST] >>> FRAME #46: data_len=1413120, stride=1280, 1280x720 in 1966.14 ms (23.40 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (81/203 decoded=46)
+[VDEC_TEST] >>> FRAME #47: data_len=1413120, stride=1280, 1280x720 in 1995.33 ms (23.56 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (82/203 decoded=47)
+[VDEC_TEST] >>> FRAME #48: data_len=1413120, stride=1280, 1280x720 in 2025.15 ms (23.70 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (83/203 decoded=48)
+[VDEC_TEST] >>> FRAME #49: data_len=1413120, stride=1280, 1280x720 in 2054.35 ms (23.85 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (84/203 decoded=49)
+[VDEC_TEST] >>> FRAME #50: data_len=1413120, stride=1280, 1280x720 in 2086.98 ms (23.96 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (85/203 decoded=50)
+[VDEC_TEST] >>> FRAME #51: data_len=1413120, stride=1280, 1280x720 in 2120.30 ms (24.05 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (86/203 decoded=51)
+[VDEC_TEST] >>> FRAME #52: data_len=1413120, stride=1280, 1280x720 in 2149.55 ms (24.19 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (87/203 decoded=52)
+[VDEC_TEST] >>> FRAME #53: data_len=1413120, stride=1280, 1280x720 in 2182.30 ms (24.29 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (88/203 decoded=53)
+[VDEC_TEST] >>> FRAME #54: data_len=1413120, stride=1280, 1280x720 in 2211.33 ms (24.42 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (89/203 decoded=54)
+[VDEC_TEST] >>> FRAME #55: data_len=1413120, stride=1280, 1280x720 in 2242.95 ms (24.52 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (90/203 decoded=55)
+[VDEC_TEST] >>> FRAME #56: data_len=1413120, stride=1280, 1280x720 in 2275.45 ms (24.61 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (91/203 decoded=56)
+[VDEC_TEST] >>> FRAME #57: data_len=1413120, stride=1280, 1280x720 in 2306.76 ms (24.71 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (92/203 decoded=57)
+[VDEC_TEST] >>> FRAME #58: data_len=1413120, stride=1280, 1280x720 in 2340.23 ms (24.78 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (93/203 decoded=58)
+[VDEC_TEST] >>> FRAME #59: data_len=1413120, stride=1280, 1280x720 in 2370.99 ms (24.88 FPS) <<<
+[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (94/203 decoded=59)
+[VDEC_TEST] >>> FRAME #60: data_len=1413120, stride=1280, 1280x720 in 2401.54 ms (24.98 FPS) <<<
+[VDEC_TEST] All 60 expected frames decoded! Success.
+[VDEC_TEST] SUMMARY: 60 frames decoded in 2.402 s -> 24.98 FPS (pure: 28.23 FPS)
+[VDEC_TEST] Cleaned up all resources successfully.

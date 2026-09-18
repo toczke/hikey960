@@ -1,0 +1,10 @@
+[  164.025499] enter omxvdec_open , open_count : 0
+[  164.025552] enter channel_init 
+[  164.025626] VDEC_Regulator_Enable_Kirin960, call regulator_enable 
+[  164.049338] vfmw channel create success ChanID 2
+[  164.089155] syntax value : range 0 primaries 0 matrix 2 transfer 0
+[  164.089206] EVNT Color Aspects report
+[  167.712966] VCTRL_DestroyChanWithOption VCTRL_StopChan ChanID 2!
+[  167.714154] VCTRL_DestroyChanWithOption vfmw destroy chan and free chan resource success, ChanID 2!
+[  167.957283] VDEC_Regulator_Disable_Kirin960, call regulator_disable
+[  167.959414] exit omxvdec_release , open_count : 0

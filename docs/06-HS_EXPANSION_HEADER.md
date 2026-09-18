@@ -21,9 +21,9 @@ In modern mainline Linux kernels (5.x - 7.x), the vast majority of the High Spee
 *   **Status:** Completely non-functional on mainline Linux.
 *   **Technical Blocker:** The Kirin 960 Image Signal Processor (ISP) requires complex, closed-source binary blobs and proprietary Huawei drivers. These drivers were never upstreamed to the V4L2 (Video for Linux 2) subsystem. Consequently, the kernel has no mechanism to process the raw MIPI CSI streams, rendering camera modules on this connector unusable.
 
-### 2. MIPI DSI (Display) - **Disabled (by default)**
-*   **Status:** Supported by `kirin-drm`, but usually disabled in headless/server builds.
-*   **Technical Details:** The DRM (Direct Rendering Manager) subsystem contains the `kirin-dsi` driver. However, interfacing with the Mali-G71 GPU (`panfrost`) on this board is known to cause kernel instability without specific Android firmware. For headless servers, `CONFIG_DRM_PANFROST` and DRM bridges are deliberately disabled to maintain rock-solid uptime.
+### 2. MIPI DSI (Display) - **Routed via Onboard Multiplexer**
+*   **Status:** Kirin DRM and Panfrost GPU are fully functional and verified (`CONFIG_DRM_PANFROST=y`, Weston DRM desktop operational on physical hardware).
+*   **Technical Details:** The Kirin 960 DSI output is routed through an onboard hardware multiplexer controlled by `mux-gpios = <&gpio2 4 1>` (GPIO20). In the default device tree configuration, this multiplexer directs the 4-lane MIPI DSI output to the onboard ADV7533 HDMI bridge. To redirect DSI signaling to the 60-pin HS connector for an external MIPI display panel, the GPIO multiplexer must be switched and a compatible panel driver added.
 
 ### 3. SPI, I2C, and USB - **Workable**
 *   **I2C / SPI:** The secondary I2C and SPI buses routed to this connector can be utilized in the same manner as the LS header. They require manual Device Tree (DTB) configuration (e.g., enabling `spidev` on the specific HS SPI controller node).
