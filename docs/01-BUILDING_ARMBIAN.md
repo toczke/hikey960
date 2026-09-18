@@ -76,9 +76,9 @@ Ensure the following flags are strictly set in your `.config`:
 *   **Graphics / GPU & CMA Memory:**
     ```ini
     CONFIG_DRM_PANFROST=y
-    CONFIG_CMA_SIZE_MBYTES=64
+    CONFIG_CMA_SIZE_MBYTES=256
     ```
-    *(Panfrost is kept ENABLED. `CONFIG_CMA_SIZE_MBYTES=64` serves as the baseline compile-time fallback. For full multimedia operation with 4K UHD and 4× concurrent 1080p VPU pipelines, pass `cma=256M` in bootargs via GRUB.)*
+    *(Panfrost is kept ENABLED. `CONFIG_CMA_SIZE_MBYTES=256` allocates 256MB of contiguous physical memory out-of-the-box, matching the required memory pool for 4K UHD and 4× concurrent 1080p VPU hardware video decode and encode pipelines without runtime starvation.)*
 
 *   **Hardware Video Acceleration (VPU — Kirin 960 VDH/VEDU):**
     ```ini

@@ -48,18 +48,18 @@ We have successfully ported the HiKey960 to a modern headless server environment
 | **Processor** (Kirin 960 4GB) | `[VERIFIED ON HARDWARE]` | SMP and CPU frequency scaling operate natively without modifications. |
 | **40-Pin LS Header** | `[VERIFIED ON HARDWARE]` | UART, I2C, SPI, GPIO supported. `spidev` nodes require DTB patch. **Strictly 1.8V logic.** |
 | **HDMI Display** (Kirin DRM) | `[VERIFIED ON HARDWARE — docs/07-MULTIMEDIA_AND_GPU.md]` | Upstreamed Kirin 960 DPE/DSI driver with identity-mapped LPAE mini-page table SMMU bypass and ADV7533 bridge support (720p60 verified with Weston compositor). |
-| **GPU Acceleration** (Mali-G71) | `[VERIFIED ON HARDWARE — docs/07-MULTIMEDIA_AND_GPU.md]` | ARM Mali-G71 Bifrost GPU accelerated via upstream `panfrost` driver (`CONFIG_DRM_PANFROST=y`). Base defconfig uses `CONFIG_CMA_SIZE_MBYTES=64`; expanded to 256MB at runtime via `cma=256M` bootargs for concurrent VPU/GPU operation. |
+| **GPU Acceleration** (Mali-G71) | `[VERIFIED ON HARDWARE — docs/07-MULTIMEDIA_AND_GPU.md]` | ARM Mali-G71 Bifrost GPU accelerated via upstream `panfrost` driver (`CONFIG_DRM_PANFROST=y`). Configured with 256MB CMA (`CONFIG_CMA_SIZE_MBYTES=256` / `cma=256M`), fully stabilized for concurrent VPU/GPU multimedia workloads. |
 | **Video Codec** (VPU/hi_vcodec) | `[VERIFIED ON HARDWARE — tests/vpu_hardware_results.json & venc_hardware_results.json]` | Hardware video decoding operational on Kirin 960 VDH silicon: 10/10 PASS across all codecs and profiles (VP8, HEVC Main, HEVC Main10, MPEG-2, MPEG-4, H.264 Baseline, H.264 Main, H.264 High 1080p30, H.264 High 1080p60 120/120 frames), verified bit-accuracy (SSIM vs CPU reference), and zero DMA-BUF leaks. Hardware video encoding operational on Kirin 960 VEDU silicon across all resolution ladder steps: verified H.265/HEVC 1080p60 (116.3 FPS), H.264 1080p60 (116.4 FPS), H.264 SD (438–520 FPS), 4× concurrent 1080p30 (5/5 loop PASS, ~120 FPS aggregate), 4K UHD 3840×2160 (16–29 FPS), and clean hardware boundary limit rejection. Zero DMA-BUF leaks across all tests. Full details in [`docs/07-MULTIMEDIA_AND_GPU.md §3`](docs/07-MULTIMEDIA_AND_GPU.md#3-hardware-video-acceleration-vpu--hi_vcodec). |
 
 ## GitHub Actions CI & Automated Releases
 This repository is equipped with fully automated **GitHub Actions** workflows:
-*   [`.github/workflows/kernel-build.yml`](.github/workflows/kernel-build.yml): Pull request & branch validation workflow that compiles the kernel (`Image.gz` + DTB) with ccache acceleration and uploads development build artifacts.
+*   [`.github/workflows/kernel-build.yml`](.github/workflows/kernel-build.yml): Pull request and branch validation workflow that compiles the kernel (`Image.gz` + DTB) with ccache acceleration and uploads development build artifacts.
 *   [`.github/workflows/release.yml`](.github/workflows/release.yml): Production release workflow triggered on every merge/push to `main` or `master`. It compiles the kernel, generates cryptographic SHA256 checksums, and automatically publishes an official GitHub Release with downloadable production-ready kernel assets (`Image.gz`, `hi3660-hikey960.dtb`, `config-*`, and `sha256sums.txt`).
 
 Whenever a release build runs, it will:
-1. Clone the mainline stable kernel source from kernel.org.
+1. Fetch mainline stable Linux kernel source from kernel.org.
 2. Inject Kirin 960 DRM and VPU (`hi_vcodec`) hardware drivers.
-3. Apply the custom HiKey960 configurations (UFS, PMIC, USB, Panfrost GPU, VPU VDEC/VENC).
+3. Apply the custom HiKey960 configurations (UFS, PMIC, USB, Panfrost GPU with 256MB CMA, VPU VDEC/VENC).
 4. Apply Device Tree (DTB) patches on the fly to fix the UART4 Bluetooth bugs (`dmas` and `max-speed`).
 5. Build the `Image.gz` and `.dtb` files with compiler cache (`ccache`).
 6. Automatically create an official **GitHub Public Release** with signed checksums and kernel binaries attached.
@@ -68,7 +68,7 @@ Whenever a release build runs, it will:
 Nobody ported this board to modern Linux because the Hisilicon firmware is fundamentally broken in several ways. This repository systematically resolves all of them:
 1.  **EDK2 NVRAM Hardcoding:** The stock UEFI bootloader ignores standard EFI partition UUIDs, hardcoding the ESP to **Partition Index 7** and **LBA 73984**. Custom partition tables shift this LBA, breaking auto-boot. **Solution:** We provide and flash the stock `prm_ptable.img` to lock the LBA in place, ensuring reliable auto-booting.
 2.  **Sparse Image Parser Bug:** The HiKey960's `fastboot` crashes (`Unsupported Chunk Type: 0xFFFF`) when flashing large, modern rootfs images. **Solution:** Our flashing documentation provides the exact chunk-split workarounds to safely flash modern Armbian images.
-3.  **Kernel Fragility & Hardware Regressions:** Mainline kernels broke compatibility with the Wi-Fi/Bluetooth UART bus and entirely dropped the proprietary display drivers. **Solution:** Our CI pipeline applies on-the-fly Device Tree (DTB) patches to fix Bluetooth DMA/baud-rate timeouts, modifies CMA allocation to stabilize the GPU, and injects a manually ported Kirin DRM driver to restore physical HDMI output.
+3.  **Kernel Fragility & Hardware Regressions:** Mainline kernels broke compatibility with the Wi-Fi/Bluetooth UART bus and entirely dropped proprietary display and VPU drivers. **Solution:** Our CI pipeline applies on-the-fly Device Tree (DTB) patches to fix Bluetooth DMA/baud-rate timeouts, configures 256MB CMA to stabilize GPU & VPU operations, injects a ported Kirin DRM driver to restore physical HDMI output, and provides native modern C platform glue for hardware video decoding and encoding.
 
 ## Documentation Workflow
 
