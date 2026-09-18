@@ -41,6 +41,16 @@
 #include <drm/drm_gem_dma_helper.h>
 #include <drm/drm_gem_framebuffer_helper.h>
 #include <drm/drm_fbdev_dma.h>
+#include <linux/version.h>
+
+struct drm_atomic_state;
+struct drm_atomic_commit;
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 2, 0)
+#define kirin_atomic_state_t struct drm_atomic_commit
+#else
+#define kirin_atomic_state_t struct drm_atomic_state
+#endif
 
 #include "kirin_drm_drv.h"
 
@@ -71,7 +81,7 @@ static const u32 channel_formats1[] = {
 	DRM_FORMAT_ARGB8888, DRM_FORMAT_ABGR8888,
 };
 
-u32 dss_get_channel_formats(u8 ch, const u32 **formats)
+static u32 dss_get_channel_formats(u8 ch, const u32 **formats)
 {
 	switch (ch) {
 	case DSS_CH1:
@@ -108,8 +118,6 @@ static void dss_ldi_set_mode(struct dss_crtc *acrtc)
 	u32 clk_Hz;
 	struct dss_hw_ctx *ctx = acrtc->ctx;
 	struct drm_display_mode *mode = &acrtc->base.state->mode;
-	struct drm_display_mode *adj_mode = &acrtc->base.state->adjusted_mode;
-
 
 	DRM_INFO("mode->clock(org) = %u\n", mode->clock);
 	if(mode->clock == 148500){
@@ -121,7 +129,7 @@ static void dss_ldi_set_mode(struct dss_crtc *acrtc)
 	} else if(mode->clock == 74250){
 		clk_Hz = 72000 * 1000UL;
 	} else {
-		clk_Hz = mode->clock * 1000UL;;
+		clk_Hz = mode->clock * 1000UL;
 	}
 
 	/*
@@ -265,7 +273,7 @@ static irqreturn_t dss_irq_handler(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
-static void dss_crtc_enable(struct drm_crtc *crtc, struct drm_atomic_state *state)
+static void dss_crtc_enable(struct drm_crtc *crtc, kirin_atomic_state_t *state)
 {
 	struct dss_crtc *acrtc = to_dss_crtc(crtc);
 	struct dss_hw_ctx *ctx = acrtc->ctx;
@@ -306,7 +314,7 @@ static void dss_crtc_mode_set_nofb(struct drm_crtc *crtc)
 	dss_ldi_set_mode(acrtc);
 }
 
-static void dss_crtc_atomic_begin(struct drm_crtc *crtc, struct drm_atomic_state *state)
+static void dss_crtc_atomic_begin(struct drm_crtc *crtc, kirin_atomic_state_t *state)
 {
 	struct dss_crtc *acrtc = to_dss_crtc(crtc);
 	struct dss_hw_ctx *ctx = acrtc->ctx;
@@ -315,7 +323,7 @@ static void dss_crtc_atomic_begin(struct drm_crtc *crtc, struct drm_atomic_state
 		(void)dss_power_up(acrtc);
 }
 
-static void dss_crtc_atomic_flush(struct drm_crtc *crtc, struct drm_atomic_state *state)
+static void dss_crtc_atomic_flush(struct drm_crtc *crtc, kirin_atomic_state_t *state)
 
 {
 	struct drm_pending_vblank_event *event = crtc->state->event;
@@ -384,7 +392,7 @@ static int dss_crtc_init(struct drm_device *dev, struct drm_crtc *crtc,
 	return 0;
 }
 
-static int dss_plane_atomic_check(struct drm_plane *plane, struct drm_atomic_state *state_)
+static int dss_plane_atomic_check(struct drm_plane *plane, kirin_atomic_state_t *state_)
 {
 	struct drm_plane_state *state = drm_atomic_get_new_plane_state(state_, plane);
 	struct drm_framebuffer *fb = state->fb;
@@ -429,16 +437,13 @@ static int dss_plane_atomic_check(struct drm_plane *plane, struct drm_atomic_sta
 	return 0;
 }
 
-static void dss_plane_atomic_update(struct drm_plane *plane, struct drm_atomic_state *state_)
+static void dss_plane_atomic_update(struct drm_plane *plane, kirin_atomic_state_t *state_)
 {
-	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state_, plane);
 	hisi_fb_pan_display(plane);
 }
 
-static void dss_plane_atomic_disable(struct drm_plane *plane, struct drm_atomic_state *state_)
+static void dss_plane_atomic_disable(struct drm_plane *plane, kirin_atomic_state_t *state_)
 {
-	struct drm_plane_state *old_state = drm_atomic_get_old_plane_state(state_, plane);
-	//struct dss_plane *aplane = to_dss_plane(plane);
 }
 
 static const struct drm_plane_helper_funcs dss_plane_helper_funcs = {
