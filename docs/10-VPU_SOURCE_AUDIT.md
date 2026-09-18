@@ -9,11 +9,11 @@
 
 | Subsystem | Source Form | Kernel Interface | Layout Risk Verdict | Bring-Up Action / Status |
 |---|---|---|---|---|
-| **Decoder (`vdec`) Modern Glue** | 9 editable `.c` files (`omxvdec/`) | Linux 7.1 native DMA (`dma_alloc_coherent`), dma_buf, modern platform driver | **LOW RISK** (Real modern C) | **VERIFIED ON SILICON**: Operates cleanly on Linux 7.1.13; teardown UAF resolved. |
-| **Encoder (`venc`) Driver & HAL** | 3 modern C files + 9 compiled `.S` files | Modern Linux 7.1 platform_driver, cdev, dma_alloc_coherent; core datapath is frozen assembly | **FROZEN ASSEMBLY (HIGH RISK)** | `drv_venc_intf.S`, `hi_drv_mem.S`, `venc_regulator.S` REMOVED and replaced with native C. Core bitstream encoding logic remains frozen 2017 assembly (HIGH RISK). |
+| **Decoder (`vdec`) Modern Glue** | 9 editable `.c` files (`omxvdec/`) | Linux 7.2 native DMA (`dma_alloc_coherent`), dma_buf, modern platform driver | **LOW RISK** (Real modern C) | **VERIFIED ON SILICON**: Operates cleanly on Linux 7.2.6; teardown UAF resolved. |
+| **Encoder (`venc`) Driver & HAL** | 3 modern C files + 9 compiled `.S` files | Modern Linux 7.2 platform_driver, cdev, dma_alloc_coherent; core datapath is frozen assembly | **FROZEN ASSEMBLY (HIGH RISK)** | `drv_venc_intf.S`, `hi_drv_mem.S`, `venc_regulator.S` REMOVED and replaced with native C. Core bitstream encoding logic remains frozen 2017 assembly (HIGH RISK). |
 
 ### Safety Directive
-> **CRITICAL SAFETY PROTOCOL:** No `.S` file marked `STRUCT-LAYOUT RISK` may be loaded on real hardware without a modern C replacement wrapper. Loading the un-shimmed `venc` assembly directly against Linux 7.1 will cause severe kernel memory corruption or AXI interconnect lockup due to FLATMEM address corruption and struct layout changes. Phase 4 replaces the 3 high-risk files (`hi_drv_mem.S`, `drv_venc_intf.S`, `venc_regulator.S`) with modern C glue before enabling `venc@e8900000` in the device tree.
+> **CRITICAL SAFETY PROTOCOL:** No `.S` file marked `STRUCT-LAYOUT RISK` may be loaded on real hardware without a modern C replacement wrapper. Loading the un-shimmed `venc` assembly directly against Linux 7.2 will cause severe kernel memory corruption or AXI interconnect lockup due to FLATMEM address corruption and struct layout changes. Phase 4 replaces the 3 high-risk files (`hi_drv_mem.S`, `drv_venc_intf.S`, `venc_regulator.S`) with modern C glue before enabling `venc@e8900000` in the device tree.
 
 ---
 
@@ -126,7 +126,7 @@ The file `drivers-import/vcodec/ion_compat.c` provides compilation shims for leg
 
 ## 6. Decoder Hardware Verification Ground Truth (Work Order 2 - 10/10 PASS)
 
-Empirical decoding verification executed on authentic Kirin 960 silicon (`root@192.168.0.165`, Linux 7.1.13, `cma=256M`):
+Empirical decoding verification executed on authentic Kirin 960 silicon (`root@192.168.0.165`, Linux 7.2.6, `cma=256M`):
 
 | Test Codec & Stream | Frames Decoded | Decode Speed | SSIM vs CPU Ref | Hardware Verification Status |
 |---|---|---|---|---|
@@ -285,7 +285,7 @@ hi_omxvenc-objs := venc_regulator.o   \
 
 ## 9. VENC Hardware Verification Ground Truth (Work Order 3 - 100% PASS)
 
-All VENC ladder gates verified on physical Kirin 960 silicon (`root@192.168.0.165`, Linux 7.1.13, `cma=256M`):
+All VENC ladder gates verified on physical Kirin 960 silicon (`root@192.168.0.165`, Linux 7.2.6, `cma=256M`):
 
 | Test Step | Target | Hardware Status | FPS | Bitstream / ffprobe | DMA-BUF Status |
 |---|---|---|---|---|---|
