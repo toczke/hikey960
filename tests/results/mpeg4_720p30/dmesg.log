@@ -1,9 +1,10 @@
-[  976.941139] enter omxvdec_open , open_count : 0
-[  976.941235] enter channel_init 
-[  976.941379] VDEC_Regulator_Enable_Kirin960, call regulator_enable 
-[  976.960213] vfmw channel create success ChanID 2
-[  981.108179] VCTRL_DestroyChanWithOption VCTRL_StopChan ChanID 2!
-[  981.108286] decoder_release_stream can't find Chan(0).
-[  981.108458] VCTRL_DestroyChanWithOption vfmw destroy chan and free chan resource success, ChanID 2!
-[  981.287146] VDEC_Regulator_Disable_Kirin960, call regulator_disable
-[  981.287665] exit omxvdec_release , open_count : 0
+[  289.583889] enter omxvdec_open , open_count : 0
+[  289.583948] enter channel_init 
+[  289.584025] VDEC_Regulator_Enable_Kirin960, call regulator_enable 
+[  289.610238] vfmw channel create success ChanID 2
+[  291.272604] WARN: buffer 0xd2300000 still in use?!
+[  291.363591] VCTRL_DestroyChanWithOption VCTRL_StopChan ChanID 2!
+[  291.363719] decoder_release_stream can't find Chan(0).
+[  291.363933] VCTRL_DestroyChanWithOption vfmw destroy chan and free chan resource success, ChanID 2!
+[  291.554106] VDEC_Regulator_Disable_Kirin960, call regulator_disable
+[  291.555949] exit omxvdec_release , open_count : 0

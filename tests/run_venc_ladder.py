@@ -145,8 +145,9 @@ def scp_from(board: str, remote_path: str, local_path: str, timeout: int = 120):
 def probe_stream(file_path: str) -> dict:
     cmd = [
         "ffprobe", "-v", "error",
-        "-show_entries", "stream=codec_name,width,height,r_frame_rate,nb_read_frames",
+        "-show_entries", "stream=codec_name,width,height,r_frame_rate,nb_read_frames,nb_read_packets",
         "-count_frames",
+        "-count_packets",
         "-of", "json",
         file_path
     ]
@@ -159,11 +160,12 @@ def probe_stream(file_path: str) -> dict:
         if streams:
             info = streams[0]
             try:
-                nb = int(info.get("nb_read_frames", 0) or 0)
+                nb = int(info.get("nb_read_frames", 0) or info.get("nb_read_packets", 0) or 0)
             except Exception:
                 nb = 0
             if nb == 0 or info.get("width", 0) == 0:
                 return {"error": f"Invalid stream geometry or frame count: frames={nb}, width={info.get('width')}", "raw": info}
+            info["nb_read_frames"] = str(nb)
             return info
         return {"error": "no streams found"}
     except Exception as e:

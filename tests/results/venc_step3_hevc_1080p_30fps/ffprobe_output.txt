@@ -1,6 +1,8 @@
 {
   "codec_name": "hevc",
-  "width": 0,
-  "height": 0,
-  "r_frame_rate": "1200000/1"
+  "width": 1920,
+  "height": 1080,
+  "r_frame_rate": "1200000/1",
+  "nb_read_packets": "60",
+  "nb_read_frames": "60"
 }

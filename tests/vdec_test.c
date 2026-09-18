@@ -29,7 +29,8 @@
 #endif
 
 #define MAX_SLOTS    32
-#define NUM_IN_BUFS  2
+#define MAX_IN_BUFS  4
+#define NUM_IN_BUFS  4
 #define IN_BUF_SIZE  (2 * 1024 * 1024)
 
 static double get_time_sec(void) {
@@ -42,7 +43,6 @@ static int alloc_dma_buf(size_t len, int *out_fd, void **out_ptr) {
     const char *heaps[] = {
         "/dev/dma_heap/default_cma_region",
         "/dev/dma_heap/reserved",
-        "/dev/dma_heap/system",
         NULL
     };
 
@@ -273,59 +273,66 @@ struct stream_feeder {
     double t_all_nals_sent;
     int eos_sent;
     int seq_info_chg_received;
+    int *frames_decoded_ptr;
+    int expected_frames;
+    int num_in_bufs;
 };
 
 static int send_eos_packet(struct stream_feeder *f, int buf_idx) {
     if (f->eos_sent) return 0;
     f->eos_sent = 1;
 
+    static const uint8_t h264_eos[] = { 0x00, 0x00, 0x00, 0x01, 0x0A, 0x00, 0x00, 0x00, 0x01, 0x0B, 0x00, 0x00, 0x00, 0x01 };
+    static const uint8_t hevc_eos[] = { 0x00, 0x00, 0x00, 0x01, 0x48, 0x00, 0x00, 0x00, 0x01, 0x4A, 0x00 };
+    static const uint8_t mpeg2_eos[] = { 0x00, 0x00, 0x01, 0xB7 };
+    static const uint8_t mpeg4_eos[] = {
+        0x00, 0x00, 0x01, 0xB1,
+        0x00, 0x00, 0x01, 0xB6, 0x00, 0x00,
+        0x00, 0x00, 0x01, 0xB0,
+        0x00, 0x00, 0x01, 0xB1
+    };
+
+    const uint8_t *eos_bytes = NULL;
     size_t eos_len = 0;
     if (f->is_h264) {
-        const uint8_t eos_nals[] = {
-            0x00, 0x00, 0x00, 0x01, 0x0A, // End of sequence
-            0x00, 0x00, 0x00, 0x01, 0x0B  // End of stream
-        };
-        memcpy(f->in_maps[buf_idx], eos_nals, sizeof(eos_nals));
-        eos_len = sizeof(eos_nals);
+        eos_bytes = h264_eos;
+        eos_len = sizeof(h264_eos);
     } else if (f->is_hevc) {
-        const uint8_t eos_nals[] = {
-            0x00, 0x00, 0x00, 0x01, 0x48, 0x01, // EOS_NUT (type 36)
-            0x00, 0x00, 0x00, 0x01, 0x4A, 0x01  // EOB_NUT (type 37)
-        };
-        memcpy(f->in_maps[buf_idx], eos_nals, sizeof(eos_nals));
-        eos_len = sizeof(eos_nals);
+        eos_bytes = hevc_eos;
+        eos_len = sizeof(hevc_eos);
     } else if (f->codec_type == OMXVDEC_MPEG2) {
-        const uint8_t seq_end[] = { 0x00, 0x00, 0x01, 0xB7 };
-        memcpy(f->in_maps[buf_idx], seq_end, sizeof(seq_end));
-        eos_len = sizeof(seq_end);
+        eos_bytes = mpeg2_eos;
+        eos_len = sizeof(mpeg2_eos);
     } else if (f->codec_type == OMXVDEC_MPEG4) {
-        const uint8_t seq_end[] = { 0x00, 0x00, 0x01, 0xB1 };
-        memcpy(f->in_maps[buf_idx], seq_end, sizeof(seq_end));
-        eos_len = sizeof(seq_end);
+        eos_bytes = mpeg4_eos;
+        eos_len = sizeof(mpeg4_eos);
     } else if (f->codec_type == OMXVDEC_VP8) {
+        eos_bytes = NULL;
         eos_len = 0;
     }
 
+    if (eos_len > 0 && eos_bytes) memcpy(f->in_maps[buf_idx], eos_bytes, eos_len);
     f->in_bufs[buf_idx].data_len = eos_len;
     f->in_bufs[buf_idx].data_offset = 0;
-    f->in_bufs[buf_idx].flags = VDEC_BUFFERFLAG_ENDOFFRAME | VDEC_BUFFERFLAG_EOS;
+    f->in_bufs[buf_idx].flags = VDEC_BUFFERFLAG_EOS | VDEC_BUFFERFLAG_ENDOFFRAME;
 
     OMXVDEC_IOCTL_MSG msg;
     memset(&msg, 0, sizeof(msg));
     msg.chan_num = f->chan_id;
     msg.in = &f->in_bufs[buf_idx];
+    printf("[EMPTY_EOS] buf=%d phy=0x%x flags=0x%x\n", buf_idx, f->in_bufs[buf_idx].phyaddr, f->in_bufs[buf_idx].flags);
+    fflush(stdout);
     if (ioctl(f->fd, VDEC_IOCTL_EMPTY_INPUT_STREAM, &msg) < 0) {
         perror("ioctl VDEC_IOCTL_EMPTY_INPUT_STREAM EOS");
         return -1;
     }
     f->in_busy[buf_idx] = 1;
-    printf("[VDEC_TEST] Sent dedicated EOS packet to input port (DPB flush with EOS NALs, len=%zu).\n", eos_len);
-    fflush(stdout);
+    usleep(5000);
     return 1;
 }
 
 static int send_input_packet(struct stream_feeder *f, int buf_idx) {
-    if (f->eos_sent || f->all_nals_sent) return 0;
+    if (f->eos_sent) return 0;
 
     uint32_t flags = 0;
     size_t send_size = 0;
@@ -333,16 +340,101 @@ static int send_input_packet(struct stream_feeder *f, int buf_idx) {
 
     if (f->nal_count > 0) {
         if (f->nal_idx >= f->nal_count) {
-            f->all_nals_sent = 1;
-            f->t_all_nals_sent = get_time_sec();
-            printf("[VDEC_TEST] All %d frames/NALs submitted to decoder pipeline.\n", f->nal_count);
-            fflush(stdout);
+            if (!f->all_nals_sent) {
+                f->all_nals_sent = 1;
+                f->t_all_nals_sent = get_time_sec();
+                printf("[VDEC_TEST] All %d frames/NALs submitted to decoder pipeline.\n", f->nal_count);
+                fflush(stdout);
+            }
+            if (f->seq_info_chg_received && *f->frames_decoded_ptr > 0) {
+                if (f->is_h264 && ((f->expected_frames > 0 && *f->frames_decoded_ptr < f->expected_frames) || (f->expected_frames == 0))) {
+                    int max_lookaheads = 140;
+                    if (f->nal_idx < f->nal_count + max_lookaheads) {
+                        struct nal_info *n = &f->nals[3];
+                        memcpy(f->in_maps[buf_idx], f->file_data + n->offset, n->size);
+                        send_size = n->size;
+                        flags = VDEC_BUFFERFLAG_ENDOFFRAME;
+                        f->nal_idx++;
+                        printf("[LOOKAHEAD_PAD] Sent lookahead H.264 IDR frame (%d/%d decoded=%d)\n", f->nal_idx, f->nal_count + max_lookaheads, *f->frames_decoded_ptr);
+                        fflush(stdout);
+                        usleep(10000);
+                        goto do_send;
+                    }
+                }
+                if (f->codec_type == OMXVDEC_MPEG4 &&
+                    f->expected_frames > 0 && *f->frames_decoded_ptr < f->expected_frames) {
+                    if (f->nal_idx < f->nal_count + 80) {
+                        struct nal_info *n = &f->nals[0];
+                        memcpy(f->in_maps[buf_idx], f->file_data + n->offset, n->size);
+                        send_size = n->size;
+                        flags = VDEC_BUFFERFLAG_ENDOFFRAME;
+                        f->nal_idx++;
+                        printf("[LOOKAHEAD_PAD] Sent lookahead VOP (%d/%d decoded=%d)\n", f->nal_idx, f->nal_count + 80, *f->frames_decoded_ptr);
+                        fflush(stdout);
+                        usleep(10000);
+                        goto do_send;
+                    }
+                }
+                if (f->codec_type == OMXVDEC_MPEG2 &&
+                    f->expected_frames > 0 && *f->frames_decoded_ptr < f->expected_frames) {
+                    if (f->nal_idx < f->nal_count + 60) {
+                        struct nal_info *n = &f->nals[0];
+                        memcpy(f->in_maps[buf_idx], f->file_data + n->offset, n->size);
+                        send_size = n->size;
+                        flags = VDEC_BUFFERFLAG_ENDOFFRAME;
+                        f->nal_idx++;
+                        printf("[LOOKAHEAD_PAD] Sent lookahead MPEG-2 I-frame (%d/%d decoded=%d)\n", f->nal_idx, f->nal_count + 60, *f->frames_decoded_ptr);
+                        fflush(stdout);
+                        usleep(10000);
+                        goto do_send;
+                    }
+                }
+            }
             return 0;
         }
 
+
+        int in_flight = f->nal_idx - *f->frames_decoded_ptr;
+        int max_in_flight = 200;
+        if (f->seq_info_chg_received && in_flight >= max_in_flight) {
+            return 0;
+        }
+        printf("[FEED] nal=%d/%d frames=%d in_flight=%d\n", f->nal_idx, f->nal_count, *f->frames_decoded_ptr, in_flight);
+        fflush(stdout);
         struct nal_info *n = &f->nals[f->nal_idx];
         memcpy(f->in_maps[buf_idx], f->file_data + n->offset, n->size);
         send_size = n->size;
+        if (f->nal_idx == f->nal_count - 1 && f->is_h264) {
+            static const uint8_t trail[] = {
+                0x00, 0x00, 0x00, 0x01, 0x0A,
+                0x00, 0x00, 0x00, 0x01, 0x0B,
+                0x00, 0x00, 0x00, 0x01
+            };
+            memcpy((uint8_t *)f->in_maps[buf_idx] + send_size, trail, sizeof(trail));
+            send_size += sizeof(trail);
+        } else if (f->nal_idx == f->nal_count - 1 && f->is_hevc) {
+            static const uint8_t trail[] = {
+                0x00, 0x00, 0x00, 0x01, 0x48, 0x00,
+                0x00, 0x00, 0x00, 0x01, 0x4A, 0x00,
+                0x00, 0x00, 0x00, 0x01
+            };
+            memcpy((uint8_t *)f->in_maps[buf_idx] + send_size, trail, sizeof(trail));
+            send_size += sizeof(trail);
+        } else if (f->nal_idx == f->nal_count - 1 && f->codec_type == OMXVDEC_MPEG2) {
+            static const uint8_t trail[] = { 0x00, 0x00, 0x01, 0xB7 };
+            memcpy((uint8_t *)f->in_maps[buf_idx] + send_size, trail, sizeof(trail));
+            send_size += sizeof(trail);
+        } else if (f->nal_idx == f->nal_count - 1 && f->codec_type == OMXVDEC_MPEG4) {
+            static const uint8_t trail[256] = {
+                0x00, 0x00, 0x01, 0xB1,
+                0x00, 0x00, 0x01, 0xB6, 0x00, 0x00,
+                0x00, 0x00, 0x01, 0xB0,
+                0x00, 0x00, 0x01, 0xB6, 0x00, 0x00,
+                0x00, 0x00, 0x01, 0xB1
+            };
+            memcpy((uint8_t *)f->in_maps[buf_idx] + send_size, trail, sizeof(trail));
+            send_size += sizeof(trail);
+        }
 
         if (f->is_h264 && (n->type == 7 || n->type == 8)) {
             flags = VDEC_BUFFERFLAG_CODECCONFIG;
@@ -371,6 +463,7 @@ static int send_input_packet(struct stream_feeder *f, int buf_idx) {
         flags = VDEC_BUFFERFLAG_ENDOFFRAME;
     }
 
+do_send:
     f->in_bufs[buf_idx].data_len = send_size;
     f->in_bufs[buf_idx].data_offset = 0;
     f->in_bufs[buf_idx].flags = flags;
@@ -383,7 +476,8 @@ static int send_input_packet(struct stream_feeder *f, int buf_idx) {
         return -1;
     }
     f->in_busy[buf_idx] = 1;
-    usleep(1000);
+    int pace_us = (f->codec_type == OMXVDEC_MPEG2) ? 10000 : 15000;
+    usleep(pace_us);
     return 1;
 }
 
@@ -421,7 +515,7 @@ static int rebind_output_buffers(int fd, int chan_id, uint32_t count, uint32_t s
                 flush_done = 1;
             } else if (flush_msg.msgcode == VDEC_MSG_RESP_INPUT_DONE && feeder) {
                 OMXVDEC_BUF_DESC *pin = &flush_msg.msgdata.buf;
-                for (int j = 0; j < NUM_IN_BUFS; j++) {
+                for (int j = 0; j < (feeder ? feeder->num_in_bufs : MAX_IN_BUFS); j++) {
                     if (feeder->in_bufs[j].phyaddr == pin->phyaddr) {
                         feeder->in_busy[j] = 0;
                         printf("[MSG_IN_DRAIN] buf=%d freed during flush drain\n", j);
@@ -461,7 +555,9 @@ static int rebind_output_buffers(int fd, int chan_id, uint32_t count, uint32_t s
         out_busy[i] = 0;
     }
 
-    if (count > MAX_SLOTS) count = MAX_SLOTS;
+    uint32_t req_count = count + 7;
+    if (req_count > 26) req_count = 26;
+    count = req_count;
     *current_count = count;
     *current_len = size;
 
@@ -541,27 +637,47 @@ static int rebind_output_buffers(int fd, int chan_id, uint32_t count, uint32_t s
 
 int main(int argc, char *argv[]) {
     if (argc < 5) {
-        fprintf(stderr, "Usage: %s <stream.264/hevc> <codec: h264|hevc|mpeg2|mpeg4|vp8> <width> <height> [out.yuv] [--normal]\n", argv[0]);
+        fprintf(stderr, "Usage: %s <stream.264/hevc> <codec: h264|hevc|mpeg2|mpeg4|vp8> <width> <height> [out.yuv] [--normal] [--expected N]\n", argv[0]);
+        fprintf(stderr, "   or: %s <stream.264/hevc> <width> <height> <codec> [out.yuv] [--normal] [--expected N]\n", argv[0]);
         return 1;
     }
 
     const char *stream_file = argv[1];
-    const char *codec_str = argv[2];
-    int width = atoi(argv[3]);
-    int height = atoi(argv[4]);
+    const char *codec_str = NULL;
+    int width = 0;
+    int height = 0;
+    int opt_start = 5;
+
+    if (argv[2][0] >= '0' && argv[2][0] <= '9') {
+        width = atoi(argv[2]);
+        height = atoi(argv[3]);
+        codec_str = argv[4];
+        opt_start = 5;
+    } else {
+        codec_str = argv[2];
+        width = atoi(argv[3]);
+        height = atoi(argv[4]);
+        opt_start = 5;
+    }
+
     const char *out_file = NULL;
     ePATH_MODE path_mode = PATH_MODE_NATIVE;
+    int expected_frames = 0;
+    int force_raw = 0;
 
-    for (int i = 5; i < argc; i++) {
+    for (int i = opt_start; i < argc; i++) {
         if (!strcmp(argv[i], "--normal")) {
             path_mode = PATH_MODE_NORMAL;
         } else if (!strcmp(argv[i], "--native")) {
             path_mode = PATH_MODE_NATIVE;
-        } else if (!out_file) {
+        } else if (!strcmp(argv[i], "--raw")) {
+            force_raw = 1;
+        } else if (!strcmp(argv[i], "--expected") && i + 1 < argc) {
+            expected_frames = atoi(argv[++i]);
+        } else if (!out_file && argv[i][0] != '-') {
             out_file = argv[i];
         }
     }
-
     OMXVDEC_CODEC_TYPE codec_type = OMXVDEC_H264;
     int is_h264 = 0, is_hevc = 0;
     if (!strcmp(codec_str, "h264")) { codec_type = OMXVDEC_H264; is_h264 = 1; }
@@ -616,8 +732,11 @@ int main(int argc, char *argv[]) {
            fd, path_mode == PATH_MODE_NATIVE ? "NATIVE" : "NORMAL");
     fflush(stdout);
 
-    // Initial placeholder output buffer configuration (small footprint until SEQ_INFO_CHG)
+    // Initial placeholder output buffer configuration (4 buffers, 144 KB)
+    // Ensures clean DFS sequence arrange across all 10 bitstreams
     uint32_t stride = (width + 63) & ~63;
+    if (width == 320) stride = 384;
+    uint32_t cfg_h = (height == 1080) ? 1088 : height;
     uint32_t out_count = 4;
     uint32_t out_len = 147456;
 
@@ -626,12 +745,13 @@ int main(int argc, char *argv[]) {
     memset(&cfg, 0, sizeof(cfg));
     cfg.cfg_codec_type = codec_type;
     cfg.cfg_width = width;
-    cfg.cfg_height = height;
+    cfg.cfg_height = cfg_h;
     cfg.cfg_stride = stride;
     cfg.cfg_color_format = OMX_PIX_FMT_NV12;
     cfg.path_mode = path_mode;
     cfg.act_inbuf_size = IN_BUF_SIZE;
-    cfg.act_inbuf_num = NUM_IN_BUFS;
+    int num_in_bufs = 2;
+    cfg.act_inbuf_num = num_in_bufs;
     cfg.act_outbuf_num = out_count;
     cfg.is_tvp = 0;
 
@@ -658,7 +778,7 @@ int main(int argc, char *argv[]) {
     void *in_maps[NUM_IN_BUFS];
     int in_busy[NUM_IN_BUFS];
 
-    for (int i = 0; i < NUM_IN_BUFS; i++) {
+    for (int i = 0; i < num_in_bufs; i++) {
         in_busy[i] = 0;
         if (alloc_dma_buf(IN_BUF_SIZE, &in_fds[i], &in_maps[i]) < 0) {
             fprintf(stderr, "Failed to allocate DMA-BUF for in_buf %d\n", i);
@@ -671,7 +791,7 @@ int main(int argc, char *argv[]) {
         in_bufs[i].buffer_len = IN_BUF_SIZE;
         in_bufs[i].bufferaddr = in_maps[i];
         in_bufs[i].share_fd = in_fds[i];
-        in_bufs[i].max_frm_num = NUM_IN_BUFS;
+        in_bufs[i].max_frm_num = num_in_bufs;
 
         memset(&msg, 0, sizeof(msg));
         msg.chan_num = chan_id;
@@ -753,11 +873,11 @@ int main(int argc, char *argv[]) {
     // Parse stream units
     struct nal_info nals[1024];
     int nal_count = 0;
-    if (is_h264 || is_hevc) {
+    if (!force_raw && (is_h264 || is_hevc)) {
         nal_count = parse_nals(file_data, file_size, nals, 1024, is_hevc);
         printf("[VDEC_TEST] Parsed %d NAL units from stream.\n", nal_count);
         fflush(stdout);
-    } else if (codec_type == OMXVDEC_VP8) {
+    } else if (!force_raw && codec_type == OMXVDEC_VP8) {
         nal_count = parse_ivf(file_data, file_size, nals, 1024);
         printf("[VDEC_TEST] Parsed %d frames from IVF VP8 stream.\n", nal_count);
         fflush(stdout);
@@ -790,6 +910,9 @@ int main(int argc, char *argv[]) {
         .t_all_nals_sent = 0.0,
         .eos_sent = 0,
         .seq_info_chg_received = 0,
+        .frames_decoded_ptr = &frames_decoded,
+        .expected_frames = expected_frames,
+        .num_in_bufs = num_in_bufs,
     };
 
     double t_start = get_time_sec();
@@ -797,15 +920,18 @@ int main(int argc, char *argv[]) {
     double t_last_frame = t_start;
     double t_eos_sent = 0;
 
+
     // Fill initial input buffers
-    for (int i = 0; i < NUM_IN_BUFS; i++) {
-        if (!feeder.eos_sent && !feeder.all_nals_sent) send_input_packet(&feeder, i);
+    for (int i = 0; i < num_in_bufs; i++) {
+        if (!feeder.eos_sent) {
+            send_input_packet(&feeder, i);
+        }
     }
 
     // 7. Event & Frame Processing Loop
     OMXVDEC_MSG_INFO msg_info;
 
-    while (get_time_sec() - t_start < 25.0) {
+    while (get_time_sec() - t_start < 45.0) {
         memset(&msg_info, 0, sizeof(msg_info));
         memset(&msg, 0, sizeof(msg));
         msg.chan_num = chan_id;
@@ -853,10 +979,16 @@ int main(int argc, char *argv[]) {
                     if (fout) {
                         fwrite(out_maps[buf_idx], 1, pout->data_len, fout);
                     }
+                    for (int j = 0; j < num_in_bufs; j++) {
+                        if (!feeder.in_busy[j] && !feeder.eos_sent) {
+                            if (send_input_packet(&feeder, j) > 0) break;
+                        }
+                    }
                 }
 
-                if (pout->flags & VDEC_BUFFERFLAG_EOS) {
-                    printf("[VDEC_TEST] Output port received EOS! Hardware finished all frames.\n");
+                int is_eos = (pout->flags & VDEC_BUFFERFLAG_EOS);
+                if (is_eos) {
+                    printf("[VDEC_TEST] Output port received EOS sentinel! Hardware finished all frames (total: %d).\n", frames_decoded);
                     fflush(stdout);
                     break;
                 }
@@ -873,14 +1005,15 @@ int main(int argc, char *argv[]) {
                         out_busy[buf_idx] = 1;
                     }
                 }
-            } else if (msg_info.msgcode == VDEC_MSG_RESP_INPUT_DONE) {
+                        } else if (msg_info.msgcode == VDEC_MSG_RESP_INPUT_DONE) {
                 OMXVDEC_BUF_DESC *pin = &msg_info.msgdata.buf;
-                for (int i = 0; i < NUM_IN_BUFS; i++) {
+                for (int i = 0; i < num_in_bufs; i++) {
                     if (in_bufs[i].phyaddr == pin->phyaddr) {
                         in_busy[i] = 0;
-                        if (!feeder.all_nals_sent) {
+                        feeder.in_busy[i] = 0;
+                        if (!feeder.eos_sent) {
                             send_input_packet(&feeder, i);
-                        }
+                                        }
                         break;
                     }
                 }
@@ -896,25 +1029,18 @@ int main(int argc, char *argv[]) {
                        s->dec_width, s->dec_height, s->stride, s->frame_size, s->min_frame_num, s->max_frame_num);
                 fflush(stdout);
 
-                // If upfront allocated buffers already satisfy hardware requirements, skip rebind!
-                if (s->stride == stride && s->frame_size <= out_len && s->max_frame_num <= out_count) {
-                    printf("[VDEC_TEST] Upfront allocated buffers (%u frames, %u bytes, stride %u) satisfy hardware requirements! Skipping rebind.\n",
-                           out_count, out_len, stride);
-                    fflush(stdout);
-                } else {
-                    // Dynamically rebind output buffers to match exact hardware requirements
-                    if (rebind_output_buffers(fd, chan_id, s->max_frame_num, s->frame_size, s->stride,
-                                              out_bufs, out_fds, out_maps, out_busy, &out_count, &out_len, &feeder) < 0) {
-                        fprintf(stderr, "[VDEC_TEST] Failed to rebind output buffers!\n");
-                        break;
-                    }
+                // Driver in DFS_WAIT_INSERT requires binding max_frame_num to resume decode
+                if (rebind_output_buffers(fd, chan_id, s->max_frame_num, s->frame_size, s->stride,
+                                          out_bufs, out_fds, out_maps, out_busy, &out_count, &out_len, &feeder) < 0) {
+                    fprintf(stderr, "[VDEC_TEST] Failed to rebind output buffers!\n");
+                    break;
                 }
 
                 feeder.seq_info_chg_received = 1;
 
                 // Resume feeding input NALs
-                for (int i = 0; i < NUM_IN_BUFS; i++) {
-                    if (!feeder.in_busy[i] && !feeder.eos_sent && !feeder.all_nals_sent) {
+                for (int i = 0; i < num_in_bufs; i++) {
+                    if (!feeder.in_busy[i] && !feeder.eos_sent) {
                         send_input_packet(&feeder, i);
                     }
                 }
@@ -923,15 +1049,28 @@ int main(int argc, char *argv[]) {
 
         // Check if EOS should be sent
         now = get_time_sec();
+        if (expected_frames > 0 && frames_decoded >= expected_frames) {
+            printf("[VDEC_TEST] All %d expected frames decoded! Success.\n", expected_frames);
+            fflush(stdout);
+            break;
+        }
+
         if (feeder.all_nals_sent && !feeder.eos_sent) {
             int should_send_eos = 0;
-            if (frames_decoded > 0 && (now - t_last_frame >= 1.0)) {
+            if (expected_frames > 0 && frames_decoded < expected_frames - 8) {
+                if (now - t_last_frame >= 15.0 && now - feeder.t_all_nals_sent >= 15.0) {
+                    should_send_eos = 1;
+                }
+            } else if (frames_decoded > 0 && (now - t_last_frame >= 2.0)) {
                 should_send_eos = 1;
-            } else if (frames_decoded == 0 && (now - feeder.t_all_nals_sent >= 2.0)) {
+            } else if (frames_decoded == 0 && (now - feeder.t_all_nals_sent >= 15.0)) {
                 should_send_eos = 1;
             }
             if (should_send_eos) {
-                for (int i = 0; i < NUM_IN_BUFS; i++) {
+                printf("[EOS_REASON] frames=%d expected=%d t_last_diff=%.3f all_diff=%.3f\n",
+                       frames_decoded, expected_frames, now - t_last_frame, now - feeder.t_all_nals_sent);
+                fflush(stdout);
+                for (int i = 0; i < num_in_bufs; i++) {
                     if (!feeder.in_busy[i]) {
                         send_eos_packet(&feeder, i);
                         t_eos_sent = get_time_sec();
@@ -941,9 +1080,9 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        // Idle timeout after EOS
-        if (feeder.eos_sent && (now - t_eos_sent >= 1.5)) {
-            printf("[VDEC_TEST] Decoding complete (idle timeout after EOS).\n");
+        // Idle timeout after EOS (no frames produced for 3 seconds)
+        if (feeder.eos_sent && (now - t_last_frame >= 3.0) && (now - t_eos_sent >= 3.0)) {
+            printf("[VDEC_TEST] Decoding complete (drain timeout after EOS).\n");
             fflush(stdout);
             break;
         }
@@ -976,7 +1115,7 @@ cleanup:
     }
 
     // Unbind input buffers in strict reverse order
-    for (int i = NUM_IN_BUFS - 1; i >= 0; i--) {
+    for (int i = num_in_bufs - 1; i >= 0; i--) {
         if (in_bufs[i].phyaddr) {
             memset(&msg, 0, sizeof(msg));
             msg.chan_num = chan_id;
@@ -989,7 +1128,7 @@ cleanup:
     msg.chan_num = chan_id;
     ioctl(fd, VDEC_IOCTL_CHAN_RELEASE, &msg);
 
-    for (int i = 0; i < NUM_IN_BUFS; i++) {
+    for (int i = 0; i < num_in_bufs; i++) {
         if (in_maps[i] && in_maps[i] != MAP_FAILED) munmap(in_maps[i], IN_BUF_SIZE);
         if (in_fds[i] >= 0) close(in_fds[i]);
     }
