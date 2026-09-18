@@ -5,6 +5,7 @@
 
 #include <linux/fs.h>
 #include <linux/slab.h>
+#include <linux/string.h>
 #include <linux/cdev.h>
 #include <linux/delay.h>
 #include <linux/sched.h>

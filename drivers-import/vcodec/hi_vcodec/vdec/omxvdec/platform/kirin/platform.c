@@ -1,7 +1,5 @@
 #include <linux/sched/clock.h>
-
-
-
+#include <linux/string.h>
 #include <linux/math64.h>
 #include <linux/file.h>
 #include <linux/major.h>
@@ -161,7 +159,7 @@ static HI_VOID DRV_PROC_EchoHelperVargs(HI_CHAR *buf, HI_U32 size, const HI_CHAR
 /*----------------------------------------
     func: memory read proc entry
  ----------------------------------------*/
-HI_S32 VDEC_Platform_Read_Proc(struct seq_file *p, HI_VOID *v)
+static HI_S32 VDEC_Platform_Read_Proc(struct seq_file *p, HI_VOID *v)
 {
     PROC_PRINT(p, "\n");
 

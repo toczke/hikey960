@@ -27,10 +27,10 @@ The Kirin 960 SoC does not have a native HDMI controller. The display pipeline c
 > `i2cget -f -y 1 0x3c 0x00` → `0x75`, `i2cget -f -y 1 0x3c 0x01` → `0x33`.
 > Values `0x75 0x33` uniquely identify the ADV7533. The ADV7535 (a different, higher-clock-capable variant) is **not** present on the HiKey960. Script comments referencing "ADV7535" are incorrect and have been updated in this commit.
 
-### 1.2 Linux 7.1 Porting Changes `[VERIFIED ON HARDWARE]`
+### 1.2 Linux 7.2 Porting Changes `[VERIFIED ON HARDWARE]`
 
 - Replaced legacy Android 4.9 `drm_fb_cma_helper` with modern `drm_gem_dma_helper` APIs.
-- Adapted atomic mode setting helpers and state management to Linux 7.1.
+- Adapted atomic mode setting helpers and state management to Linux 7.2 (`struct drm_atomic_commit *` vtable refactoring handled via `kirin_atomic_state_t` compatibility shims).
 - Renamed driver namespace to `"kirin960-drm"` to avoid symbol conflicts with mainline Kirin 620 (`"kirin-drm"`).
 
 ### 1.3 Device Tree Integration `[VERIFIED ON HARDWARE]`
@@ -111,13 +111,13 @@ The ARM Mali-G71 (Bifrost architecture) GPU is operational.
 
 ## 3. Hardware Video Acceleration (VPU — hi_vcodec)
 
-> **Overall status as of 2026-09-18: VDEC hardware decode operational on Kirin 960 silicon across all 10 codecs and profiles (10/10 PASS: VP8, HEVC Main, HEVC Main10, MPEG-2, MPEG-4, H.264 Baseline, H.264 Main, H.264 High 1080p30, H.264 High 1080p60). Zero DMA-BUF leaks. VENC hardware encode operational on Kirin 960 silicon across all resolution ladder steps for both H.264 and H.265/HEVC (1080p60 HEVC at 116 FPS, 1080p60 H.264 at 114–116 FPS, SD H.264 at 438–520 FPS, 4× concurrent 1080p30 at 120–124 FPS aggregate, and 4K UHD H.264 at 16–28 FPS). Hardware boundary limits (min(w,h) <= 2160) verified with clean parameter rejection. Zero DMA-BUF leaks across both VDEC and VENC.**
+> **Overall status as of 2026-09-18: VDEC hardware decode operational on Kirin 960 silicon under Linux 7.2.6 across all 10 codecs and profiles (10/10 PASS: VP8, HEVC Main, HEVC Main10, MPEG-2, MPEG-4, H.264 Baseline, H.264 Main, H.264 High 1080p30, H.264 High 1080p60). Zero DMA-BUF leaks. VENC hardware encode operational on Kirin 960 silicon across all resolution ladder steps for both H.264 and H.265/HEVC (1080p60 HEVC at 116 FPS, 1080p60 H.264 at 114–116 FPS, SD H.264 at 438–520 FPS, 4× concurrent 1080p30 at 120–124 FPS aggregate, and 4K UHD H.264 at 16–28 FPS). Hardware boundary limits (min(w,h) <= 2160) verified with clean parameter rejection. Zero DMA-BUF leaks across both VDEC and VENC.**
 
 ### 3.1 Decoder (VDEC)
 
-The VPU decoder driver (`drivers-import/vcodec/hi_vcodec/vdec/omxvdec/`) exposes `/dev/hi_vdec` and operates in bypass mode using dynamic DMA-BUF allocation via standard Linux 7.1 DMA-BUF heaps (`/dev/dma_heap/default_cma_region` and `reserved`).
+The VPU decoder driver (`drivers-import/vcodec/hi_vcodec/vdec/omxvdec/`) exposes `/dev/hi_vdec` and operates in bypass mode using dynamic DMA-BUF allocation via standard Linux 7.2 DMA-BUF heaps (`/dev/dma_heap/default_cma_region` and `reserved`).
 
-Silicon stream verification was executed on physical HiKey960 hardware running Linux 7.1.13 with `cma=256M`. Decoded frames were extracted to PNG and verified for structural/visual correctness via SSIM calculation against CPU-decoded references. Full evidence logs, benchmark scripts, and sample frames are tracked in the repository under [`tests/results/`](../tests/results/) and summarized in [`tests/vpu_hardware_results.json`](../tests/vpu_hardware_results.json).
+Silicon stream verification was executed on physical HiKey960 hardware running Linux 7.2.6 with `cma=256M`. Decoded frames were extracted to PNG and verified for structural/visual correctness via SSIM calculation against CPU-decoded references. Full evidence logs, benchmark scripts, and sample frames are tracked in the repository under [`tests/results/`](../tests/results/) and summarized in [`tests/vpu_hardware_results.json`](../tests/vpu_hardware_results.json).
 
 | Test Stream | Codec | Resolution | Expected | Decoded | Hardware Status | Correctness / SSIM | Evidence Links | Performance & Notes |
 |---|---|---|---|---|---|---|---|---|
@@ -139,7 +139,7 @@ Target capabilities (Work Order 3):
 - 4× simultaneous 1080p30 streams
 - Verification of hardware boundary limits (`min(width, height) <= 2160`)
 
-**Current hardware status:** The device tree node `venc@e8900000` is enabled (`status = "okay"` in `patches/0007-hikey960-vpu-node.patch`). `/dev/hi_venc` probes and registers successfully on Linux 7.1.13. Modern C platform, memory, and regulator drivers (`venc_platform.c`, `venc_memory.c`, `venc_regulator.c`) replaced `drv_venc_intf.S` and `hi_drv_mem.S`. Concurrent channel slot aliasing was resolved via handle search linear lookup in commit `75279db4`.
+**Current hardware status:** The device tree node `venc@e8900000` is enabled (`status = "okay"` in `patches/0007-hikey960-vpu-node.patch`). `/dev/hi_venc` probes and registers successfully on Linux 7.2.6. Modern C platform, memory, and regulator drivers (`venc_platform.c`, `venc_memory.c`, `venc_regulator.c`) replaced `drv_venc_intf.S` and `hi_drv_mem.S`. Concurrent channel slot aliasing was resolved via handle search linear lookup in commit `75279db4`.
 
 **HEVC Hardware Encoding Resolution:**
 Earlier trials noted a frame slice interrupt timeout (`vedu_irq=67`) on HEVC streams. Deep driver analysis revealed:
@@ -157,7 +157,7 @@ From `drv_venc_efl.h`:
 ```
 The hardware VEDU core architecture enforces `min(w, h) <= 2160` and `max(w, h) <= 4096`. Attempting to encode 3840×2400 is cleanly rejected by `VENC_DRV_EflChkChnCfg()` returning `-EPERM` (exit code 1). 4K UHD (3840×2160) is fully supported and verified.
 
-Verification results from physical HiKey960 hardware running Linux 7.1.13 (summarized in [`tests/results/venc_hardware_results.json`](../tests/results/venc_hardware_results.json)):
+Verification results from physical HiKey960 hardware running Linux 7.2.6 (summarized in [`tests/results/venc_hardware_results.json`](../tests/results/venc_hardware_results.json)):
 
 | Step | Target | Hardware Status | Measured FPS | Bitstream / ffprobe | Evidence Links | Performance & Notes |
 |---|---|---|---|---|---|---|

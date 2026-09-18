@@ -9,7 +9,7 @@ This repository documents the **complete, end-to-end process** for compiling a m
             `:]x**j-,'                 -------------
        .,+t***********z\<"             OS: Armbian 26.8.3 bookworm aarch64
        ?******************;            Host: HiKey960
-      '*n` .'`^,;;,^`'. ,cc.           Kernel: Linux 7.1.13+
+      '*n` .'`^,;;,^`'. ,cc.           Kernel: Linux 7.2.6
       -<.                .[l           Uptime: 11 mins
      //     ^^      ^^    \\           Packages: 491 (dpkg)
      !^         ^^         ":          Shell: bash 5.2.15
@@ -33,7 +33,7 @@ l**c)tttttttttttttttttttttttt(z**,     Swap: Disabled
 ## Current Project State
 We have successfully ported the HiKey960 to a modern headless server environment.
 * **Operating System:** Armbian (Debian 13 "Trixie")
-* **Kernel:** Mainline Linux 7.1.x (Edge branch)
+* **Kernel:** Mainline Linux 7.2.6 (Edge branch)
 
 **Hardware Support & Fixes:**
 
@@ -80,7 +80,7 @@ Please read the documentation in the following order to successfully build and f
 4.  [04-FREEZING_KERNEL_UPDATES.md](docs/04-FREEZING_KERNEL_UPDATES.md) - **CRITICAL:** Locking kernel packages via `apt-mark` to prevent automated updates from overwriting our DTB fixes and bricking the system.
 5.  [05-GPIO_EXPANSION_HEADER.md](docs/05-GPIO_EXPANSION_HEADER.md) - Hardware specifications, 1.8V logic limits, full 40-pin layout, and SPI/PWM device tree configuration.
 6.  [06-HS_EXPANSION_HEADER.md](docs/06-HS_EXPANSION_HEADER.md) - Details on the 60-pin HS connector, MIPI CSI/DSI limitations, and ISP hardware blockers on mainline Linux.
-7.  [07-MULTIMEDIA_AND_GPU.md](docs/07-MULTIMEDIA_AND_GPU.md) - How the Mali-G71 GPU and HDMI display pipeline (DPE/DSI) were ported to Linux 7.1; VPU bring-up status.
+7.  [07-MULTIMEDIA_AND_GPU.md](docs/07-MULTIMEDIA_AND_GPU.md) - How the Mali-G71 GPU and HDMI display pipeline (DPE/DSI) were ported to Linux 7.2; VPU bring-up status.
 8.  [08-BOARD_SWITCHES.md](docs/08-BOARD_SWITCHES.md) - Hardware DIP switch configurations for Normal Boot, Fastboot, and Brick Recovery.
 9.  [09-HDMI_HARDWARE_REGISTERS.md](docs/09-HDMI_HARDWARE_REGISTERS.md) - ADV7533 I2C register reference and DPE register values; register dump procedure.
 10. [10-VPU_SOURCE_AUDIT.md](docs/10-VPU_SOURCE_AUDIT.md) - VPU source code audit: per-`.S`-file linkage and struct-layout risk assessment *(in progress)*.

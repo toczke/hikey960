@@ -9,7 +9,7 @@
     "bitrate": 5000000,
     "iterations": 1,
     "concurrency": 1,
-    "wall_time_s": 0.8474130630493164,
+    "wall_time_s": 0.8477942943572998,
     "exit_code": 0,
     "success": true,
     "ffprobe": {
@@ -32,7 +32,7 @@
     "bitrate": 5000000,
     "iterations": 1,
     "concurrency": 1,
-    "wall_time_s": 0.8684985637664795,
+    "wall_time_s": 0.8794589042663574,
     "exit_code": 0,
     "success": true,
     "ffprobe": {
@@ -55,7 +55,7 @@
     "bitrate": 1500000,
     "iterations": 10,
     "concurrency": 1,
-    "wall_time_s": 0.9846751689910889,
+    "wall_time_s": 1.0934135913848877,
     "exit_code": 0,
     "success": true,
     "ffprobe": {
@@ -78,7 +78,7 @@
     "bitrate": 4000000,
     "iterations": 5,
     "concurrency": 4,
-    "wall_time_s": 11.779266834259033,
+    "wall_time_s": 12.559799909591675,
     "exit_code": 0,
     "success": true,
     "ffprobe": {
@@ -101,7 +101,7 @@
     "bitrate": 20000000,
     "iterations": 1,
     "concurrency": 1,
-    "wall_time_s": 1.5822017192840576,
+    "wall_time_s": 2.396186351776123,
     "exit_code": 0,
     "success": true,
     "ffprobe": {
@@ -124,7 +124,7 @@
     "bitrate": 20000000,
     "iterations": 1,
     "concurrency": 1,
-    "wall_time_s": 0.32158613204956055,
+    "wall_time_s": 0.2897813320159912,
     "exit_code": 1,
     "success": true,
     "ffprobe": {},
@@ -140,7 +140,7 @@
     "bitrate": 20000000,
     "iterations": 1,
     "concurrency": 1,
-    "wall_time_s": 0.30605053901672363,
+    "wall_time_s": 0.30809783935546875,
     "exit_code": 1,
     "success": true,
     "ffprobe": {},

@@ -58,6 +58,22 @@ unsigned long __stack_chk_guard = 0xdeadbeef12345678UL;
 EXPORT_SYMBOL(__stack_chk_guard);
 #endif
 
+/* Legacy strncpy compatibility for vendor VPU firmware/proc */
+char *strncpy(char *dest, const char *src, size_t count);
+char *strncpy(char *dest, const char *src, size_t count)
+{
+	char *tmp = dest;
+
+	while (count) {
+		if ((*tmp = *src) != 0)
+			src++;
+		tmp++;
+		count--;
+	}
+	return dest;
+}
+EXPORT_SYMBOL(strncpy);
+
 /* Procfs PDE_DATA compatibility */
 void *PDE_DATA(const struct inode *inode)
 {
@@ -74,6 +90,19 @@ void __raw_spin_lock_init(raw_spinlock_t *lock, const char *name,
 EXPORT_SYMBOL(__raw_spin_lock_init);
 
 /* TEE/TVP stubs (TrustZone secure video decode not used in open Linux) */
+int TEEK_InitializeContext(void *name, void *context);
+void TEEK_FinalizeContext(void *context);
+int TEEK_OpenSession(void *context, void *session, void *uuid, unsigned int login_type, void *connection_data, void *operation, void *return_origin);
+void TEEK_CloseSession(void *session);
+int TEEK_InvokeCommand(void *session, unsigned int command_id, void *operation, void *return_origin);
+
+/* SMMU stubs for HiSMMUV100 */
+void SMMU_SetMasterReg(void);
+void SMMU_IntServProc(void);
+void SMMU_DeInit(void);
+void SMMU_Init(void);
+void SMMU_InitGlobalReg(void);
+
 int TEEK_InitializeContext(void *name, void *context) { return -EOPNOTSUPP; }
 EXPORT_SYMBOL(TEEK_InitializeContext);
 

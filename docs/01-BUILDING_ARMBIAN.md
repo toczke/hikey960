@@ -34,8 +34,8 @@ sudo apt install -y gcc-aarch64-linux-gnu build-essential bc bison flex libssl-d
 Clone the upstream Linux kernel tree:
 ```bash
 sudo apt install -y curl tar xz-utils
-curl -fSL https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-7.1.13.tar.xz -o linux-7.1.13.tar.xz
-mkdir -p linux-src && tar -xf linux-7.1.13.tar.xz -C linux-src --strip-components=1
+curl -fSL https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-7.2.6.tar.xz -o linux-7.2.6.tar.xz
+mkdir -p linux-src && tar -xf linux-7.2.6.tar.xz -C linux-src --strip-components=1
 cd linux-src
 ```
 
