@@ -32,27 +32,27 @@
 +			};
 +			hikey_usb_ep1: endpoint@1 {
 +				reg = <1>;
-+				remote-endpoint = <&rt1711h_ep>;
++				remote-endpoint = <&usb_con_hs>;
 +			};
 +		};
 +	};
  };
  
  /*
-@@ -564,7 +596,7 @@
- 
- 			rt1711h_ep: endpoint@0 {
- 				reg = <0>;
--				remote-endpoint = <&dwc3_role_switch>;
-+				remote-endpoint = <&hikey_usb_ep1>;
- 			};
- 		};
- 	};
-@@ -686,7 +718,7 @@
+@@ -553,7 +585,7 @@
+ 				port@0 {
+ 					reg = <0>;
+ 					usb_con_hs: endpoint {
+-						remote-endpoint = <&dwc3_role_switch>;
++						remote-endpoint = <&hikey_usb_ep1>;
+ 					};
+ 				};
+ 				port@1 {
+@@ -681,7 +713,7 @@
  		#size-cells = <0>;
  		dwc3_role_switch: endpoint@0 {
  			reg = <0>;
--			remote-endpoint = <&rt1711h_ep>;
+-			remote-endpoint = <&usb_con_hs>;
 +			remote-endpoint = <&hikey_usb_ep0>;
  		};
  

@@ -113,21 +113,4 @@ jobs:
         path: |
           linux-src/arch/arm64/boot/Image.gz
           linux-src/arch/arm64/boot/dts/hisilicon/*.dtb
-        retention-days: 7
-
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: ${{ env.KERNEL_VERSION }}
-        name: Kernel ${{ env.KERNEL_VERSION }} (Testing / Pre-release)
-        prerelease: true
-        body: |
-          Automated test build for HiKey960.
-          - Kernel version: ${{ env.KERNEL_VERSION }}
-          - Status: Testing / Experimental Pre-release
-          - Includes DTB and DRM/GPU fixes
-        files: |
-          linux-src/arch/arm64/boot/Image.gz
-          linux-src/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dtb
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        retention-days: 14
