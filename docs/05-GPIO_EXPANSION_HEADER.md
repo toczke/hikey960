@@ -52,10 +52,35 @@ spi@ff3b3000 {
 *Note: Ensure no duplicate `status` properties exist before recompiling the DTB.*
 
 ### PWM (Pulse Width Modulation)
-Pin 28 (`LCD_BL_PWM`) is electrically routed to the SoC's hardware backlight PWM controller. However, the physical register addresses for the `pwm-hibvt` IP block are omitted from upstream and vendor device trees (`hi3660.dtsi`). 
-Due to the absence of memory mappings for the hardware PWM block in the mainline kernel, enabling pure hardware PWM on this pin is not supported.
+`[VERIFIED ON HARDWARE — Linux 7.2.6, physical Kirin 960 silicon at root@192.168.0.165]`
 
-**Workaround:** For precise hardware PWM generation (e.g., controlling 25kHz cooling fans), use an external I2C PWM controller (such as the PCA9685) connected to the `I2C0` pins.
+Pin 28 (`LCD_BL_PWM` / `GPIO_182`) on the Low-Speed (LS) 40-pin expansion header is electrically wired to Channel 0 of the SoC's hardware PWM generator (`pwm@e8a04000`).
+
+In upstream and vendor kernel trees, the Kirin 960 hardware PWM block was unmapped, and the PWM clock gate was missing from the CRG clock driver. We developed a modernized Linux 7.2 PWM controller driver (`drivers/pwm/pwm-hisi.c`), registered the 20 MHz parent clock (`clk_factor_ptp` / `HI3660_CLK_FACTOR_PTP`) and PWM clock gate (`HI3660_CLK_GATE_PWM` @ CRG offset `0x20` bit 0), and mapped the device tree node with pinmux `0x010 MUX_M1` (`pwm_pmx_func`) in `patches/0009-hikey960-pwm-controller-and-clock.patch`.
+
+#### Hardware Register Map & Constraints:
+* **Base Address:** `0xE8A04000` (Channels: Channel 0 @ Pin 28, Channel 1 internal).
+* **Clock Source:** 20 MHz (`clk_div_320m` divided by 16). 1 tick = 50 ns.
+* **Period / Duty Resolution:** 50 ns resolution up to >200 ms.
+* **Bus Safety Rule:** Never access unmapped MMIO offsets inside `0xE8A04000` (e.g. `0x0C`), or access registers when the clock gate is disabled; doing so triggers an asynchronous AXI DECERR/SError bus fault. The driver keeps the clock safely enabled throughout its active lifecycle.
+
+#### Userspace Usage (sysfs):
+```bash
+# Export channel 0 (Pin 28)
+echo 0 > /sys/class/pwm/pwmchip0/export
+
+# Set 1 kHz frequency (period: 1,000,000 ns) with 50% duty cycle (500,000 ns)
+echo 1000000 > /sys/class/pwm/pwmchip0/pwm0/period
+echo 500000 > /sys/class/pwm/pwmchip0/pwm0/duty_cycle
+
+# Enable PWM output
+echo 1 > /sys/class/pwm/pwmchip0/pwm0/enable
+
+# Disable and unexport
+echo 0 > /sys/class/pwm/pwmchip0/pwm0/enable
+echo 0 > /sys/class/pwm/pwmchip0/unexport
+```
+*Note: Pin 28 logic level is 1.8V. Do NOT connect 3.3V or 5V loads directly.*
 
 ### I2C and UART
 * **I2C:** Buses `i2c-0` and `i2c-1` (internal `i2c-7`) are active and automatically exported by the kernel.
