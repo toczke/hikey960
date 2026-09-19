@@ -1,0 +1,588 @@
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
+--- a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
++++ b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
+@@ -231,6 +231,34 @@ hikey_usb_ep1: endpoint@1 {
+ 			};
+ 		};
+ 	};
++
++	i2s2: hi3660_i2s {
++		compatible = "hisilicon,hi3660-i2s-1.0";
++		reg = <0x0 0xe804f800 0x0 0x400>,
++		      <0x0 0xe804e000 0x0 0x400>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&i2s2_pmx_func &i2s2_cfg_func>;
++		dmas = <&asp_dmac 18 &asp_dmac 19>;
++		dma-names = "rx", "tx";
++		#sound-dai-cells = <0>;
++	};
++
++	sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "hikey-hdmi";
++		simple-audio-card,format = "i2s";
++
++		simple-audio-card,bitclock-master = <&sound_master>;
++		simple-audio-card,frame-master = <&sound_master>;
++
++		sound_master: simple-audio-card,cpu {
++			sound-dai = <&i2s2>;
++		};
++
++		simple-audio-card,codec {
++			sound-dai = <&adv7533>;
++		};
++	};
+ };
+ 
+ /*
+@@ -610,6 +638,7 @@ adv7533: adv7533@39 {
+ 		pd-gpios = <&gpio5 1 0>;
+ 		adi,dsi-lanes = <4>;
+ 		adi,disable-timing-generator;
++		#sound-dai-cells = <0>;
+ 		ports {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+diff --git a/sound/soc/hisilicon/Kconfig b/sound/soc/hisilicon/Kconfig
+--- a/sound/soc/hisilicon/Kconfig
++++ b/sound/soc/hisilicon/Kconfig
+@@ -7,5 +7,11 @@ config SND_I2S_HI6210_I2S
+ 	help
+ 	  Hisilicon I2S
+ 
++config SND_I2S_HI3660_I2S
++	tristate "Hisilicon Hi3660 I2S controller"
++	select SND_SOC_GENERIC_DMAENGINE_PCM
++	help
++	  Hisilicon Hi3660 (Kirin 960) I2S audio controller driver.
++
+ endmenu
+ 
+diff --git a/sound/soc/hisilicon/Makefile b/sound/soc/hisilicon/Makefile
+--- a/sound/soc/hisilicon/Makefile
++++ b/sound/soc/hisilicon/Makefile
+@@ -1,2 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_SND_I2S_HI6210_I2S) += hi6210-i2s.o
++obj-$(CONFIG_SND_I2S_HI3660_I2S) += hi3660-i2s.o
+diff --git a/sound/soc/hisilicon/hi3660-i2s.h b/sound/soc/hisilicon/hi3660-i2s.h
+new file mode 100644
+--- /dev/null
++++ b/sound/soc/hisilicon/hi3660-i2s.h
+@@ -0,0 +1,95 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * linux/sound/soc/hisilicon/hi3660-i2s.h
++ *
++ * I2S IP driver for hi3660.
++ *
++ * Copyright (c) 2001-2021, Huawei Tech. Co., Ltd.
++ */
++
++#ifndef _HI3660_I2S_H
++#define _HI3660_I2S_H
++
++enum hisi_bits {
++	HII2S_BITS_16,
++	HII2S_BITS_18,
++	HII2S_BITS_20,
++	HII2S_BITS_24,
++};
++
++enum hisi_i2s_rates {
++	HII2S_FS_RATE_8KHZ = 0,
++	HII2S_FS_RATE_16KHZ = 1,
++	HII2S_FS_RATE_32KHZ = 2,
++	HII2S_FS_RATE_48KHZ = 4,
++	HII2S_FS_RATE_96KHZ = 5,
++	HII2S_FS_RATE_192KHZ = 6,
++};
++
++#define HI_ASP_CFG_R_RST_CTRLEN_REG		0x0
++#define HI_ASP_CFG_R_RST_CTRLDIS_REG		0x4
++#define HI_ASP_CFG_R_GATE_EN_REG		0xC
++#define HI_ASP_CFG_R_GATE_DIS_REG		0x10
++#define HI_ASP_CFG_R_GATE_CLKEN_REG		0x14
++#define HI_ASP_CFG_R_GATE_CLKSTAT_REG		0x18
++#define HI_ASP_CFG_R_GATE_CLKDIV_EN_REG		0x1C
++#define HI_ASP_CFG_R_CLK1_DIV_REG		0x20
++#define HI_ASP_CFG_R_CLK2_DIV_REG		0x24
++#define HI_ASP_CFG_R_CLK3_DIV_REG		0x28
++#define HI_ASP_CFG_R_CLK4_DIV_REG		0x2C
++#define HI_ASP_CFG_R_CLK5_DIV_REG		0x30
++#define HI_ASP_CFG_R_CLK6_DIV_REG		0x34
++#define HI_ASP_CFG_R_CLK_SEL_REG		0x38
++#define HI_ASP_CFG_R_SEC_REG			0x100
++
++#define HI_ASP_SIO_VERSION_REG			(0x3C)
++#define HI_ASP_SIO_MODE_REG			(0x40)
++#define HI_ASP_SIO_INTSTATUS_REG		(0x44)
++#define HI_ASP_SIO_INTCLR_REG			(0x48)
++#define HI_ASP_SIO_I2S_LEFT_XD_REG		(0x4C)
++#define HI_ASP_SIO_I2S_RIGHT_XD_REG		(0x50)
++#define HI_ASP_SIO_I2S_LEFT_RD_REG		(0x54)
++#define HI_ASP_SIO_I2S_RIGHT_RD_REG		(0x58)
++#define HI_ASP_SIO_CT_SET_REG			(0x5C)
++#define HI_ASP_SIO_CT_CLR_REG			(0x60)
++#define HI_ASP_SIO_RX_STA_REG			(0x68)
++#define HI_ASP_SIO_TX_STA_REG			(0x6C)
++#define HI_ASP_SIO_DATA_WIDTH_SET_REG		(0x78)
++#define HI_ASP_SIO_I2S_START_POS_REG		(0x7C)
++#define HI_ASP_SIO_I2S_POS_FLAG_REG		(0x80)
++#define HI_ASP_SIO_SIGNED_EXT_REG		(0x84)
++#define HI_ASP_SIO_I2S_POS_MERGE_EN_REG		(0x88)
++#define HI_ASP_SIO_INTMASK_REG			(0x8C)
++#define HI_ASP_SIO_I2S_DUAL_RX_CHN_REG		(0xA0)
++#define HI_ASP_SIO_I2S_DUAL_TX_CHN_REG		(0xC0)
++
++#define HI_ASP_CFG_R_CLK_SEL_EN			BIT(2)
++#define HI_ASP_CFG_R_CLK_SEL			0x140010
++#define HI_ASP_CFG_R_CLK1_DIV_SEL		0xbcdc9a
++#define HI_ASP_CFG_R_CLK4_DIV_SEL		0x00ff000f
++#define HI_ASP_CFG_R_CLK6_DIV_SEL		0x00ff003f
++#define HI_ASP_CFG_SIO_MODE			0
++#define HI_ASP_SIO_MODE_SEL_EN			BIT(0)
++#define HI_ASP_MASK				0xffffffff
++
++#define HI_ASP_SIO_RX_ENABLE			BIT(13)
++#define HI_ASP_SIO_TX_ENABLE			BIT(12)
++#define HI_ASP_SIO_RX_FIFO_DISABLE		BIT(11)
++#define HI_ASP_SIO_TX_FIFO_DISABLE		BIT(10)
++#define HI_ASP_SIO_RX_DATA_MERGE		BIT(9)
++#define HI_ASP_SIO_TX_DATA_MERGE		BIT(8)
++#define HI_ASP_SIO_RX_FIFO_THRESHOLD		(0x5 << 4)
++#define HI_ASP_SIO_TX_FIFO_THRESHOLD		(0xB << 0)
++#define HI_ASP_SIO_RX_FIFO_THRESHOLD_CLR	(0xF << 4)
++#define HI_ASP_SIO_TX_FIFO_THRESHOLD_CLR	(0xF << 0)
++#define HI_ASP_SIO_BURST			(0x4)
++
++enum hisi_i2s_formats {
++	HII2S_FORMAT_I2S,
++	HII2S_FORMAT_PCM_STD,
++	HII2S_FORMAT_PCM_USER,
++	HII2S_FORMAT_LEFT_JUST,
++	HII2S_FORMAT_RIGHT_JUST,
++};
++
++#endif /* _HI3660_I2S_H */
+diff --git a/sound/soc/hisilicon/hi3660-i2s.c b/sound/soc/hisilicon/hi3660-i2s.c
+new file mode 100644
+--- /dev/null
++++ b/sound/soc/hisilicon/hi3660-i2s.c
+@@ -0,0 +1,415 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * linux/sound/soc/hisilicon/hi3660-i2s.c
++ *
++ * I2S IP driver for hi3660 (Kirin 960 / HiKey960).
++ *
++ * Copyright (c) 2001-2021, Huawei Tech. Co., Ltd.
++ */
++
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/delay.h>
++#include <linux/clk.h>
++#include <linux/jiffies.h>
++#include <linux/io.h>
++#include <linux/pinctrl/consumer.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/dmaengine_pcm.h>
++#include <sound/initval.h>
++#include <sound/soc.h>
++#include <linux/interrupt.h>
++#include <linux/reset.h>
++#include <linux/of_address.h>
++#include <linux/of_irq.h>
++#include <linux/regmap.h>
++#include <linux/mfd/syscon.h>
++
++#include "hi3660-i2s.h"
++
++struct hi3660_i2s {
++	struct device *dev;
++	struct snd_soc_dai_driver dai;
++	void __iomem *base;
++	void __iomem *base_syscon;
++	void __iomem *base_sctrl;
++	phys_addr_t base_phys;
++	struct snd_dmaengine_dai_dma_data dma_data[2];
++	spinlock_t lock;
++	int rate;
++	int format;
++	int bits;
++	int channels;
++	u32 master;
++	u32 status;
++};
++
++static void update_bits(struct hi3660_i2s *i2s, u32 ofs, u32 reset, u32 set)
++{
++	u32 val = readl(i2s->base + ofs) & ~reset;
++
++	writel(val | set, i2s->base + ofs);
++}
++
++static void update_bits_syscon(struct hi3660_i2s *i2s,
++			u32 ofs, u32 reset, u32 set)
++{
++	u32 val = readl(i2s->base_syscon + ofs) & ~reset;
++
++	writel(val | set, i2s->base_syscon + ofs);
++}
++
++static int enable_format(struct hi3660_i2s *i2s,
++			 struct snd_pcm_substream *substream)
++{
++	switch (i2s->format & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_BP_FP:
++		i2s->master = false;
++		update_bits_syscon(i2s, HI_ASP_CFG_R_CLK_SEL_REG,
++				0, HI_ASP_CFG_R_CLK_SEL_EN);
++		break;
++	case SND_SOC_DAIFMT_BC_FC:
++		i2s->master = true;
++		update_bits_syscon(i2s, HI_ASP_CFG_R_CLK_SEL_REG,
++				HI_ASP_CFG_R_CLK_SEL_EN, 0);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int hi3660_i2s_startup(struct snd_pcm_substream *substream,
++			      struct snd_soc_dai *cpu_dai)
++{
++	struct hi3660_i2s *i2s = dev_get_drvdata(cpu_dai->dev);
++
++	/* Ensure ASP clocks are active in sctrl before accessing ASP registers */
++	if (i2s->base_sctrl) {
++		writel_relaxed(BIT(27), i2s->base_sctrl + 0x160); /* asp_tcxo */
++		writel_relaxed(BIT(4) | BIT(6), i2s->base_sctrl + 0x170); /* asp_subsys | asp_subsys_peri */
++	}
++
++	/* deassert reset on sio_bt */
++	update_bits_syscon(i2s, HI_ASP_CFG_R_RST_CTRLDIS_REG,
++			0, BIT(2) | BIT(6) | BIT(8) | BIT(16));
++
++	/* enable clk before frequency division */
++	update_bits_syscon(i2s, HI_ASP_CFG_R_GATE_EN_REG,
++			0, BIT(5) | BIT(6));
++
++	/* enable frequency division */
++	update_bits_syscon(i2s, HI_ASP_CFG_R_GATE_CLKDIV_EN_REG,
++			0, BIT(2) | BIT(5));
++
++	/* select clk */
++	update_bits_syscon(i2s, HI_ASP_CFG_R_CLK_SEL_REG,
++			HI_ASP_MASK, HI_ASP_CFG_R_CLK_SEL);
++
++	/* select clk_div */
++	update_bits_syscon(i2s, HI_ASP_CFG_R_CLK1_DIV_REG,
++			HI_ASP_MASK, HI_ASP_CFG_R_CLK1_DIV_SEL);
++	update_bits_syscon(i2s, HI_ASP_CFG_R_CLK4_DIV_REG,
++			HI_ASP_MASK, HI_ASP_CFG_R_CLK4_DIV_SEL);
++	update_bits_syscon(i2s, HI_ASP_CFG_R_CLK6_DIV_REG,
++			HI_ASP_MASK, HI_ASP_CFG_R_CLK6_DIV_SEL);
++
++	/* sio config */
++	update_bits(i2s, HI_ASP_SIO_MODE_REG, HI_ASP_MASK, 0x0);
++	update_bits(i2s, HI_ASP_SIO_DATA_WIDTH_SET_REG, HI_ASP_MASK, 0x9);
++	update_bits(i2s, HI_ASP_SIO_I2S_POS_MERGE_EN_REG, HI_ASP_MASK, 0x1);
++	update_bits(i2s, HI_ASP_SIO_I2S_START_POS_REG, HI_ASP_MASK, 0x0);
++
++	return 0;
++}
++
++static void hi3660_i2s_shutdown(struct snd_pcm_substream *substream,
++				struct snd_soc_dai *cpu_dai)
++{
++}
++
++static void txctrl(struct snd_soc_dai *cpu_dai, int on)
++{
++	struct hi3660_i2s *i2s = dev_get_drvdata(cpu_dai->dev);
++
++	spin_lock(&i2s->lock);
++	if (on) {
++		/* enable SIO TX */
++		update_bits(i2s, HI_ASP_SIO_CT_SET_REG, 0,
++			HI_ASP_SIO_TX_ENABLE |
++			HI_ASP_SIO_TX_DATA_MERGE |
++			HI_ASP_SIO_TX_FIFO_THRESHOLD |
++			HI_ASP_SIO_RX_ENABLE |
++			HI_ASP_SIO_RX_DATA_MERGE |
++			HI_ASP_SIO_RX_FIFO_THRESHOLD);
++	} else {
++		/* disable SIO TX */
++		update_bits(i2s, HI_ASP_SIO_CT_CLR_REG, 0,
++			HI_ASP_SIO_TX_ENABLE | HI_ASP_SIO_RX_ENABLE);
++	}
++	spin_unlock(&i2s->lock);
++}
++
++static void rxctrl(struct snd_soc_dai *cpu_dai, int on)
++{
++	struct hi3660_i2s *i2s = dev_get_drvdata(cpu_dai->dev);
++
++	spin_lock(&i2s->lock);
++	if (on) {
++		/* enable SIO RX */
++		update_bits(i2s, HI_ASP_SIO_CT_SET_REG, 0,
++			HI_ASP_SIO_TX_ENABLE |
++			HI_ASP_SIO_TX_DATA_MERGE |
++			HI_ASP_SIO_TX_FIFO_THRESHOLD |
++			HI_ASP_SIO_RX_ENABLE |
++			HI_ASP_SIO_RX_DATA_MERGE |
++			HI_ASP_SIO_RX_FIFO_THRESHOLD);
++	} else {
++		/* disable SIO RX */
++		update_bits(i2s, HI_ASP_SIO_CT_CLR_REG, 0,
++			HI_ASP_SIO_TX_ENABLE | HI_ASP_SIO_RX_ENABLE);
++	}
++	spin_unlock(&i2s->lock);
++}
++
++static int set_sysclk(struct snd_soc_dai *cpu_dai,
++		      int clk_id, unsigned int freq, int dir)
++{
++	return 0;
++}
++
++static int set_format(struct snd_soc_dai *cpu_dai, unsigned int fmt)
++{
++	struct hi3660_i2s *i2s = dev_get_drvdata(cpu_dai->dev);
++
++	i2s->format = fmt;
++	i2s->master = (i2s->format & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) ==
++		      SND_SOC_DAIFMT_BC_FC;
++
++	return 0;
++}
++
++static int hw_params(struct snd_pcm_substream *substream,
++		     struct snd_pcm_hw_params *params,
++		     struct snd_soc_dai *cpu_dai)
++{
++	struct hi3660_i2s *i2s = dev_get_drvdata(cpu_dai->dev);
++	struct snd_dmaengine_dai_dma_data *dma_data;
++
++	dma_data = snd_soc_dai_get_dma_data(cpu_dai, substream);
++
++	enable_format(i2s, substream);
++
++	dma_data->maxburst = 4;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		dma_data->addr = i2s->base_phys +
++			HI_ASP_SIO_I2S_DUAL_TX_CHN_REG;
++	else
++		dma_data->addr = i2s->base_phys +
++			HI_ASP_SIO_I2S_DUAL_RX_CHN_REG;
++
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_U16_LE:
++	case SNDRV_PCM_FORMAT_S16_LE:
++		i2s->bits = 16;
++		dma_data->addr_width = 4;
++		break;
++
++	case SNDRV_PCM_FORMAT_U24_LE:
++	case SNDRV_PCM_FORMAT_S24_LE:
++		i2s->bits = 32;
++		dma_data->addr_width = 4;
++		break;
++	default:
++		dev_err(cpu_dai->dev, "Bad format\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int trigger(struct snd_pcm_substream *substream, int cmd,
++		   struct snd_soc_dai *cpu_dai)
++{
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++			rxctrl(cpu_dai, 1);
++		else
++			txctrl(cpu_dai, 1);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++			rxctrl(cpu_dai, 0);
++		else
++			txctrl(cpu_dai, 0);
++		break;
++	default:
++		dev_err(cpu_dai->dev, "unknown cmd\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int dai_probe(struct snd_soc_dai *dai)
++{
++	struct hi3660_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++
++	snd_soc_dai_init_dma_data(dai,
++		&i2s->dma_data[SNDRV_PCM_STREAM_PLAYBACK],
++		&i2s->dma_data[SNDRV_PCM_STREAM_CAPTURE]);
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops dai_ops = {
++	.probe		= dai_probe,
++	.trigger	= trigger,
++	.hw_params	= hw_params,
++	.set_fmt	= set_format,
++	.set_sysclk	= set_sysclk,
++	.startup	= hi3660_i2s_startup,
++	.shutdown	= hi3660_i2s_shutdown,
++};
++
++static const struct snd_soc_dai_driver dai_init = {
++	.name = "hi3660_i2s",
++	.playback = {
++		.channels_min = 2,
++		.channels_max = 2,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE |
++			   SNDRV_PCM_FMTBIT_U16_LE |
++			   SNDRV_PCM_FMTBIT_S24_LE |
++			   SNDRV_PCM_FMTBIT_U24_LE,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++	},
++	.capture = {
++		.channels_min = 2,
++		.channels_max = 2,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE |
++			   SNDRV_PCM_FMTBIT_U16_LE |
++			   SNDRV_PCM_FMTBIT_S24_LE |
++			   SNDRV_PCM_FMTBIT_U24_LE,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++	},
++	.ops = &dai_ops,
++};
++
++static const struct snd_soc_component_driver component_driver = {
++	.name = "hi3660_i2s",
++};
++
++static const struct snd_pcm_hardware sound_hardware = {
++	.info = SNDRV_PCM_INFO_MMAP |
++		SNDRV_PCM_INFO_MMAP_VALID |
++		SNDRV_PCM_INFO_PAUSE |
++		SNDRV_PCM_INFO_RESUME |
++		SNDRV_PCM_INFO_INTERLEAVED |
++		SNDRV_PCM_INFO_HALF_DUPLEX,
++	.period_bytes_min = 4096,
++	.period_bytes_max = 4096,
++	.periods_min = 4,
++	.periods_max = UINT_MAX,
++	.buffer_bytes_max = SIZE_MAX,
++};
++
++static const struct snd_dmaengine_pcm_config dmaengine_pcm_config = {
++	.pcm_hardware = &sound_hardware,
++	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
++	.prealloc_buffer_size = 64 * 1024,
++};
++
++static int hi3660_i2s_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct hi3660_i2s *i2s;
++	struct resource *res;
++	struct pinctrl *pctrl;
++	int ret;
++
++	i2s = devm_kzalloc(dev, sizeof(*i2s), GFP_KERNEL);
++	if (!i2s)
++		return -ENOMEM;
++
++	i2s->dev = dev;
++	spin_lock_init(&i2s->lock);
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res)
++		return -ENODEV;
++	i2s->base_phys = (phys_addr_t)res->start;
++
++	i2s->dai = dai_init;
++	dev_set_drvdata(dev, i2s);
++
++	i2s->base = devm_ioremap_resource(dev, res);
++	if (IS_ERR(i2s->base)) {
++		dev_err(dev, "ioremap base failed\n");
++		return PTR_ERR(i2s->base);
++	}
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++	if (!res)
++		return -ENODEV;
++	i2s->base_syscon = devm_ioremap(dev, res->start, resource_size(res));
++	if (IS_ERR(i2s->base_syscon)) {
++		dev_err(dev, "ioremap base_syscon failed\n");
++		return PTR_ERR(i2s->base_syscon);
++	}
++
++	/* Map sctrl (0xfff0a000) to ensure ASP clock gates are open before access */
++	i2s->base_sctrl = devm_ioremap(dev, 0xfff0a000, 0x1000);
++	if (i2s->base_sctrl) {
++		writel_relaxed(BIT(27), i2s->base_sctrl + 0x160); /* asp_tcxo */
++		writel_relaxed(BIT(4) | BIT(6), i2s->base_sctrl + 0x170); /* asp_subsys | asp_subsys_peri */
++	}
++
++	/* Optional pinctrl configuration */
++	pctrl = devm_pinctrl_get_select_default(dev);
++	if (IS_ERR(pctrl) && PTR_ERR(pctrl) != -ENODEV)
++		dev_warn(dev, "pinctrl default selection returned %ld\n", PTR_ERR(pctrl));
++
++	ret = devm_snd_dmaengine_pcm_register(dev, &dmaengine_pcm_config, 0);
++	if (ret) {
++		dev_err(dev, "Failed to register dmaengine pcm: %d\n", ret);
++		return ret;
++	}
++
++	ret = devm_snd_soc_register_component(dev, &component_driver,
++					      &i2s->dai, 1);
++	if (ret) {
++		dev_err(dev, "Failed to register component: %d\n", ret);
++		return ret;
++	}
++
++	dev_info(dev, "Hi3660 I2S audio controller initialized\n");
++	return 0;
++}
++
++static const struct of_device_id dt_ids[] = {
++	{ .compatible = "hisilicon,hi3660-i2s-1.0" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, dt_ids);
++
++static struct platform_driver local_platform_driver = {
++	.probe = hi3660_i2s_probe,
++	.driver = {
++		.name = "hi3660_i2s",
++		.of_match_table = dt_ids,
++	},
++};
++
++module_platform_driver(local_platform_driver);
++
++MODULE_DESCRIPTION("Hisilicon Hi3660 I2S driver");
++MODULE_AUTHOR("Guangke Ji <j00209069@notesmail.huawei.com>");
++MODULE_LICENSE("GPL");

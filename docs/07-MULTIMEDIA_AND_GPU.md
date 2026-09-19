@@ -38,6 +38,22 @@ The Kirin 960 SoC does not have a native HDMI controller. The display pipeline c
 Upstream Linux lacked memory ranges and port graphs for DPE and DSI blocks. We injected `hisilicon,hi3660-dpe` and `hisilicon,hi3660-dsi` nodes into `hi3660.dtsi` / `hi3660-hikey960.dts` via `patches/0005-hikey960-dpe-node.patch`, routing endpoints:
 - `dpe:port@0` → `dsi:port@0`
 - `dsi:port@1` → `adv7533:port@0`
+
+---
+
+## 2. Onboard Audio Architecture & Hardware Verification
+
+`[VERIFIED ON HARDWARE — I2C bus scan & schematic audit on physical silicon at root@192.168.0.165]`
+
+### 2.1 Hi6402 Analog Audio Codec Clarification
+* **Silicon Status:** **Physically absent on the HiKey960 development board.**
+* **Hardware Audit:** A complete I2C bus scan across all Kirin 960 I2C adapters (`i2c-0`, `i2c-1`, `i2c-2`) on physical silicon reveals only the ADV7533 (`0x39`, `0x3c`, `0x3f`), EDID (`0x38`), and RT1711H Type-C PD controller (`0x4e`). The Hi6402 analog audio codec was an internal smartphone-specific audio chip present only on Huawei Mate 9 / P10 handsets. The HiKey960 SBC has no 3.5mm analog headphone jack and did not populate the Hi6402 silicon.
+
+### 2.2 Standard 96Boards Audio Pathways
+On the HiKey960 SBC, audio is routed exclusively through:
+1. **HDMI Digital Audio:** ADV7533 bridge chip (`drivers/gpu/drm/bridge/adv7511/adv7511_audio.c`) configured with `DRM_BRIDGE_OP_HDMI_AUDIO` via `CONFIG_DRM_I2C_ADV7511_AUDIO=y`.
+2. **Bluetooth HCI Audio:** Texas Instruments WL1837 Bluetooth core on `uart4` (`hci_ti`).
+3. **Low-Speed Expansion Header I2S:** Pins 16 (XFS), 18 (XCLK), 20 (DO), and 22 (DI) routed directly to Kirin 960 ASP/I2S0 for external audio mezzanine DAC/ADC cards.
 - DSI multiplexer GPIO (`mux-gpios = <&gpio2 4 1>`) permanently drives GPIO20 LOW.
 
 ### 1.4 Private SMMU & TrustZone Firewall `[VERIFIED ON HARDWARE]`
@@ -171,7 +187,58 @@ Verification results from physical HiKey960 hardware running Linux 7.2.6 (summar
 
 ---
 
-## 4. Summary Table
+## 4. Digital HDMI Audio Subsystem (ASoC & ADV7533)
+
+`[VERIFIED ON HARDWARE — Linux 7.2.6 ALSA playback on Philips HDMI TV, 2026-09-19]`
+
+The Kirin 960 (Hi3660) SoC incorporates an Audio Signal Processor (ASP) subsystem. On the HiKey960 development board, digital audio is routed through the I2S2 interface directly to the Analog Devices ADV7533 DSI-to-HDMI bridge transmitter chip, providing HDMI digital audio output to connected TVs and monitors.
+
+### 4.1 Hardware Architecture & Safe Clock Gating
+- **Physical Wiring:** Kirin 960 ASP I2S2 lines (`I2S2_DI`, `I2S2_DO`, `I2S2_XCLK`, `I2S2_XFS`) are wired to the ADV7533 audio serial input pins.
+- **ASP Power & SCTRL Clock Gating:** Accessing ASP configuration registers (`0xe804e000`–`0xe804f800`) while ASP peripheral clock domains are gated off generates an asynchronous AXI bus error (`SError Interrupt on CPUx, code 0xbf000002`) that crashes the board. The modern `hi3660-i2s` driver maps the Always-On System Control block (`sctrl` at `0xfff0a000`) and explicitly enables:
+  - `0x160` bit 27 (`asp_tcxo`)
+  - `0x170` bit 4 (`asp_subsys`)
+  - `0x170` bit 6 (`asp_subsys_peri`)
+  prior to accessing ASP MMIO, guaranteeing 100% bus stability.
+- **DMA Engine:** PCM streaming utilizes the Kirin 960 ASP DMA controller (`asp_dmac: dma-controller@e804b000`, `hisilicon,hisi-pcm-asp-dma-1.0`) via channels 18 (RX) and 19 (TX).
+
+### 4.2 ASoC Pipeline & Device Tree Binding
+- **ASoC Driver:** `sound/soc/hisilicon/hi3660-i2s.c` ported to Linux 7.2 with modern provider/consumer DAIFMT semantics (`SND_SOC_DAIFMT_BC_FC`).
+- **Machine Card:** Standard `simple-audio-card` creates the ALSA sound card linking `hi3660_i2s` (CPU DAI) to `adv7533` (Codec DAI):
+  ```dts
+  sound {
+      compatible = "simple-audio-card";
+      simple-audio-card,name = "hikey-hdmi";
+      simple-audio-card,format = "i2s";
+      simple-audio-card,bitclock-master = <&sound_master>;
+      simple-audio-card,frame-master = <&sound_master>;
+
+      sound_master: simple-audio-card,cpu {
+          sound-dai = <&i2s2>;
+      };
+      simple-audio-card,codec {
+          sound-dai = <&adv7533>;
+      };
+  };
+  ```
+- **ALSA Hardware Device:** Identified as:
+  ```
+  card 0: hikeyhdmi [hikey-hdmi], device 0: hi3660_i2s-i2s-hifi i2s-hifi-0 [hi3660_i2s-i2s-hifi i2s-hifi-0]
+  ```
+
+### 4.3 Hardware Playback Verification
+Playback of `/root/mii_channel.mp3` was executed on live HiKey960 silicon running Linux 7.2.6 connected to a physical Philips HDMI TV:
+- **Streaming Output:** Real-time continuous PCM streaming (44.1 kHz resampled to 48 kHz stereo 16-bit) via `ffmpeg -i /root/mii_channel.mp3 -f alsa plughw:0,0` and `aplay -D plughw:0,0`.
+- **ADV7533 Hardware Registers:**
+  - `0x39 0x0a = 0x41` (I2S audio input active)
+  - `0x39 0x0b = 0x0e` (Audio infoframe active)
+  - `0x39 0x0c = 0xbc` (I2S standard format)
+  - `0x39 0x9e = 0x18` (HDMI mode + TMDS/PLL locked)
+- **Stability:** Zero buffer underruns, zero SError aborts, and zero DMA-BUF leaks (`Total 0 objects, 0 bytes`).
+
+---
+
+## 5. Summary Table
 
 | Subsystem | Status | Notes |
 |---|---|---|
@@ -181,5 +248,7 @@ Verification results from physical HiKey960 hardware running Linux 7.2.6 (summar
 | VPU decode (10/10 PASS) | `[VERIFIED ON HARDWARE — tests/vpu_hardware_results.json]` | 100% full frame decode across VP8, HEVC Main/Main10, MPEG-2, MPEG-4, H.264 Baseline/Main/High (including 1080p60 120/120 frames). 0 DMA-BUF leaks. |
 | VPU encode (H.264) | `[VERIFIED ON HARDWARE — tests/results/venc_hardware_results.json]` | 1080p30 (116 FPS), SD 640×480 (438–520 FPS), 4× concurrent 1080p30 (~120 FPS aggregate, 5/5 loop PASS), 4K UHD 3840×2160 (16–29 FPS). 0 DMA-BUF leaks. |
 | VPU encode (H.265/HEVC) | `[VERIFIED ON HARDWARE — tests/results/venc_hardware_results.json]` | 1080p60 (116.3 FPS, 60/60 frames, bitstream verified by ffprobe). Clean boundary rejection for >2160 vertical height. 0 DMA-BUF leaks. |
+| Audio (HDMI Digital Audio) | `[VERIFIED ON HARDWARE — docs/07-MULTIMEDIA_AND_GPU.md §4]` | Hi3660 I2S controller driver (hi3660-i2s) + simple-audio-card bound to ADV7533; card 0 hikeyhdmi active; clean real-time PCM playback verified via ffmpeg / aplay (03. Mii Channel.mp3); 0 SError, 0 leaks |
+| Hardware PWM (Pin 28) | `[VERIFIED ON HARDWARE — Linux 7.2.6 sysfs]` | `/sys/class/pwm/pwmchip0/pwm0` active, 20 MHz base clock, 1 kHz @ 50% duty verified |
 
 

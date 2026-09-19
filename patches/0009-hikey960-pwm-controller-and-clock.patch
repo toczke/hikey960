@@ -1,0 +1,449 @@
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
+index e71c35f..778451a 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
++++ b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
+@@ -744,3 +744,9 @@ dwc3_ss: endpoint@1 {
+ 		};
+ 	};
+ };
++
++&pwm {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pwm_pmx_func>;
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+index 8d035ec..1658dde 100644
+--- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
+@@ -1090,6 +1090,15 @@ dwmmc2: mmc@ff3ff000 {
+ 			status = "disabled";
+ 		};
+ 
++		pwm: pwm@e8a04000 {
++			compatible = "hisilicon,hi3660-pwm", "hisilicon,pwm";
++			reg = <0x0 0xe8a04000 0x0 0x1000>;
++			clocks = <&crg_ctrl HI3660_CLK_GATE_PWM>;
++			clock-names = "clk_pwm";
++			#pwm-cells = <2>;
++			status = "disabled";
++		};
++
+ 		watchdog0: watchdog@e8a06000 {
+ 			compatible = "arm,sp805", "arm,primecell";
+ 			reg = <0x0 0xe8a06000 0x0 0x1000>;
+diff --git a/arch/arm64/boot/dts/hisilicon/hikey960-pinctrl.dtsi b/arch/arm64/boot/dts/hisilicon/hikey960-pinctrl.dtsi
+index b801a48..15f171c 100644
+--- a/arch/arm64/boot/dts/hisilicon/hikey960-pinctrl.dtsi
++++ b/arch/arm64/boot/dts/hisilicon/hikey960-pinctrl.dtsi
+@@ -263,6 +263,12 @@ i2s2_pmx_func: i2s2-pins {
+ 				>;
+ 			};
+ 
++			pwm_pmx_func: pwm-pins {
++				pinctrl-single,pins = <
++					0x010 MUX_M1 /* Pin 28: GPIO_182 / LCD_BL_PWM */
++				>;
++			};
++
+ 			slimbus_pmx_func: slimbus-pins {
+ 				pinctrl-single,pins = <
+ 					0x02c MUX_M1 /* SLIMBUS_CLK */
+diff --git a/drivers/clk/hisilicon/clk-hi3660.c b/drivers/clk/hisilicon/clk-hi3660.c
+index 50f13db..d33c935 100644
+--- a/drivers/clk/hisilicon/clk-hi3660.c
++++ b/drivers/clk/hisilicon/clk-hi3660.c
+@@ -46,6 +46,7 @@ static const struct hisi_fixed_factor_clock hi3660_crg_fixed_factor_clks[] = {
+ 	{ HI3660_VENC_VOLT_HOLD, "venc_volt_hold", "peri_volt_hold", 1, 1, 0, },
+ 	{ HI3660_CLK_FAC_ISP_SNCLK, "clk_isp_snclk_fac", "clk_isp_snclk_angt",
+ 	  1, 10, 0, },
++	{ HI3660_CLK_FACTOR_PTP, "clk_factor_ptp", "clk_div_320m", 1, 16, 0, },
+ };
+ 
+ static const struct hisi_gate_clock hi3660_crgctrl_gate_sep_clks[] = {
+@@ -105,6 +106,8 @@ static const struct hisi_gate_clock hi3660_crgctrl_gate_sep_clks[] = {
+ 	  CLK_SET_RATE_PARENT, 0x10, 30, 0, },
+ 	{ HI3660_CLK_GATE_I2C7, "clk_gate_i2c7", "clk_mux_i2c",
+ 	  CLK_SET_RATE_PARENT, 0x10, 31, 0, },
++	{ HI3660_CLK_GATE_PWM, "clk_gate_pwm", "clk_factor_ptp",
++	  CLK_SET_RATE_PARENT, 0x20, 0, 0, },
+ 	{ HI3660_CLK_GATE_I2C3, "clk_gate_i2c3", "clk_mux_i2c",
+ 	  CLK_SET_RATE_PARENT, 0x20, 7, 0, },
+ 	{ HI3660_CLK_GATE_SPI1, "clk_gate_spi1", "clk_mux_spi",
+diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+index e8886a9..a3dcc3e 100644
+--- a/drivers/pwm/Kconfig
++++ b/drivers/pwm/Kconfig
+@@ -292,6 +292,16 @@ config PWM_HIBVT
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called pwm-hibvt.
+ 
++config PWM_HISI
++	tristate "HiSilicon Kirin PWM support"
++	depends on ARCH_HISI || COMPILE_TEST
++	depends on HAS_IOMEM
++	help
++	  Generic PWM framework driver for HiSilicon Kirin SoCs (Hi3660 / Kirin 960).
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called pwm-hisi.
++
+ config PWM_IMG
+ 	tristate "Imagination Technologies PWM driver"
+ 	depends on HAS_IOMEM
+diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+index 5630a52..8f77f13 100644
+--- a/drivers/pwm/Makefile
++++ b/drivers/pwm/Makefile
+@@ -24,6 +24,7 @@ obj-$(CONFIG_PWM_EP93XX)	+= pwm-ep93xx.o
+ obj-$(CONFIG_PWM_FSL_FTM)	+= pwm-fsl-ftm.o
+ obj-$(CONFIG_PWM_GPIO)		+= pwm-gpio.o
+ obj-$(CONFIG_PWM_HIBVT)		+= pwm-hibvt.o
++obj-$(CONFIG_PWM_HISI)		+= pwm-hisi.o
+ obj-$(CONFIG_PWM_IMG)		+= pwm-img.o
+ obj-$(CONFIG_PWM_IMX1)		+= pwm-imx1.o
+ obj-$(CONFIG_PWM_IMX27)		+= pwm-imx27.o
+diff --git a/include/dt-bindings/clock/hi3660-clock.h b/include/dt-bindings/clock/hi3660-clock.h
+index e1374e1..1491e96 100644
+--- a/include/dt-bindings/clock/hi3660-clock.h
++++ b/include/dt-bindings/clock/hi3660-clock.h
+@@ -167,6 +167,8 @@
+ #define HI3660_CLK_ANGT_ISP_SNCLK	154
+ #define HI3660_CLK_MUX_ISP_SNCLK	155
+ #define HI3660_CLK_DIV_ISP_SNCLK	156
++#define HI3660_CLK_FACTOR_PTP		157
++#define HI3660_CLK_GATE_PWM		158
+ 
+ /* clk in pmuctrl */
+ #define HI3660_GATE_ABB_192		0
+diff --git a/drivers/pwm/pwm-hisi.c b/drivers/pwm/pwm-hisi.c
+new file mode 100644
+index 0000000..9ba2989
+--- /dev/null
++++ b/drivers/pwm/pwm-hisi.c
+@@ -0,0 +1,325 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * PWM Controller Driver for HiSilicon Kirin SoCs (Hi3660 / Kirin 960)
++ *
++ * Copyright (c) 2019 Huawei Technologies Co., Ltd.
++ * Copyright (c) 2026 Tomasz Toczek
++ */
++
++#include <linux/bitops.h>
++#include <linux/clk.h>
++#include <linux/delay.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/pwm.h>
++#include <linux/spinlock.h>
++
++#define PWM_CHANNEL_NUMBER	2
++#define PWM_PRESCALER_DEFAULT	1
++
++#define PWM_REG_LOCK_VAL	0x1ACCE550
++#define PWM_REG_UNLOCK_VAL	0x1ACCE551
++#define PWM_ENABLE_CFG_VAL	0x1
++#define PWM_DISABLE_CFG_VAL	0x0
++
++#define PWM_LOCK_REG		0x0000
++#define PWM_CTL_REG		0x0004
++#define PWM_CFG_REG		0x0008
++#define PWM_PR0_REG		0x0100
++#define PWM_PR1_REG		0x0104
++#define PWM_CX_MR_BASE		0x0300
++#define PWM_CX_MR0_BASE		0x0304
++#define PWM_CX_MR1_BASE		0x0308
++#define PWM_CX_PHA_BASE		0x0310
++#define PWM_CX_STEP		0x0100
++
++#define PWM_PR_OFFSET		0
++#define PWM_PR_WIDTH		16
++#define PWM_CFG_OFFSET(c)	((c) * 2)
++#define PWM_CFG_WIDTH		2
++#define PWM_CHAN_EN_OFFSET(c)	(PWM_CFG_OFFSET(c) + 1)
++
++#define MAX_PWM_CLK_RATE	120000000UL
++#define MAX_PRESCALER		16
++
++struct hisi_pwm_chip {
++	void __iomem *base;
++	struct clk *clk;
++	unsigned long clk_rate;
++	bool clk_enabled;
++	u32 prescaler0;
++	u32 prescaler1;
++	u32 enabled_channels;
++	spinlock_t lock;
++};
++
++static inline struct hisi_pwm_chip *to_hisi_pwm_chip(struct pwm_chip *chip)
++{
++	return pwmchip_get_drvdata(chip);
++}
++
++static inline void write_reg(void __iomem *reg_addr, u32 reg_val)
++{
++	writel(reg_val, reg_addr);
++}
++
++static void write_partial_reg(void __iomem *reg, u32 offset, u32 width, u32 val)
++{
++	u32 mask, tmp;
++
++	if (width == 0)
++		return;
++
++	mask = GENMASK(offset + width - 1, offset);
++	tmp = readl(reg);
++	tmp &= ~mask;
++	tmp |= ((val << offset) & mask);
++	write_reg(reg, tmp);
++}
++
++static inline void hisi_pwm_reg_unlock(struct hisi_pwm_chip *hpc)
++{
++	write_reg(hpc->base + PWM_LOCK_REG, PWM_REG_UNLOCK_VAL);
++}
++
++static inline void hisi_pwm_reg_lock(struct hisi_pwm_chip *hpc)
++{
++	write_reg(hpc->base + PWM_LOCK_REG, PWM_REG_LOCK_VAL);
++}
++
++static inline void hisi_pwm_enable(struct hisi_pwm_chip *hpc)
++{
++	write_reg(hpc->base + PWM_CTL_REG, PWM_ENABLE_CFG_VAL);
++}
++
++static inline void hisi_pwm_disable(struct hisi_pwm_chip *hpc)
++{
++	write_reg(hpc->base + PWM_CTL_REG, PWM_DISABLE_CFG_VAL);
++}
++
++static void hisi_pwm_prescaler_config(const struct hisi_pwm_chip *hpc)
++{
++	u32 pr0 = (hpc->prescaler0 == 0) ? 0 : (hpc->prescaler0 - 1);
++	u32 pr1 = (hpc->prescaler1 == 0) ? 0 : (hpc->prescaler1 - 1);
++
++	write_partial_reg(hpc->base + PWM_PR0_REG, PWM_PR_OFFSET, PWM_PR_WIDTH, pr0);
++	write_partial_reg(hpc->base + PWM_PR1_REG, PWM_PR_OFFSET, PWM_PR_WIDTH, pr1);
++}
++
++static void hisi_channel_output_config(struct hisi_pwm_chip *hpc, u32 chan, bool enable)
++{
++	u32 val = enable ? 0x1 : 0x0;
++
++	write_partial_reg(hpc->base + PWM_CFG_REG, PWM_CHAN_EN_OFFSET(chan), 1, val);
++}
++
++static int hisi_config_channel(struct hisi_pwm_chip *hpc, u32 chan,
++			       u64 period_ns, u64 duty_ns)
++{
++	u64 dividend, divisor;
++	u32 period_ticks, duty_ticks;
++
++	divisor = (u64)hpc->prescaler0 * (u64)hpc->prescaler1 * NSEC_PER_SEC;
++	if (divisor == 0)
++		return -EINVAL;
++
++	/* Calculate period ticks */
++	dividend = (u64)hpc->clk_rate * period_ns;
++	period_ticks = (u32)DIV_ROUND_CLOSEST_ULL(dividend, divisor);
++	if (period_ticks > 0)
++		period_ticks -= 1;
++
++	/* Calculate duty ticks */
++	dividend = (u64)hpc->clk_rate * duty_ns;
++	duty_ticks = (u32)DIV_ROUND_CLOSEST_ULL(dividend, divisor);
++
++	write_reg(hpc->base + PWM_CX_MR_BASE + chan * PWM_CX_STEP, period_ticks);
++	write_reg(hpc->base + PWM_CX_MR0_BASE + chan * PWM_CX_STEP, duty_ticks);
++	write_reg(hpc->base + PWM_CX_PHA_BASE + chan * PWM_CX_STEP, 0);
++
++	return 0;
++}
++
++static int hisi_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
++			      struct pwm_state *state)
++{
++	struct hisi_pwm_chip *hpc = to_hisi_pwm_chip(chip);
++	u32 period_val, duty_val, cfg_val, ctl_val;
++	u64 tmp, divisor;
++	unsigned long flags;
++
++	spin_lock_irqsave(&hpc->lock, flags);
++
++	period_val = readl(hpc->base + PWM_CX_MR_BASE + pwm->hwpwm * PWM_CX_STEP);
++	duty_val = readl(hpc->base + PWM_CX_MR0_BASE + pwm->hwpwm * PWM_CX_STEP);
++	cfg_val = readl(hpc->base + PWM_CFG_REG);
++	ctl_val = readl(hpc->base + PWM_CTL_REG);
++
++	spin_unlock_irqrestore(&hpc->lock, flags);
++
++	divisor = hpc->clk_rate;
++	if (divisor == 0)
++		return -EINVAL;
++
++	tmp = ((u64)period_val + 1) * (u64)hpc->prescaler0 * (u64)hpc->prescaler1 * NSEC_PER_SEC;
++	state->period = DIV_ROUND_CLOSEST_ULL(tmp, divisor);
++
++	tmp = (u64)duty_val * (u64)hpc->prescaler0 * (u64)hpc->prescaler1 * NSEC_PER_SEC;
++	state->duty_cycle = DIV_ROUND_CLOSEST_ULL(tmp, divisor);
++
++	state->polarity = PWM_POLARITY_NORMAL;
++	state->enabled = (ctl_val == PWM_ENABLE_CFG_VAL) &&
++			 !!(cfg_val & BIT(PWM_CHAN_EN_OFFSET(pwm->hwpwm)));
++
++	return 0;
++}
++
++static int hisi_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
++			  const struct pwm_state *state)
++{
++	struct hisi_pwm_chip *hpc = to_hisi_pwm_chip(chip);
++	unsigned long flags;
++	int ret = 0;
++
++	if (state->polarity != PWM_POLARITY_NORMAL)
++		return -EINVAL;
++
++	spin_lock_irqsave(&hpc->lock, flags);
++
++	if (state->enabled) {
++		hisi_pwm_reg_unlock(hpc);
++
++		ret = hisi_config_channel(hpc, pwm->hwpwm, state->period, state->duty_cycle);
++		if (ret) {
++			hisi_pwm_reg_lock(hpc);
++			spin_unlock_irqrestore(&hpc->lock, flags);
++			return ret;
++		}
++
++		hisi_channel_output_config(hpc, pwm->hwpwm, true);
++		hisi_pwm_enable(hpc);
++		hisi_pwm_reg_lock(hpc);
++
++		hpc->enabled_channels |= BIT(pwm->hwpwm);
++	} else {
++		if (hpc->enabled_channels & BIT(pwm->hwpwm)) {
++			hisi_pwm_reg_unlock(hpc);
++			hisi_channel_output_config(hpc, pwm->hwpwm, false);
++
++			hpc->enabled_channels &= ~BIT(pwm->hwpwm);
++			if (hpc->enabled_channels == 0)
++				hisi_pwm_disable(hpc);
++
++			hisi_pwm_reg_lock(hpc);
++		}
++	}
++
++	spin_unlock_irqrestore(&hpc->lock, flags);
++	return 0;
++}
++
++static const struct pwm_ops hisi_pwm_ops = {
++	.apply = hisi_pwm_apply,
++	.get_state = hisi_pwm_get_state,
++};
++
++static int hisi_pwm_probe(struct platform_device *pdev)
++{
++	struct hisi_pwm_chip *hpc;
++	struct pwm_chip *chip;
++	int ret;
++
++	chip = devm_pwmchip_alloc(&pdev->dev, PWM_CHANNEL_NUMBER, sizeof(*hpc));
++	if (IS_ERR(chip))
++		return PTR_ERR(chip);
++
++	hpc = pwmchip_get_drvdata(chip);
++	spin_lock_init(&hpc->lock);
++
++	hpc->base = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(hpc->base))
++		return PTR_ERR(hpc->base);
++
++	hpc->clk = devm_clk_get(&pdev->dev, "clk_pwm");
++	if (IS_ERR(hpc->clk))
++		hpc->clk = devm_clk_get(&pdev->dev, NULL);
++	if (IS_ERR(hpc->clk)) {
++		dev_err(&pdev->dev, "failed to get pwm clock: %ld\n", PTR_ERR(hpc->clk));
++		return PTR_ERR(hpc->clk);
++	}
++
++	ret = clk_prepare_enable(hpc->clk);
++	if (ret) {
++		dev_err(&pdev->dev, "failed to prepare/enable clock: %d\n", ret);
++		return ret;
++	}
++
++	hpc->clk_rate = clk_get_rate(hpc->clk);
++	if (hpc->clk_rate == 0 || hpc->clk_rate > MAX_PWM_CLK_RATE) {
++		dev_err(&pdev->dev, "invalid clock rate: %lu\n", hpc->clk_rate);
++		clk_disable_unprepare(hpc->clk);
++		return -EINVAL;
++	}
++
++	hpc->prescaler0 = PWM_PRESCALER_DEFAULT;
++	hpc->prescaler1 = PWM_PRESCALER_DEFAULT;
++	of_property_read_u32(pdev->dev.of_node, "pre_freq_divisor0", &hpc->prescaler0);
++	of_property_read_u32(pdev->dev.of_node, "pre_freq_divisor1", &hpc->prescaler1);
++
++	/* Initialize prescalers */
++	hisi_pwm_reg_unlock(hpc);
++	hisi_pwm_prescaler_config(hpc);
++	hisi_pwm_reg_lock(hpc);
++
++	/* Keep clock enabled - Kirin PWM IP block registers must have active clock to avoid bus hangs */
++	hpc->clk_enabled = true;
++
++	chip->ops = &hisi_pwm_ops;
++
++	ret = pwmchip_add(chip);
++	if (ret) {
++		dev_err(&pdev->dev, "failed to add pwm chip: %d\n", ret);
++		clk_disable_unprepare(hpc->clk);
++		return ret;
++	}
++
++	platform_set_drvdata(pdev, chip);
++	dev_info(&pdev->dev, "HiSilicon Kirin PWM initialized (clk: %lu Hz)\n", hpc->clk_rate);
++	return 0;
++}
++
++static void hisi_pwm_remove(struct platform_device *pdev)
++{
++	struct pwm_chip *chip = platform_get_drvdata(pdev);
++	struct hisi_pwm_chip *hpc = pwmchip_get_drvdata(chip);
++
++	pwmchip_remove(chip);
++
++	if (hpc->clk_enabled)
++		clk_disable(hpc->clk);
++	clk_unprepare(hpc->clk);
++}
++
++static const struct of_device_id hisi_pwm_of_match[] = {
++	{ .compatible = "hisilicon,hi3660-pwm" },
++	{ .compatible = "hisilicon,pwm" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, hisi_pwm_of_match);
++
++static struct platform_driver hisi_pwm_driver = {
++	.driver = {
++		.name = "hisi-pwm",
++		.of_match_table = hisi_pwm_of_match,
++	},
++	.probe = hisi_pwm_probe,
++	.remove = hisi_pwm_remove,
++};
++module_platform_driver(hisi_pwm_driver);
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("HiSilicon Kirin SoC PWM driver");
++MODULE_AUTHOR("Tomasz Toczek");
